@@ -1,16 +1,114 @@
 'use client';
-import { useMemo, useState } from 'react';
+
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, Check, CircleHelp, RotateCcw } from 'lucide-react';
-import BathroomPreview from './BathroomPreview';
+import { AlertTriangle, ArrowLeft, ArrowRight, BookOpen, Check, RotateCcw, X } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import SelectedOptionGallery from './SelectedOptionGallery';
 import DesignVisualStyles from './DesignVisualStyles';
-import { bathroomSteps, defaultBathroomValues, selectedChoice } from '../data/bathroom-options';
+import { bathroomSteps, defaultBathroomValues, type Choice } from '../data/bathroom-options';
+import { guideBySlug } from '../data/guides/catalog';
+
+type Values = Record<string, string | string[]>;
+const STORAGE = 'bath-designer-selections-v2';
+const prioritiesList = ['디자인', '청소 편의', '수납', '공간감', '관리 편의', '물튐 방지', '반신욕', '샤워 편의', '아이와 사용', '오래 사용하기', '호텔 같은 분위기', '밝은 분위기'];
+
+function label(value: string | string[] | undefined, choices: Choice[]) {
+  if (Array.isArray(value)) return value.map((id) => choices.find((choice) => choice.id === id)?.name ?? id).join(', ');
+  return choices.find((choice) => choice.id === value)?.name ?? '미정';
+}
+
+function querySelections(params: URLSearchParams): Values {
+  const selected: Values = {};
+  bathroomSteps.forEach((step) => step.groups.forEach((group) => {
+    const query = params.get(group.key);
+    if (!query) return;
+    const choice = group.choices.find((item) => item.id === query || item.name === query);
+    if (choice) selected[group.key] = group.multiple ? [choice.id] : choice.id;
+  }));
+  return selected;
+}
 
 export default function Configurator() {
+  const params = useSearchParams();
+  const guideValues = useMemo(() => querySelections(params), [params]);
   const [current, setCurrent] = useState(0);
-  const [values, setValues] = useState<Record<string, string>>(defaultBathroomValues);
+  const [values, setValues] = useState<Values>(defaultBathroomValues);
+  const [priorities, setPriorities] = useState<string[]>([]);
+  const [guideOpen, setGuideOpen] = useState(false);
   const step = bathroomSteps[current];
-  const selections = useMemo(() => Object.fromEntries(bathroomSteps.map(item => [item.key, selectedChoice(values, item.key)])), [values]);
-  const budget = 260 + Object.entries(values).reduce((sum, [key, value]) => sum + (bathroomSteps.find(item => item.key === key)?.choices.find(choice => choice.name === value)?.impact ?? 0), 0);
-  return <main className="design"><DesignVisualStyles /><header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>나의 욕실 설계</span><button onClick={() => { setValues(defaultBathroomValues); setCurrent(0); }}><RotateCcw size={15} /> 처음부터</button></header><div className="progress"><div style={{ width: `${((current + 1) / bathroomSteps.length) * 100}%` }} /></div><div className="designGrid"><section className="options"><div className="stepMeta">STEP {String(current + 1).padStart(2, '0')} / {bathroomSteps.length} <span>{step.title}</span></div><h1>{step.question}<button className="help" aria-label="도움말"><CircleHelp size={17} /></button></h1><p className="stepIntro">옵션을 고르면 미리보기와 예상 예산에 바로 반영됩니다.</p><div className="choiceGrid">{step.choices.map(choice => <button key={choice.id} onClick={() => setValues(previous => ({ ...previous, [step.key]: choice.name }))} className={`choice ${values[step.key] === choice.name ? 'selected' : ''}`}><img src={choice.image} alt="" /><div className="choiceCopy"><span className="check"><Check size={14} /></span><strong>{choice.name}</strong><small>{choice.sub}</small><em>{choice.impact === 0 ? '기본 구성' : `약 +${choice.impact}만원`}</em>{values[step.key] === choice.name && <mark>✓ 선택됨</mark>}</div></button>)}</div><div className="notice">실제 시공 전에는 현장 실측과 상태 확인이 필요합니다.</div><div className="navButtons"><button className="secondary" disabled={current === 0} onClick={() => setCurrent(index => index - 1)}><ArrowLeft size={17} /> 이전</button>{current < bathroomSteps.length - 1 ? <button className="button" onClick={() => setCurrent(index => index + 1)}>다음 <ArrowRight size={17} /></button> : <Link href={{ pathname: '/result', query: values }} className="button">설계안 완성 <ArrowRight size={17} /></Link>}</div></section><aside className="live"><BathroomPreview selections={selections} /></aside><aside className="summary"><h2>현재 선택</h2>{bathroomSteps.slice(0, current + 1).map(item => <div className="summaryRow" key={item.key}><span>{item.title}</span><b>{values[item.key]}</b></div>)}<div className="budget"><span>예상 예산 범위</span><strong>{budget}~{budget + 70}만원</strong><small>현장 상태와 제품 사양에 따라 달라질 수 있어요.</small></div></aside></div></main>;
+  const guide = guideBySlug[step.guide];
+  const selectedItems = step.groups.flatMap((group) => { const value = values[group.key]; const ids = Array.isArray(value) ? value : value ? [value] : []; return ids.filter((id) => id !== 'undecided' && id !== 'none').map((id) => ({ title: group.title, choice: group.choices.find((choice) => choice.id === id)! })).filter((item) => item.choice); });
+
+  useEffect(() => {
+    let saved: { values?: Values; priorities?: string[] } = {};
+    try { saved = JSON.parse(localStorage.getItem(STORAGE) ?? '{}'); } catch {}
+    setValues({ ...saved.values, ...guideValues });
+    setPriorities(saved.priorities ?? []);
+  }, [guideValues]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE, JSON.stringify({ values, priorities }));
+  }, [values, priorities]);
+
+  useEffect(() => {
+    setValues((old) => {
+      const concealed = Array.isArray(old.concealed) ? old.concealed : [];
+      const next = { ...old };
+      if (concealed.includes('concealed-basin') && !next.faucet) next.faucet = 'concealed';
+      if (concealed.includes('concealed-shower') && !next.showerFaucet) next.showerFaucet = 'concealed-shower';
+      return next;
+    });
+  }, [values.concealed]);
+
+  function update(key: string, id: string, multiple?: boolean) {
+    setValues((old) => {
+      if (!multiple) return { ...old, [key]: id };
+      const before = Array.isArray(old[key]) ? old[key] as string[] : [];
+      const next = id === 'none' || id === 'undecided' ? [id] : before.filter((item) => item !== 'none' && item !== 'undecided');
+      return { ...old, [key]: next.includes(id) ? next.filter((item) => item !== id) : [...next, id] };
+    });
+  }
+
+  const warning = values.sink === 'top-bowl' && values.faucet === 'one-hole'
+    ? '볼 세면대와 낮은 수전의 높이 조합을 확인하세요.'
+    : values.bathtubPlan === 'no' && values.showerFaucet === 'bath'
+      ? '욕조 없음과 욕조 겸용 수전이 함께 선택되어 있습니다.'
+      : values.partition === 'full-partition' && values.showerBooth && values.showerBooth !== 'none'
+        ? '샤워부스와 전체 파티션을 함께 사용할 계획인지 확인해보세요.' : '';
+
+  if (step.key === 'checklist') return <main className="design">
+    <DesignVisualStyles />
+    <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>나의 욕실 정리</span></header>
+    <div className="progress"><div style={{ width: '100%' }} /></div>
+    <div className="designGrid finalGrid">
+      <section className="options finalCheck">
+        <div className="stepMeta">STEP 17 / 17 <span>시공 전 최종 체크</span></div>
+        <h1>원하는 욕실이 맞는지 마지막으로 확인해보세요.</h1>
+        {bathroomSteps.slice(0, 16).map((item, index) => <div className="checkRow" key={item.key}><div><span>{String(index + 1).padStart(2, '0')} {item.title}</span><b>{item.groups.map((group) => label(values[group.key], group.choices)).filter((item) => item !== '미정').join(' · ') || '미정 — 업체와 상담할 항목'}</b></div><button className="secondary" onClick={() => setCurrent(index)}>수정</button></div>)}
+        <h2>내 우선순위 (최대 3개)</h2>
+        <div className="priorityList">{prioritiesList.map((item) => <button key={item} className={priorities.includes(item) ? 'on' : ''} onClick={() => setPriorities((old) => old.includes(item) ? old.filter((value) => value !== item) : old.length < 3 ? [...old, item] : old)}>{item}</button>)}</div>
+        <Link className="button" href={{ pathname: '/result', query: { plan: encodeURIComponent(JSON.stringify(values)), priorities: priorities.join('|') } }}>상담 준비서 보기 <ArrowRight size={17} /></Link>
+      </section>
+      <aside className="live"><SelectedOptionGallery items={bathroomSteps.slice(0,16).flatMap((item)=>item.groups.flatMap((group)=>{const value=values[group.key];const ids=Array.isArray(value)?value:value?[value]:[];return ids.filter(id=>id!=='undecided'&&id!=='none').map(id=>({title:item.title,choice:group.choices.find(choice=>choice.id===id)!})).filter(item=>item.choice)}))} /></aside>
+    </div>
+  </main>;
+
+  return <main className="design">
+    <DesignVisualStyles />
+    <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>내 욕실 만들기</span><button onClick={() => { localStorage.removeItem(STORAGE); setValues({}); setPriorities([]); setCurrent(0); }}><RotateCcw size={15} /> 처음부터</button></header>
+    <div className="progress"><div style={{ width: `${((current + 1) / bathroomSteps.length) * 100}%` }} /></div>
+    <div className="designGrid">
+      <section className="options">
+        <div className="stepMeta">STEP {String(current + 1).padStart(2, '0')} / 17 <span>{step.title}</span></div>
+        <div className="stepHeading"><h1>{step.question}</h1><button className="guideButton" onClick={() => setGuideOpen(true)}><BookOpen size={15} /> 가이드 보기</button></div>
+        <p className="stepIntro">모르는 항목은 ‘아직 모르겠어요’로 남겨도 괜찮습니다.</p>
+        {step.groups.map((group) => <section className="choiceGroup" key={group.key}><h2>{group.title}{group.multiple && <small>복수 선택 가능</small>}</h2><div className="choiceGrid">{group.choices.filter(choice=>choice.id!=='undecided').map((choice) => { const selected = Array.isArray(values[group.key]) ? values[group.key].includes(choice.id) : values[group.key] === choice.id; return <button key={choice.id} onClick={() => update(group.key, choice.id, group.multiple)} className={`choice ${selected ? 'selected' : ''}`}><img src={choice.image} onError={(event)=>{event.currentTarget.src='/images/bathroom/showroom-v1.png'}} alt="" /><div className="choiceCopy"><span className="check"><Check size={14} /></span><strong>{choice.name}</strong><small>{choice.sub}</small></div></button>; })}</div><button className={`undecidedButton ${values[group.key]==='undecided'||(Array.isArray(values[group.key])&&values[group.key].includes('undecided'))?'selected':''}`} onClick={()=>update(group.key,'undecided',group.multiple)}>아직 모르겠어요</button></section>)}
+        {warning && <div className="selectionWarning"><AlertTriangle size={16} /><div>{warning}<small>확인이 필요한 조합입니다. 실제 시공 가능 여부는 현장에서 확인하세요.</small></div></div>}
+        <div className="navButtons"><button className="secondary" disabled={current === 0} onClick={() => setCurrent((index) => index - 1)}><ArrowLeft size={17} /> 이전</button><button className="secondary" onClick={() => setCurrent((index) => Math.min(16, index + 1))}>건너뛰기</button><button className="button" onClick={() => setCurrent((index) => Math.min(16, index + 1))}>선택 완료 <ArrowRight size={17} /></button></div>
+      </section>
+      <aside className="live"><SelectedOptionGallery items={selectedItems} empty="이 단계에서 선택한 항목이 사진과 함께 표시됩니다." /><section className="summary"><h2>현재 선택</h2>{bathroomSteps.slice(0, current + 1).flatMap((item) => item.groups.map((group) => { const value=values[group.key]; const first=group.choices.find(choice=>choice.id===(Array.isArray(value)?value[0]:value)); return <div className="summaryRow" key={group.key}>{first&&<img src={first.image} onError={event=>{event.currentTarget.src='/images/bathroom/showroom-v1.png'}} alt=""/>}<div><span>{group.title}</span><b>{label(value, group.choices)}</b></div></div> }))}</section></aside>
+    </div>
+    {guideOpen && <div className="guideDrawer" role="dialog" aria-modal="true"><div><button className="drawerClose" onClick={() => setGuideOpen(false)} aria-label="가이드 닫기"><X size={18} /></button><span>GUIDE</span><h2>{guide?.title}</h2><p>{guide?.oneLine}</p>{guide?.options.slice(0, 3).map((option) => <article key={option.id}><b>{option.title}</b><p>{option.shortDescription}</p></article>)}<Link className="button" href={`/guide/${step.guide}`}>전체 가이드 보기</Link></div></div>}
+  </main>;
 }

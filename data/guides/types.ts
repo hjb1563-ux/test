@@ -1,0 +1,2 @@
+export type GuideOption = { id:string; title:string; shortDescription:string; description:string; image:string; pros:string[]; cons:string[]; recommendedFor:string; avoidWhen:string; installationDifficulty:number; maintenanceDifficulty:number; spaceImpact:number; caution:string; apply?: { key:string; value:string } };
+export type Guide = { slug:string; order:number; title:string; oneLine:string; description:string; image:string; difficulty:number; expertNote:string; options:GuideOption[]; relatedGuides:string[]; keywords:string[] };

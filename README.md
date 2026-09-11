@@ -12,3 +12,11 @@ Option cards use `public/images/bathroom/option-placeholder.svg` until productio
 - `public/images/bathroom/jendai/`, `faucets/`, `mirrors/`, `accessories/`
 
 Example: `image: '/images/bathroom/tiles/tile-600x1200-warm-gray.jpg'`.
+
+## Remodeling guide
+
+The guide catalog is managed by `data/guides/catalog.ts`, with shared types in `data/guides/types.ts`. It serves 16 beginner-friendly topics at `/guide/[slug]`, plus a searchable glossary at `/guide/glossary`.
+
+Guide card and option imagery currently uses the safe local placeholder at `public/images/guide/guide-placeholder.svg`. Put future owned/licensed assets beneath `public/images/guide/` by category (`demolition/`, `structure/`, `waterproofing/`, `tiles/`, `basins/`, `toilets/`, `furniture/`, `bathtubs/`, `ceilings/`, `faucets/`, `drainage/`, `ventilation/`, `lighting/`, `accessories/`, `grout/`, or `threshold/`) and update the relevant `image` field in the guide data.
+
+Some guide choices include an “내 욕실에 적용해보기” link. It passes the matching option to `/design` as a query parameter, where the existing configurator loads that selection.
