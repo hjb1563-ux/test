@@ -38,7 +38,7 @@ export default function Configurator() {
   const [guideOpen, setGuideOpen] = useState(false);
   const step = bathroomSteps[current];
   const guide = guideBySlug[step.guide];
-  const selectedItems = step.groups.flatMap((group) => { const value = values[group.key]; const ids = Array.isArray(value) ? value : value ? [value] : []; return ids.filter((id) => id !== 'undecided' && id !== 'none').map((id) => ({ title: group.title, choice: group.choices.find((choice) => choice.id === id)! })).filter((item) => item.choice); });
+  const selectedItems = step.groups.flatMap((group) => { const value = values[group.key]; const ids = Array.isArray(value) ? value : value ? [value] : []; return ids.filter((id) => id !== 'none').map((id) => ({ title: group.title, choice: group.choices.find((choice) => choice.id === id)! })).filter((item) => item.choice); });
 
   useEffect(() => {
     let saved: { values?: Values; priorities?: string[] } = {};
@@ -63,7 +63,7 @@ export default function Configurator() {
 
   function update(key: string, id: string, multiple?: boolean) {
     setValues((old) => {
-      if (!multiple) return { ...old, [key]: id };
+      if (!multiple) return { ...old, [key]: old[key] === id ? '' : id };
       const before = Array.isArray(old[key]) ? old[key] as string[] : [];
       const next = id === 'none' || id === 'undecided' ? [id] : before.filter((item) => item !== 'none' && item !== 'undecided');
       return { ...old, [key]: next.includes(id) ? next.filter((item) => item !== id) : [...next, id] };
@@ -90,7 +90,7 @@ export default function Configurator() {
         <div className="priorityList">{prioritiesList.map((item) => <button key={item} className={priorities.includes(item) ? 'on' : ''} onClick={() => setPriorities((old) => old.includes(item) ? old.filter((value) => value !== item) : old.length < 3 ? [...old, item] : old)}>{item}</button>)}</div>
         <Link className="button" href={{ pathname: '/result', query: { plan: encodeURIComponent(JSON.stringify(values)), priorities: priorities.join('|') } }}>상담 준비서 보기 <ArrowRight size={17} /></Link>
       </section>
-      <aside className="live"><SelectedOptionGallery items={bathroomSteps.slice(0,16).flatMap((item)=>item.groups.flatMap((group)=>{const value=values[group.key];const ids=Array.isArray(value)?value:value?[value]:[];return ids.filter(id=>id!=='undecided'&&id!=='none').map(id=>({title:item.title,choice:group.choices.find(choice=>choice.id===id)!})).filter(item=>item.choice)}))} /></aside>
+      <aside className="live"><SelectedOptionGallery items={bathroomSteps.slice(0,16).flatMap((item)=>item.groups.flatMap((group)=>{const value=values[group.key];const ids=Array.isArray(value)?value:value?[value]:[];return ids.filter(id=>id!=='none').map(id=>({title:item.title,choice:group.choices.find(choice=>choice.id===id)!})).filter(item=>item.choice)}))} /></aside>
     </div>
   </main>;
 
