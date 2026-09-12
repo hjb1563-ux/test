@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <rect width="1600" height="1000" fill="#eee9e1"/>
+  <g fill="none" stroke="#9e9284" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M670 470h260v40a55 55 0 0 1-55 55H725a55 55 0 0 1-55-55z"/>
+    <path d="M700 470v-85a30 30 0 0 1 60 0v15m-50 165-12 25m192-25 12 25"/>
+  </g>
+  <text x="800" y="675" text-anchor="middle" font-family="'Noto Sans KR','Malgun Gothic',sans-serif" font-size="42" fill="#796e61">대표 이미지 준비 중</text>
+</svg>

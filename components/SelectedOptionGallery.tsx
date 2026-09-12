@@ -1,17 +1,14 @@
 'use client';
 
 import { type WheelEvent } from 'react';
+import BuilderOptionImage from './BuilderOptionImage';
 import type { Choice } from '../data/bathroom-options';
 
 type Item = { title: string; choice: Choice };
 
-const fallback = (event: { currentTarget: HTMLImageElement }) => {
-  event.currentTarget.src = '/images/bathroom/showroom-v1.png';
-};
-
 const HistoryCard = ({ item }: { item: Item }) => (
   <article>
-    <img src={item.choice.image} onError={fallback} alt="" />
+    <BuilderOptionImage option={item.choice} />
     <div>
       <small>{item.title}</small>
       <strong>{item.choice.name}</strong>
@@ -57,7 +54,7 @@ export default function SelectedOptionGallery({
           <div className="galleryHead"><span>CURRENT STEP</span><h2>선택한 욕실 요소</h2></div>
           {representative ? (
             <div className="selectedHeroImage">
-              <img src={representative.choice.image} onError={fallback} alt="현재 선택을 보여주는 욕실 이미지" />
+              <BuilderOptionImage option={representative.choice} alt={representative.choice.name} />
             </div>
           ) : <p>{empty}</p>}
           {variant === 'current' && (
