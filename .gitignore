@@ -3,3 +3,30 @@ node_modules/
 out/
 *.log
 .env*.local
+
+# Additional build output and local deployment metadata
+dist/
+.vercel/
+coverage/
+*.tsbuildinfo
+
+# Environment files (only an empty example may be committed)
+.env
+.env.*
+!.env.example
+
+# Package manager logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Certificates and private keys
+*.pem
+*.key
+*.p12
+*.pfx
