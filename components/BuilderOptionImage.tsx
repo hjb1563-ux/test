@@ -9,9 +9,10 @@ export default function BuilderOptionImage({
   option,
   alt = '',
 }: {
-  option: Pick<Choice, 'builderImage'>;
+  option: Pick<Choice, 'builderImage' | 'showBuilderImage'>;
   alt?: string;
 }) {
+  if (!option.showBuilderImage) return null;
   const source = option.builderImage || FALLBACK;
   return (
     <img

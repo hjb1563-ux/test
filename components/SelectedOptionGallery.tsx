@@ -26,7 +26,7 @@ export default function SelectedOptionGallery({
   variant?: 'current' | 'history';
 }) {
   const selectedItems = Array.from(
-    new Map(items.map((item) => [`${item.title}:${item.choice.id}`, item])).values(),
+    new Map(items.filter(item => item.choice.showBuilderImage).map((item) => [`${item.title}:${item.choice.id}`, item])).values(),
   );
 
   const wheel = (event: WheelEvent<HTMLElement>) => {
