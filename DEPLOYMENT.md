@@ -15,15 +15,20 @@
 기본 Next.js 배포를 사용하므로 `vercel.json`이나 `output: export` 설정은 필요하지 않습니다.
 환경변수를 사용하지 않아 `.env.example`도 생성하지 않았습니다. 추후 필요하면 변수 이름과 빈 값만 넣으세요.
 
-## 공개 배포 전 해결할 항목
+## 보안 업데이트 확인 결과
 
-이번 준비 과정의 `npm audit` 결과는 취약한 패키지 2개(Next.js: Critical, PostCSS: High)를 보고했습니다.
-현재 버전은 Next.js `14.2.5`, 직접 의존성 PostCSS `8.4.39`입니다.
-이는 하드코딩된 Secret 발견과는 별개이며, 모든 취약점이 이 앱에서 악용 가능한지는 별도 검토가 필요합니다.
+Next.js `16.3.5`, 직접 의존성 PostCSS `8.5.28`, Next.js 내부 PostCSS `8.5.23`으로 업데이트했습니다.
+Next.js 14.x 및 확인한 15.5.25는 취약한 내부 PostCSS를 사용하므로 패치된 16.x로 변경했습니다.
+React / React DOM은 지원 peer 범위인 `18.3.1`을 유지했습니다.
+Node는 `20.9.0` 이상이 필요하며, 로컬 검증 버전은 `24.20.0`입니다.
 
-요청 범위에 따라 패키지 버전과 lockfile은 변경하지 않았습니다. **외부 공개 전에 보안 업데이트를 검토하고,
-업데이트 후 `npm audit`, `npm run build`, 선택·저장 기능 테스트를 다시 확인하세요.**
-`npm audit fix --force`나 검토 없는 major 업그레이드는 실행하지 마세요.
+업데이트 직후 `npm audit`와 `npm audit --omit=dev`는 모두 취약점 0건을 보고했고,
+production build와 Builder 선택·입력·저장 복원 회귀 테스트가 통과했습니다.
+기존 번들러 동작을 유지하기 위해 dev/build는 `--webpack`을 명시합니다.
+Next.js 16에서 제거된 `next lint` 스크립트는 삭제했습니다. `npm run typecheck`는 타입 검사이며 ESLint 대체가 아닙니다.
+
+배포할 때는 갱신된 `package.json`과 `package-lock.json`, 호환 수정 파일을 함께 업로드하고 `npm ci`로 설치하세요.
+의존성 경고를 숨기는 옵션, 강제 수정, overrides는 사용하지 않았습니다.
 
 ## 검사 범위와 Git 제외 파일
 
@@ -38,7 +43,7 @@ OS 파일, 인증서·개인 키와 coverage를 제외합니다. 빈 값만 가�
 
 ## Vercel 연결 순서
 
-1. 위 보안 업데이트 항목을 해결합니다.
+1. 보안 업데이트 변경을 GitHub에 commit/push합니다.
 2. Vercel에 로그인하고 **Add New → Project**에서 GitHub 저장소 `hjb1563-ux/test`를 Import합니다.
 3. GitHub 연결 권한이 필요하면 해당 저장소 접근을 직접 승인합니다.
 4. Framework를 Next.js, Root Directory를 `./`, Production Branch를 `master`로 확인합니다.
