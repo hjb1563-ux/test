@@ -30,3 +30,8 @@ Thumbs.db
 *.key
 *.p12
 *.pfx
+
+# Local image imports and replaced originals; canonical images stay tracked.
+public/images/bathroom-builder/inbox/*
+!public/images/bathroom-builder/inbox/.gitkeep
+public/images/bathroom-builder/archive/

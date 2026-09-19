@@ -46,6 +46,7 @@ function evaluate(source, filename) {
   return module.exports;
 }
 function load(file) {
+  if (file.endsWith('.json')) return JSON.parse(fs.readFileSync(file, 'utf8'));
   if (!path.extname(file)) file += fs.existsSync(file + '.tsx') ? '.tsx' : '.ts';
   if (!cache.has(file)) cache.set(file, evaluate(fs.readFileSync(file, 'utf8'), file));
   return cache.get(file);
@@ -91,9 +92,13 @@ assert.equal(structure(data.bathroomSteps), structure(original.bathroomSteps), '
 for (const [key, ids] of Object.entries(removed)) assert.ok(groups.find(g => g.key === key).choices.every(c => !ids.includes(c.id)));
 for (const group of groups) for (const choice of group.choices) {
   if (!choice.showBuilderImage) { if (choice.id !== 'undecided') assert.equal(choice.builderImage, null); continue; }
-  assert.match(choice.builderImage, /^\/images\/bathroom-builder\/.+\.jpg$/);
+  assert.match(choice.builderImage, /^\/images\/bathroom-builder\/.+\.(png|jpe?g|webp)$/);
   assert.ok(fs.existsSync(path.dirname(path.join(root, 'public', choice.builderImage))));
-  assert.ok(fs.readFileSync(path.join(root, 'BATHROOM_BUILDER_IMAGES.md'), 'utf8').includes('public' + choice.builderImage));
+  const imported = require('../data/bathroom-builder-images.generated.json')[`${group.key}:${choice.id}`];
+  if (imported) {
+    assert.equal(choice.builderImage, imported);
+    assert.ok(fs.existsSync(path.join(root, 'public', imported)));
+  } else assert.ok(fs.readFileSync(path.join(root, 'BATHROOM_BUILDER_IMAGES.md'), 'utf8').includes('public' + choice.builderImage));
 }
 let tree = click(render(), '선택 완료');
 tree = click(tree, '하프 파티션');
@@ -141,6 +146,23 @@ function noSelectedImages(tree) {
   assert.equal(all(region(tree, 'selectedGallery selectedGallery--current'), n => n.type === 'img' || n.type === 'article').length, 0);
   assert.equal(all(region(tree, 'summary'), n => n.type === 'img').length, 0);
 }
+
+for (const [key, id] of [['bathtub', 'bath-standard'], ['cabinet', 'led-cabinet']]) {
+  const group = groups.find(g => g.key === key);
+  const option = group.choices.find(c => c.id === id);
+  const index = data.bathroomSteps.findIndex(s => s.groups.includes(group));
+  assert.ok(option.builderImage.endsWith('.png'));
+  tree = click(start(index), option.name);
+  four(tree, option.builderImage);
+  tree = click(tree, option.name);
+  assert.equal(sources(tree, option.builderImage).length, 0);
+  tree = click(tree, option.name); four(tree, option.builderImage);
+  const saved = state(); tree = start(index, saved); four(tree, option.builderImage);
+  assert.ok(!JSON.stringify(saved).includes('/images/'));
+}
+const withoutBuilderImage = steps => JSON.stringify(steps, (key, value) => key === 'builderImage' ? undefined : value);
+assert.equal(withoutBuilderImage(data.bathroomSteps), withoutBuilderImage(original.bathroomSteps));
+console.log('PASS: imported bathtub/LED cabinet PNGs on all three surfaces, deselect/reselect/storage restore; all option data except image paths unchanged');
 tree = click(start(), '누수 이력이 있어요');
 assert.ok(all(tree, n => n.type === 'button' && text(n).includes('누수 이력'))[0].props['aria-checked']);
 assert.ok(text(region(tree, 'summary')).includes('누수 이력이 있어요'));

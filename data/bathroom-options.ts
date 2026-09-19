@@ -1,3 +1,5 @@
+import importedBuilderImages from './bathroom-builder-images.generated.json';
+const importedImages: Record<string, string> = importedBuilderImages;
 export type Choice={id:string;name:string;sub:string;image:string;builderImage:string|null;showBuilderImage:boolean;requiresCustomText?:boolean};
 export type ChoiceGroup={key:string;title:string;multiple?:boolean;choices:Choice[]};
 export type BathroomStep={key:string;title:string;question:string;guide:string;groups:ChoiceGroup[]};
@@ -55,7 +57,7 @@ const isTextOnly = (key: BuilderGroupKey, id: string) =>
   (key === 'drainPosition' && id === 'consult');
 const imageSettings = (key: BuilderGroupKey, id: string, file: string) => ({
   showBuilderImage: !isTextOnly(key, id) && id !== 'undecided',
-  builderImage: isTextOnly(key, id) ? null : builderImage(key, file),
+  builderImage: isTextOnly(key, id) ? null : (id !== 'undecided' && importedImages[`${key}:${id}`]) || builderImage(key, file),
 });
 const undecided = (key: BuilderGroupKey, folder: string): Choice => ({
   id: 'undecided', name: '아직 모르겠어요', sub: '상담하며 결정할게요',

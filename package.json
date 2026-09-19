@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "sync:builder-images": "node scripts/sync-builder-images.mjs",
+    "predev": "npm run sync:builder-images",
+    "prebuild": "npm run sync:builder-images",
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
