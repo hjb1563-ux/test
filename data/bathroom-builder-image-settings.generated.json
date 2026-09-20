@@ -1,0 +1,542 @@
+{
+  "demolition:overlay": {
+    "builderImage": "/images/bathroom-builder/demolition/overlay.jpg",
+    "showBuilderImage": true
+  },
+  "demolition:partial-demolition-overlay": {
+    "builderImage": "/images/bathroom-builder/demolition/partial-demolition-overlay.jpg",
+    "showBuilderImage": true
+  },
+  "demolition:full-demolition": {
+    "builderImage": "/images/bathroom-builder/demolition/full-demolition.jpg",
+    "showBuilderImage": true
+  },
+  "demolition:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "bathroomCondition:cracked": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "bathroomCondition:loose": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "bathroomCondition:leak": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "bathroomCondition:remove-bath": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "bathroomCondition:unknown-condition": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "bathroomCondition:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "jendai:none": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "jendai:keep": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "jendai:new": {
+    "builderImage": "/images/bathroom-builder/structure/jendai/new.jpg",
+    "showBuilderImage": true
+  },
+  "jendai:remove": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "jendai:sink-ledger": {
+    "builderImage": "/images/bathroom-builder/structure/jendai/basin-jendai.jpg",
+    "showBuilderImage": true
+  },
+  "jendai:toilet-ledger": {
+    "builderImage": "/images/bathroom-builder/structure/jendai/toilet-jendai.jpg",
+    "showBuilderImage": true
+  },
+  "jendai:shower-ledger": {
+    "builderImage": "/images/bathroom-builder/structure/jendai/shower-jendai.jpg",
+    "showBuilderImage": true
+  },
+  "jendai:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "partition:none": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "partition:half-partition": {
+    "builderImage": "/images/bathroom-builder/structure/partition/half-partition.jpg",
+    "showBuilderImage": true
+  },
+  "partition:full-partition": {
+    "builderImage": "/images/bathroom-builder/structure/partition/full-partition.jpg",
+    "showBuilderImage": true
+  },
+  "partition:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "showerBooth:none": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "showerBooth:fixed-glass": {
+    "builderImage": "/images/bathroom-builder/structure/shower-booth/fixed-glass.png",
+    "showBuilderImage": true
+  },
+  "showerBooth:door-booth": {
+    "builderImage": "/images/bathroom-builder/structure/shower-booth/door.png",
+    "showBuilderImage": true
+  },
+  "showerBooth:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "niche:none": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "niche:shower-niche": {
+    "builderImage": "/images/bathroom-builder/structure/niche/shower-niche.jpg",
+    "showBuilderImage": true
+  },
+  "niche:sink-niche": {
+    "builderImage": "/images/bathroom-builder/structure/niche/sink-niche.jpg",
+    "showBuilderImage": true
+  },
+  "niche:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "concealed:concealed-basin": {
+    "builderImage": "/images/bathroom-builder/structure/embedded/basin-faucet.jpg",
+    "showBuilderImage": true
+  },
+  "concealed:concealed-shower": {
+    "builderImage": "/images/bathroom-builder/structure/embedded/shower-faucet.jpg",
+    "showBuilderImage": true
+  },
+  "concealed:concealed-bath": {
+    "builderImage": "/images/bathroom-builder/structure/embedded/bathtub-faucet.jpg",
+    "showBuilderImage": true
+  },
+  "concealed:concealed-paper": {
+    "builderImage": "/images/bathroom-builder/structure/embedded/toilet-paper-holder.jpg",
+    "showBuilderImage": true
+  },
+  "concealed:none": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "concealed:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "waterproofing:liquid-waterproofing": {
+    "builderImage": "/images/bathroom-builder/waterproofing/liquid.png",
+    "showBuilderImage": true
+  },
+  "waterproofing:coating-waterproofing": {
+    "builderImage": "/images/bathroom-builder/waterproofing/coating.png",
+    "showBuilderImage": true
+  },
+  "waterproofing:combined-waterproofing": {
+    "builderImage": "/images/bathroom-builder/waterproofing/liquid-plus-coating.png",
+    "showBuilderImage": true
+  },
+  "waterproofing:consult": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "waterproofing:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "wallTileSize:300x600": {
+    "builderImage": "/images/bathroom-builder/tile/wall/300x600.png",
+    "showBuilderImage": true
+  },
+  "wallTileSize:600x600": {
+    "builderImage": "/images/bathroom-builder/tile/wall/600x600.png",
+    "showBuilderImage": true
+  },
+  "wallTileSize:600x1200": {
+    "builderImage": "/images/bathroom-builder/tile/wall/600x1200.png",
+    "showBuilderImage": true
+  },
+  "wallTileSize:other": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "wallTileSize:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "tile:white": {
+    "builderImage": "/images/bathroom-builder/tile/tone/white.png",
+    "showBuilderImage": true
+  },
+  "tile:ivory": {
+    "builderImage": "/images/bathroom-builder/tile/tone/ivory.png",
+    "showBuilderImage": true
+  },
+  "tile:gray": {
+    "builderImage": "/images/bathroom-builder/tile/tone/gray.png",
+    "showBuilderImage": true
+  },
+  "tile:dark": {
+    "builderImage": "/images/bathroom-builder/tile/tone/dark.png",
+    "showBuilderImage": true
+  },
+  "tile:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "tileSurface:matte": {
+    "builderImage": "/images/bathroom-builder/tile/finish/matte.png",
+    "showBuilderImage": true
+  },
+  "tileSurface:glossy": {
+    "builderImage": "/images/bathroom-builder/tile/finish/glossy.png",
+    "showBuilderImage": true
+  },
+  "tileSurface:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "window:yes": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "window:no": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "window:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "sink:vanity-basin": {
+    "builderImage": "/images/bathroom-builder/basin/standard.png",
+    "showBuilderImage": true
+  },
+  "sink:top-bowl": {
+    "builderImage": "/images/bathroom-builder/basin/top-bowl.png",
+    "showBuilderImage": true
+  },
+  "sink:undermount-basin": {
+    "builderImage": "/images/bathroom-builder/basin/undermount.png",
+    "showBuilderImage": true
+  },
+  "sink:other": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "sink:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "toilet:one-piece": {
+    "builderImage": "/images/bathroom-builder/toilet/one-piece.png",
+    "showBuilderImage": true
+  },
+  "toilet:two-piece": {
+    "builderImage": "/images/bathroom-builder/toilet/two-piece.png",
+    "showBuilderImage": true
+  },
+  "toilet:wall-hung": {
+    "builderImage": "/images/bathroom-builder/toilet/wall-hung.png",
+    "showBuilderImage": true
+  },
+  "toilet:other": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "toilet:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "cabinet:sliding-mirror": {
+    "builderImage": "/images/bathroom-builder/cabinet/sliding-mirror.png",
+    "showBuilderImage": true
+  },
+  "cabinet:led-cabinet": {
+    "builderImage": "/images/bathroom-builder/cabinet/led-mirror-cabinet.png",
+    "showBuilderImage": true
+  },
+  "cabinet:none": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "cabinet:other": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "cabinet:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "mirror:mirror": {
+    "builderImage": "/images/bathroom-builder/cabinet/standard-mirror.png",
+    "showBuilderImage": true
+  },
+  "mirror:led-mirror": {
+    "builderImage": "/images/bathroom-builder/cabinet/led-mirror.png",
+    "showBuilderImage": true
+  },
+  "mirror:none": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "mirror:other": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "mirror:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "bathtub:none": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "bathtub:bath-standard": {
+    "builderImage": "/images/bathroom-builder/bathtub/standard.png",
+    "showBuilderImage": true
+  },
+  "bathtub:bath-masonry": {
+    "builderImage": "/images/bathroom-builder/bathtub/masonry.png",
+    "showBuilderImage": true
+  },
+  "bathtub:bath-half-body": {
+    "builderImage": "/images/bathroom-builder/bathtub/half-bath.png",
+    "showBuilderImage": true
+  },
+  "bathtub:other": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "bathtub:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "ceiling:smc-flat": {
+    "builderImage": "/images/bathroom-builder/inbox/SMC%20%ED%8F%89%EC%B2%9C%EC%9E%A52.png",
+    "showBuilderImage": true
+  },
+  "ceiling:smc-dome": {
+    "builderImage": "/images/bathroom-builder/ceiling/smc-dome.png",
+    "showBuilderImage": true
+  },
+  "ceiling:other": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "ceiling:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "faucet:one-hole": {
+    "builderImage": "/images/bathroom-builder/inbox/%EC%9D%BC%EB%B0%98%20%EC%84%B8%EB%A9%B4%20%EC%88%98%EC%A0%84.png",
+    "showBuilderImage": true
+  },
+  "faucet:concealed": {
+    "builderImage": "/images/bathroom-builder/faucet/basin/concealed.jpg",
+    "showBuilderImage": true
+  },
+  "faucet:other": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "faucet:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "showerFaucet:shower": {
+    "builderImage": "/images/bathroom-builder/inbox/%EC%9D%BC%EB%B0%98%20%EC%83%A4%EC%9B%8C%20%EC%88%98%EC%A0%84.png",
+    "showBuilderImage": true
+  },
+  "showerFaucet:concealed-shower": {
+    "builderImage": "/images/bathroom-builder/faucet/shower/concealed.jpg",
+    "showBuilderImage": true
+  },
+  "showerFaucet:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "drain:square-drain": {
+    "builderImage": "/images/bathroom-builder/inbox/%EC%9D%BC%EB%B0%98%20%EC%82%AC%EA%B0%81%20%EB%B0%B0%EC%88%98%EA%B5%AC2.png",
+    "showBuilderImage": true
+  },
+  "drain:tile-drain": {
+    "builderImage": "/images/bathroom-builder/inbox/%ED%83%80%EC%9D%BC%20%EC%82%BD%EC%9E%85%ED%98%95%20%EB%B0%B0%EC%88%98%EA%B5%AC2.png",
+    "showBuilderImage": true
+  },
+  "drain:linear-drain": {
+    "builderImage": "/images/bathroom-builder/inbox/%EB%9D%BC%EC%9D%B8%20%EB%B0%B0%EC%88%98%EA%B5%AC2.png",
+    "showBuilderImage": true
+  },
+  "drain:trench-drain": {
+    "builderImage": "/images/bathroom-builder/inbox/%ED%8A%B8%EB%A0%8C%EC%B9%98%20%EB%93%9C%EB%A0%88%EC%9D%B8%20%EB%B0%B0%EC%88%98%EA%B5%AC2.png",
+    "showBuilderImage": true
+  },
+  "drain:other": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "drain:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "drainPosition:keep": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "drainPosition:move": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "drainPosition:consult": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "drainPosition:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "ventilation:fan": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "ventilation:strong-fan": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "ventilation:dehumidify": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "ventilation:dry": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "ventilation:heater": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "ventilation:other": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "ventilation:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "lighting:light-recessed": {
+    "builderImage": "/images/bathroom-builder/inbox/%EC%B2%9C%EC%9E%A5%20%EB%A7%A4%EB%A6%BD%20%EC%A1%B0%EB%AA%852.png",
+    "showBuilderImage": true
+  },
+  "lighting:indirect": {
+    "builderImage": "/images/bathroom-builder/inbox/%EC%B2%9C%EC%9E%A5%20%EA%B0%84%EC%A0%91%20%EC%A1%B0%EB%AA%852.png",
+    "showBuilderImage": true
+  },
+  "lighting:cabinet-indirect": {
+    "builderImage": "/images/bathroom-builder/inbox/%EC%9A%95%EC%8B%A4%EC%9E%A5%20%EA%B0%84%EC%A0%91%20%EC%A1%B0%EB%AA%85.png",
+    "showBuilderImage": true
+  },
+  "lighting:other": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "lighting:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "accessoryFinish:chrome": {
+    "builderImage": "/images/bathroom-builder/accessories/chrome.png",
+    "showBuilderImage": true
+  },
+  "accessoryFinish:nickel": {
+    "builderImage": "/images/bathroom-builder/accessories/nickel.png",
+    "showBuilderImage": true
+  },
+  "accessoryFinish:other": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "accessoryFinish:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "accessory:paper-holder": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "accessory:towel-bar": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "accessory:soap-holder": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "accessory:cup": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "accessory:corner-shelf": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "accessory:straight-shelf": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "accessory:other": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "accessory:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "grout:grout-cement": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "grout:grout-epoxy": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "grout:grout-elastic": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "grout:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "threshold:threshold-tile": {
+    "builderImage": "/images/bathroom-builder/threshold/tile.png",
+    "showBuilderImage": true
+  },
+  "threshold:threshold-artificial-stone": {
+    "builderImage": "/images/bathroom-builder/threshold/artificial-stone.png",
+    "showBuilderImage": true
+  },
+  "threshold:undecided": {
+    "builderImage": null,
+    "showBuilderImage": false
+  }
+}

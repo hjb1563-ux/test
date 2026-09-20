@@ -21,9 +21,19 @@
     "벽걸이형 변기": "toilet:wall-hung"
   },
   "keywords": {
-    "거울": ["mirror:mirror", "mirror:led-mirror"],
-    "욕조": ["bathtub:bath-standard", "bathtub:bath-masonry", "bathtub:bath-half-body"],
-    "매립 샤워 수전": ["concealed:concealed-shower", "showerFaucet:concealed-shower"],
+    "거울": [
+      "mirror:mirror",
+      "mirror:led-mirror"
+    ],
+    "욕조": [
+      "bathtub:bath-standard",
+      "bathtub:bath-masonry",
+      "bathtub:bath-half-body"
+    ],
+    "매립 샤워 수전": [
+      "concealed:concealed-shower",
+      "showerFaucet:concealed-shower"
+    ],
     "벽 타일 600x600": "wallTileSize:600x600",
     "바닥 타일 600x600": "floorTileSize:600x600",
     "벽 타일 600x1200": "wallTileSize:600x1200",
@@ -59,6 +69,12 @@
     "세면대 벽 니치": "niche:sink-niche",
     "세면대 위 젠다이": "jendai:sink-ledger",
     "변기 위 젠다이": "jendai:toilet-ledger",
-    "타일 덧방": "demolition:overlay"
+    "타일 덧방": "demolition:overlay",
+    "일반 세면 수전": "faucet:one-hole",
+    "일반 샤워 수전": "showerFaucet:shower",
+    "파티션 없음": "partition:none",
+    "샤워부스 없음": "showerBooth:none",
+    "욕실 창문 있음": "window:yes",
+    "욕실 창문 없음": "window:no"
   }
 }

@@ -1,93 +1,61 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import { normalizeFilename, loadOptions, matchFilename, syncImages } from '../scripts/sync-builder-images.mjs';
-
 const options = await loadOptions();
 const aliases = JSON.parse(await fs.readFile('data/bathroom-builder-image-aliases.json', 'utf8'));
 for (const [name, target] of Object.entries(aliases.exact)) {
-  for (const suffix of ['', '(1)', ' (2) - 복사본', ' (3) copy FINAL 최종']) {
-    const result = matchFilename(`${name}${suffix}.png`, options, aliases);
-    assert.equal(result.status, 'MATCHED', `${name}${suffix}`);
-    assert.equal(result.option.key, target);
+  for (const suffix of ['', '(1)', '2', '3 (2)']) {
+    const found = matchFilename(`${name}${suffix}.PNG`, options, aliases);
+    assert.equal(found.status, 'MATCHED', name); assert.equal(found.option.key, target);
   }
 }
-assert.equal(Object.keys(aliases.exact).length, 19);
-assert.equal(normalizeFilename('  SmC  평천장(1) - 복사본 copy final 최종.PNG'), normalizeFilename('smc 평천장'));
-assert.equal(normalizeFilename('조적 욕조'.normalize('NFD') + '.png'), normalizeFilename('조적 욕조'));
-assert.equal(matchFilename('럭셔리 황금 욕조.png', options, aliases).status, 'UNMATCHED');
-assert.equal(matchFilename('거울.png', options, aliases).status, 'AMBIGUOUS');
-assert.equal(matchFilename('600x600.png', options, aliases).status, 'AMBIGUOUS');
-assert.equal(matchFilename('바닥 타일 600×600.png', options, aliases).option.key, 'floorTileSize:600x600');
-assert.equal(matchFilename('LED 거울장.png', options.filter(o => o.key !== 'cabinet:led-cabinet'), aliases).status, 'OPTION_NOT_FOUND');
-for (const name of ['기존 젠다이 유지', '기존 젠다이 철거']) assert.equal(matchFilename(name + '.png', options, aliases).status, 'SKIPPED_NO_IMAGE');
-assert.equal(matchFilename('기타.png', options, aliases).status, 'AMBIGUOUS');
-for (const name of ['원피스 변기', '투피스 변기', '탑볼 세면대', '언더볼', '하프 파티션', '풀 파티션', '조적 욕조', '매립 샤워 수전']) {
-  assert.equal(matchFilename(name + '.webp', options, aliases).status, 'MATCHED', name);
-}
-console.log('PASS: 19 required names/suffixes, Unicode/case normalization, future labels/aliases, ambiguous/unknown/removed/image-free options');
-
-const root = await fs.mkdtemp(path.join(os.tmpdir(), 'bath-image-import-'));
-const inbox = path.join(root, 'public/images/bathroom-builder/inbox');
-const manifestPath = path.join(root, 'data/bathroom-builder-images.generated.json');
-const run = () => syncImages({ root, options, aliases });
+assert.equal(normalizeFilename('  SmC 평천장 (1).PNG'), normalizeFilename('smc평천장'));
+assert.equal(matchFilename('거울2.png', options, aliases).status, 'AMBIGUOUS');
+assert.equal(matchFilename('럭셔리 욕조2.png', options, aliases).status, 'UNMATCHED');
+assert.equal(matchFilename('600x1200.png', options, aliases).option.key, 'wallTileSize:600x1200');
+assert.equal(matchFilename('600x1200.png', options, aliases).version, 1);
+assert.equal(matchFilename('바닥 타일 600x600.png', options, aliases).status, 'OPTION_NOT_FOUND');
+assert.equal(matchFilename('강한 환기2.png', options, aliases).status, 'MATCHED');
+assert.equal(matchFilename('욕조 없음.png', options, aliases).status, 'MATCHED');
+const fixture = await fs.mkdtemp(path.join(os.tmpdir(), 'bath-image-sync-'));
+const imageDir = path.join(fixture, 'public/images/bathroom-builder');
+const generated = path.join(fixture, 'data/bathroom-builder-image-settings.generated.json');
+const getSettings = async () => JSON.parse(await fs.readFile(generated, 'utf8'));
+const run = () => syncImages({ root: fixture, options, aliases });
 try {
-  await fs.mkdir(inbox, { recursive: true }); await fs.mkdir(path.dirname(manifestPath));
-  await fs.writeFile(manifestPath, '{}\n');
+  await fs.mkdir(path.join(imageDir, 'nested'), {recursive:true}); await fs.mkdir(path.join(fixture, 'data'));
   const png = await fs.readFile('public/images/bathroom-builder/bathtub/standard.png');
-  await fs.writeFile(path.join(inbox, '일반 욕조(1).png'), png);
-  let result = await run(); assert.equal(result[0].status, 'MATCHED');
-  const target = path.join(root, 'public', result[0].url);
-  assert.deepEqual(await fs.readFile(target), png);
-  assert.deepEqual(await fs.readFile(path.join(inbox, '일반 욕조(1).png')), png);
-  const stable = await fs.readFile(manifestPath, 'utf8');
-  result = await run(); assert.equal(result[0].action, 'UNCHANGED');
-  assert.equal(await fs.readFile(manifestPath, 'utf8'), stable);
-  // Conflicting copies preserve the existing target/manifest, even when identical.
-  await fs.writeFile(path.join(inbox, '일반 욕조(2).png'), png);
-  result = await run(); assert.ok(result.every(r => r.status === 'DUPLICATE_TARGET' && r.identical));
-  assert.equal(await fs.readFile(manifestPath, 'utf8'), stable);
-  const replacement = await fs.readFile('public/images/bathroom-builder/bathtub/masonry.png');
-  await fs.writeFile(path.join(inbox, '일반 욕조(2).png'), replacement);
-  result = await run(); assert.ok(result.every(r => r.status === 'DUPLICATE_TARGET' && !r.identical));
-  assert.deepEqual(await fs.readFile(target), png);
-  await fs.unlink(path.join(inbox, '일반 욕조(1).png'));
-  result = await run(); assert.equal(result[0].action, 'REPLACED');
-  assert.deepEqual(await fs.readFile(path.join(root, result[0].archived)), png);
-  assert.deepEqual(await fs.readFile(target), replacement);
-  await fs.unlink(path.join(inbox, '일반 욕조(2).png'));
-  // A checkout without ignored inbox originals keeps the generated mapping.
-  assert.deepEqual(await run(), []);
-  assert.equal(await fs.readFile(manifestPath, 'utf8'), stable);
-  await fs.writeFile(path.join(inbox, '일반 욕조.jpg'), png);
-  assert.equal((await run())[0].status, 'INVALID_FORMAT');
-  assert.equal(await fs.readFile(manifestPath, 'utf8'), stable);
-  await fs.unlink(path.join(inbox, '일반 욕조.jpg'));
-  const jpg = await fs.readFile('public/images/bathroom-builder/structure/partition/half-partition.jpg');
-  for (const extension of ['.jpg', '.jpeg']) {
-    const file = path.join(inbox, '일반 욕조' + extension); await fs.writeFile(file, jpg);
-    result = await run(); assert.equal(result[0].status, 'MATCHED'); assert.ok(result[0].url.endsWith(extension));
-    assert.deepEqual(await fs.readFile(path.join(root, 'public', result[0].url)), jpg); await fs.unlink(file);
-  }
-  const webp = Buffer.from('UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA', 'base64');
-  await fs.writeFile(path.join(inbox, '일반 욕조.webp'), webp);
-  result = await run(); assert.equal(result[0].status, 'MATCHED'); assert.ok(result[0].url.endsWith('.webp'));
-  assert.deepEqual(await fs.readFile(path.join(root, 'public', result[0].url)), webp);
-  assert.ok(await fs.stat(target)); // Previous format is not deleted.
-  console.log('PASS: byte-preserving PNG/JPG/JPEG/WebP copies, idempotence, duplicates, archive before replacement, extension change, no-inbox build, format validation');
+  const different = await fs.readFile('public/images/bathroom-builder/bathtub/masonry.png');
+  const add = (name, bytes = png) => fs.writeFile(path.join(imageDir, name), bytes);
+  await add('천장 간접 조명.png'); await add('nested/천장 간접 조명2.png'); await add('nested/천장 간접 조명3.png');
+  await add('강한 환기.png'); await add('건조 기능2.png'); await add('욕조 없음.png');
+  await add('600x1200.png'); await add('아직 모르겠어요.png'); await add('기타.png'); await add('업체와 상담 후 결정.png'); await add('거울2.png');
+  let report = await run(), settings = await getSettings();
+  assert.equal(decodeURIComponent(settings['lighting:indirect'].builderImage), '/images/bathroom-builder/nested/천장 간접 조명3.png');
+  assert.equal(report.files.filter(f => f.status === 'OLDER_VERSION').length, 2);
+  for (const key of ['ventilation:strong-fan', 'ventilation:dry', 'bathtub:none']) assert.equal(settings[key].showBuilderImage, true);
+  assert.equal(settings['ventilation:dehumidify'].showBuilderImage, false);
+  for (const o of options.filter(o => o.id === 'undecided' || o.id === 'other' || /상담.*결정/.test(o.name))) assert.equal(settings[o.key].showBuilderImage, false);
+  assert.equal(report.files.find(f => f.file === '거울2.png').status, 'AMBIGUOUS');
+  const stable = await fs.readFile(generated, 'utf8');
+  await run(); assert.equal(await fs.readFile(generated, 'utf8'), stable);
+  // Differing copies at the same version never silently replace the selected photo.
+  await add('천장 간접 조명3 (1).png', different); report = await run();
+  assert.equal(report.ambiguous, 3); assert.equal(await fs.readFile(generated, 'utf8'), stable);
+  // A removed path is replaced with the latest remaining unambiguous version.
+  await fs.unlink(path.join(imageDir, '천장 간접 조명3 (1).png'));
+  await fs.unlink(path.join(imageDir, 'nested/천장 간접 조명3.png'));
+  await run(); settings = await getSettings(); assert.ok(decodeURIComponent(settings['lighting:indirect'].builderImage).endsWith('조명2.png'));
+  await fs.unlink(path.join(imageDir, '강한 환기.png')); await run(); assert.equal((await getSettings())['ventilation:strong-fan'].showBuilderImage, false);
+  await add('강한 환기.jpg'); report = await run(); assert.equal(report.files.find(f => f.file === '강한 환기.jpg').status, 'INVALID_FORMAT');
+  assert.deepEqual(await fs.readFile(path.join(imageDir, '천장 간접 조명.png')), png);
+  console.log('PASS: recursive scan, versions, dimensions, new per-option images, none images, protected choices, ambiguity, deleted paths, idempotence, format validation and original preservation');
 } finally {
-  // This is only the dedicated mkdtemp test directory, never the workspace.
-  assert.ok(root.startsWith(path.join(os.tmpdir(), 'bath-image-import-')));
-  await fs.rm(root, { recursive: true, force: true });
+  assert.ok(path.resolve(fixture).startsWith(path.resolve(os.tmpdir()) + path.sep + 'bath-image-sync-'));
+  await fs.rm(fixture, {recursive:true, force:true});
 }
-
-const manifest = JSON.parse(await fs.readFile('data/bathroom-builder-images.generated.json', 'utf8'));
-for (const [name, key] of Object.entries(aliases.exact)) {
-  const entries = await fs.readdir('public/images/bathroom-builder/inbox');
-  const source = entries.find(file => normalizeFilename(file) === normalizeFilename(name));
-  assert.ok(manifest[key], key);
-  if (source) assert.deepEqual(await fs.readFile(path.join('public/images/bathroom-builder/inbox', source)), await fs.readFile(path.join('public', manifest[key])));
-  else assert.ok(await fs.stat(path.join('public', manifest[key])));
-}
-console.log('PASS: all 19 real imported images exist and are byte-identical to their inbox originals');
+const current = JSON.parse(await fs.readFile('data/bathroom-builder-image-settings.generated.json','utf8'));
+for (const setting of Object.values(current)) if (setting.showBuilderImage) assert.ok(await fs.stat(path.join('public', decodeURIComponent(setting.builderImage))));
+console.log('PASS: every enabled real Builder image exists');

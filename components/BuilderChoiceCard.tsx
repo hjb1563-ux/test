@@ -11,7 +11,7 @@ export default function BuilderChoiceCard({ label, selected, multiple = false, t
 }) {
   return <button type="button" role={multiple ? 'checkbox' : 'radio'} aria-checked={selected}
     tabIndex={tabIndex} onClick={onSelect}
-    className={`builderChoiceCard${selected ? ' selected' : ''}${label.length > 8 ? ' builderChoiceCard--wide' : ''}`}
+    className={`builderChoiceCard${selected ? ' selected' : ''}`}
     onKeyDown={event => {
       if (multiple || !['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return;
       const cards = Array.from(event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="radio"]') ?? []);

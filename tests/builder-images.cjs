@@ -65,7 +65,8 @@ function all(node, predicate) {
 const text = node => typeof node === 'string' ? node : Array.isArray(node) ? node.map(text).join('') : node && typeof node === 'object' ? text(node.children) : '';
 const Configurator = load(path.join(root, 'components/Configurator')).default;
 const data = load(path.join(root, 'data/bathroom-options'));
-const groups = data.bathroomSteps.flatMap(step => step.groups);
+const builderSteps = load(path.join(root, 'data/bathroom-builder-options')).builderBathroomSteps;
+const groups = builderSteps.flatMap(step => step.groups);
 function render() {
   let tree, rounds = 0;
   do { dirty = false; cursor = 0; effects = []; tree = expand(Configurator()); effects.forEach(fn => fn()); assert.ok(++rounds < 20); } while (dirty);
@@ -91,14 +92,12 @@ const structure = steps => JSON.stringify(steps.map(s => ({ key: s.key, groups: 
 assert.equal(structure(data.bathroomSteps), structure(original.bathroomSteps), 'Unrelated options, names, multi-select flags and legacy images unchanged');
 for (const [key, ids] of Object.entries(removed)) assert.ok(groups.find(g => g.key === key).choices.every(c => !ids.includes(c.id)));
 for (const group of groups) for (const choice of group.choices) {
-  if (!choice.showBuilderImage) { if (choice.id !== 'undecided') assert.equal(choice.builderImage, null); continue; }
+  if (!choice.showBuilderImage) { assert.equal(load(path.join(root, 'components/BuilderOptionImage')).default({ option: choice }), null); continue; }
   assert.match(choice.builderImage, /^\/images\/bathroom-builder\/.+\.(png|jpe?g|webp)$/);
-  assert.ok(fs.existsSync(path.dirname(path.join(root, 'public', choice.builderImage))));
-  const imported = require('../data/bathroom-builder-images.generated.json')[`${group.key}:${choice.id}`];
-  if (imported) {
-    assert.equal(choice.builderImage, imported);
-    assert.ok(fs.existsSync(path.join(root, 'public', imported)));
-  } else assert.ok(fs.readFileSync(path.join(root, 'BATHROOM_BUILDER_IMAGES.md'), 'utf8').includes('public' + choice.builderImage));
+  assert.ok(fs.existsSync(path.dirname(path.join(root, 'public', decodeURIComponent(choice.builderImage)))));
+  const current = require('../data/bathroom-builder-image-settings.generated.json')[group.key + ':' + choice.id];
+  assert.equal(choice.builderImage, current.builderImage);
+  assert.ok(fs.existsSync(path.join(root, 'public', decodeURIComponent(choice.builderImage))));
 }
 let tree = click(render(), '선택 완료');
 tree = click(tree, '하프 파티션');
@@ -150,7 +149,7 @@ function noSelectedImages(tree) {
 for (const [key, id] of [['bathtub', 'bath-standard'], ['cabinet', 'led-cabinet']]) {
   const group = groups.find(g => g.key === key);
   const option = group.choices.find(c => c.id === id);
-  const index = data.bathroomSteps.findIndex(s => s.groups.includes(group));
+  const index = builderSteps.findIndex(s => s.groups.includes(group));
   assert.ok(option.builderImage.endsWith('.png'));
   tree = click(start(index), option.name);
   four(tree, option.builderImage);
@@ -180,10 +179,10 @@ assert.deepEqual(state().concealed, ['concealed-shower']);
 tree = click(tree, '사용하지 않음'); assert.deepEqual(state().concealed, ['none']);
 console.log('PASS: unused selection highlight, exclusive toggle and deselect');
 
-const customGroups = ['sink','toilet','cabinet','mirror','bathtub','ceiling','faucet','drain','ventilation','lighting','accessoryFinish','accessory','wallTileSize','floorTileSize'];
+const customGroups = ['sink','toilet','cabinet','mirror','bathtub','ceiling','faucet','drain','ventilation','lighting','accessoryFinish','accessory','wallTileSize'];
 for (const key of customGroups) {
   const group = groups.find(g => g.key === key);
-  const stepIndex = data.bathroomSteps.findIndex(s => s.groups.includes(group));
+  const stepIndex = builderSteps.findIndex(s => s.groups.includes(group));
   const other = group.choices.find(c => c.id === 'other');
   assert.ok(other.requiresCustomText); assert.equal(other.showBuilderImage, false);
   tree = start(stepIndex);
@@ -207,7 +206,7 @@ for (const key of customGroups) {
   if (group.multiple) { assert.ok(state()[key].includes('other')); assert.ok(text(region(tree, 'summary')).includes(draft)); }
   else { assert.equal(state()[key], regular.id); assert.ok(!text(region(tree, 'summary')).includes(draft)); }
 }
-console.log('PASS: all 14 other inputs, per-category drafts, optional empty input, storage restore, deselect and single/multiple selection');
+console.log('PASS: all 13 other inputs, per-category drafts, optional empty input, storage restore, deselect and single/multiple selection');
 
 tree = click(start(10), '업체와 상담 후 결정'); noSelectedImages(tree);
 assert.ok(text(region(tree, 'summary')).includes('업체와 상담 후 결정'));
@@ -237,7 +236,7 @@ for (let index = 0; index < 17; index++) {
   assert.equal(all(left, n => n.type === 'img' || n.type === 'Image').length, 0);
   assert.equal(all(left, n => n.props.className === 'choice' || n.props.className === 'choiceCopy' || n.props.className === 'undecidedButton').length, 0);
   const buttons = all(left, n => n.type === 'button' && String(n.props.className).includes('builderChoiceCard'));
-  assert.equal(buttons.length, data.bathroomSteps[index].groups.reduce((n, g) => n + g.choices.length, 0));
+  assert.equal(buttons.length, builderSteps[index].groups.reduce((n, g) => n + g.choices.length, 0));
   for (const button of buttons) assert.ok(['radio', 'checkbox'].includes(button.props.role));
   if (index < 16) tree = click(tree, '선택 완료');
 }
@@ -245,7 +244,7 @@ for (const group of groups) {
   const undecided = group.choices.find(c => c.id === 'undecided');
   assert.equal(undecided.showBuilderImage, false);
   assert.equal(Image({ option: undecided }), null);
-  const index = data.bathroomSteps.findIndex(s => s.groups.includes(group));
+  const index = builderSteps.findIndex(s => s.groups.includes(group));
   const first = group.choices.find(c => c.id !== 'undecided' && c.id !== 'none');
   tree = start(index, { [group.key]: group.multiple ? [first.id] : first.id });
   let section = all(tree, n => n.props.className === 'choiceGroup' && text(n.children[0]).startsWith(group.title))[0];
@@ -272,3 +271,89 @@ assert.equal(radio.type, 'button'); // Native buttons activate with both Space a
 radio.props.onKeyDown({ key: 'ArrowRight', currentTarget: current, preventDefault: () => prevented++ });
 assert.equal(clicked, 1); assert.equal(focused, 1); assert.equal(prevented, 1);
 console.log('PASS: all 17 steps have image-free text cards; every undecided option is exclusive, restored and image-free; radio arrow-key navigation');
+
+// Builder-only option changes: exercise the real click handlers and storage effects.
+tree = click(start(7), '일반 욕조');
+tree = click(tree, '욕조 없음');
+assert.equal(state().bathtub, 'none');
+assert.equal(all(tree, n => n.type === 'button' && text(n) === '욕조 없음')[0].props['aria-checked'], true);
+assert.equal(all(tree, n => n.type === 'button' && text(n) === '일반 욕조')[0].props['aria-checked'], false);
+noSelectedImages(tree);
+assert.ok(text(region(tree, 'summary')).includes('욕조 없음'));
+tree = start(7, state());
+assert.equal(state().bathtub, 'none'); noSelectedImages(tree);
+assert.ok(text(region(tree, 'summary')).includes('욕조 없음'));
+tree = click(tree, '조적 욕조');
+assert.equal(state().bathtub, 'bath-masonry');
+four(tree, groups.find(g => g.key === 'bathtub').choices.find(c => c.id === 'bath-masonry').builderImage);
+
+tree = start(3, { floorTileSize: '600x600', wallTileSize: '300x600', sink: 'other', sinkOther: '보존할 입력' });
+assert.ok(text(tree).includes('벽 & 바닥 타일 크기'));
+assert.equal(all(tree, n => n.props.id === 'builder-floorTileSize-title').length, 0);
+assert.equal(state().floorTileSize, undefined);
+assert.equal(state().wallTileSize, '300x600');
+assert.equal(state().sinkOther, '보존할 입력');
+const wall = groups.find(g => g.key === 'wallTileSize');
+assert.equal(JSON.stringify(wall.choices, (k,v) => ['builderImage','showBuilderImage'].includes(k) ? undefined : v), JSON.stringify(data.bathroomSteps[3].groups.find(g => g.key === 'wallTileSize').choices, (k,v) => ['builderImage','showBuilderImage'].includes(k) ? undefined : v));
+
+for (const key of ['window', 'drainPosition', 'ventilation', 'accessory', 'grout']) {
+  const group = groups.find(g => g.key === key);
+  const stepIndex = builderSteps.findIndex(s => s.groups.includes(group));
+  const originalGroup = data.bathroomSteps.flatMap(s => s.groups).find(g => g.key === key);
+  for (const choice of group.choices) {
+    assert.equal(choice.showBuilderImage, false);
+    assert.equal(choice.builderImage, null);
+    tree = click(start(stepIndex), choice.name);
+    noSelectedImages(tree);
+    assert.ok(text(region(tree, 'summary')).includes(choice.name));
+    const row = all(region(tree, 'summary'), n => n.props.className === 'summaryRow' && text(n).startsWith(group.title))[0];
+    assert.equal(all(row, n => n.type === 'div').length, 2, 'Only the row and text wrapper; no empty thumbnail wrapper');
+    const saved = state();
+    tree = start(stepIndex, saved);
+    assert.equal(JSON.stringify(state()), JSON.stringify(saved));
+    noSelectedImages(tree);
+    assert.equal(all(tree, n => n.type === 'button' && text(n) === choice.name)[0].props['aria-checked'], true);
+  }
+  if (group.multiple) {
+    const choices = group.choices.filter(c => c.id !== 'other' && c.id !== 'undecided').slice(0, 3);
+    tree = start(stepIndex);
+    for (const choice of choices) tree = click(tree, choice.name);
+    assert.equal(JSON.stringify(state()[key]), JSON.stringify(choices.map(c => c.id)));
+    noSelectedImages(tree);
+    for (const choice of choices) assert.ok(text(region(tree, 'summary')).includes(choice.name));
+    tree = start(stepIndex, state()); noSelectedImages(tree);
+    assert.equal(JSON.stringify(state()[key]), JSON.stringify(choices.map(c => c.id)));
+  }
+}
+
+for (const key of ['drain', 'accessoryFinish', 'bathtub']) {
+  const group = groups.find(g => g.key === key);
+  const stepIndex = builderSteps.findIndex(s => s.groups.includes(group));
+  for (const choice of group.choices.filter(c => c.showBuilderImage)) {
+    tree = click(start(stepIndex), choice.name); four(tree, choice.builderImage);
+  }
+}
+// Shared options used by other routes remain byte-for-byte equivalent.
+assert.equal(JSON.stringify(data.bathroomSteps), JSON.stringify(original.bathroomSteps));
+console.log('PASS: no bathtub single-select/restore; merged tile label and legacy floor values; all five text-only groups and multi-select restore; drain/finish/bathtub images retained; shared route data unchanged');
+
+// Every live photo uses the same source on all three surfaces, including replacements.
+for (const group of groups) for (const choice of group.choices.filter(c => c.showBuilderImage)) {
+  const index = builderSteps.findIndex(s => s.groups.includes(group));
+  tree = start(index);
+  const selectedGroup = all(tree, n => n.props.className === 'choiceGroup' && text(n.children[0]).startsWith(group.title))[0];
+  all(selectedGroup, n => n.type === 'button' && text(n) === choice.name)[0].props.onClick(); tree = render();
+  four(tree, choice.builderImage);
+  tree = start(index, state()); four(tree, choice.builderImage);
+  const restoredGroup = all(tree, n => n.props.className === 'choiceGroup' && text(n.children[0]).startsWith(group.title))[0];
+  all(restoredGroup, n => n.type === 'button' && text(n) === choice.name)[0].props.onClick(); tree = render();
+  assert.equal(sources(tree, choice.builderImage).length, 0);
+}
+// Exercise an image-enabled 'none' without adding a real option or fixture photo.
+const noBath = groups.find(g => g.key === 'bathtub').choices.find(c => c.id === 'none');
+const oldNoBath = { ...noBath };
+try {
+  noBath.showBuilderImage = true; noBath.builderImage = '/images/bathroom-builder/bathtub/standard.png';
+  tree = click(start(7), noBath.name); four(tree, noBath.builderImage);
+} finally { Object.assign(noBath, oldNoBath); }
+console.log('PASS: all real image choices share current paths across hero/history/summary, storage remount and deselect; image-enabled none renders');

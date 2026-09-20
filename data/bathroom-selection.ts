@@ -1,4 +1,4 @@
-import { bathroomSteps, type ChoiceGroup } from './bathroom-options';
+import { bathroomSteps, type BathroomStep, type ChoiceGroup } from './bathroom-options';
 
 // Preserve the existing { values, priorities } storage envelope and ID fields.
 export type BathroomValues = Record<string, string | string[]>;
@@ -18,11 +18,11 @@ export function selectionLabel(values: BathroomValues, group: ChoiceGroup): stri
 }
 
 /** Validate stored IDs against current options, including removed legacy IDs. */
-export function normalizeBathroomValues(input: unknown): BathroomValues {
+export function normalizeBathroomValues(input: unknown, steps: BathroomStep[] = bathroomSteps): BathroomValues {
   if (!input || typeof input !== 'object' || Array.isArray(input)) return {};
   const raw = input as Record<string, unknown>;
   const result: BathroomValues = {};
-  for (const group of bathroomSteps.flatMap(step => step.groups)) {
+  for (const group of steps.flatMap(step => step.groups)) {
     const value = raw[group.key];
     const incoming = Array.isArray(value) ? value : typeof value === 'string' ? [value] : [];
     const ids = Array.from(new Set(incoming.filter((id): id is string =>

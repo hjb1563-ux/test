@@ -35,3 +35,17 @@ Thumbs.db
 public/images/bathroom-builder/inbox/*
 !public/images/bathroom-builder/inbox/.gitkeep
 public/images/bathroom-builder/archive/
+
+# BEGIN builder image sources
+!public/images/bathroom-builder/inbox/**/
+!public/images/bathroom-builder/inbox/SMC 평천장2.png
+!public/images/bathroom-builder/inbox/라인 배수구2.png
+!public/images/bathroom-builder/inbox/욕실장 간접 조명.png
+!public/images/bathroom-builder/inbox/일반 사각 배수구2.png
+!public/images/bathroom-builder/inbox/일반 샤워 수전.png
+!public/images/bathroom-builder/inbox/일반 세면 수전.png
+!public/images/bathroom-builder/inbox/천장 간접 조명2.png
+!public/images/bathroom-builder/inbox/천장 매립 조명2.png
+!public/images/bathroom-builder/inbox/타일 삽입형 배수구2.png
+!public/images/bathroom-builder/inbox/트렌치 드레인 배수구2.png
+# END builder image sources
