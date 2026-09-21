@@ -1,0 +1,701 @@
+{
+  "existingFiles": 172,
+  "changed": [],
+  "deleted": [],
+  "renamed": [],
+  "added": [
+    "home/luxury-hotel-bathroom-hero-original.png",
+    "home/luxury-hotel-bathroom-hero.webp"
+  ],
+  "mappingUnchanged": true,
+  "before": {
+    "bathroom/option-placeholder.svg": {
+      "size": 1125,
+      "sha256": "2c24760a17d8739337e82e9c44e193783fdee22df3285f6eceeeef90de43cf24"
+    },
+    "bathroom/showroom-v1.png": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "guide/guide-placeholder.svg": {
+      "size": 908,
+      "sha256": "74bfe6d90f1fd615550de8108fc28cacf85ebdbe98d8f2156dad686eaf466886"
+    },
+    "bathroom/references/bathroom-design-reference.png": {
+      "size": 1621243,
+      "sha256": "2cd9692551967630f7c8acbc1fe17e72025e7cc135c3111396f5827eb1b7f787"
+    },
+    "bathroom-builder/accessories/chrome.png": {
+      "size": 2567259,
+      "sha256": "5eee64e3211f3bbdf8b479612623e842d1ba48d2d962b99ed7803d71e5247d78"
+    },
+    "bathroom-builder/accessories/nickel.png": {
+      "size": 2450652,
+      "sha256": "de81d68e4a6dfca19e32b6a44609911e8b7ffefce9694f81b7adb9975b8d79ef"
+    },
+    "bathroom-builder/accessories/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/basin/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/basin/standard.png": {
+      "size": 2196014,
+      "sha256": "0c1a97861923f540963df365a2b7ce3fda232148faa80c8b2c484a0d17ae21c9"
+    },
+    "bathroom-builder/basin/top-bowl.png": {
+      "size": 2158034,
+      "sha256": "3936433d9e400ac8437fa93095d240b3712db3656c4462a67d5a2a174df2bd6e"
+    },
+    "bathroom-builder/basin/undermount.png": {
+      "size": 2169001,
+      "sha256": "9a13ab45bc7bf091b21586d262677ba3a327d40f9a505c3720881834ec798e57"
+    },
+    "bathroom-builder/bathtub/half-bath.png": {
+      "size": 2488877,
+      "sha256": "f44f6895801b1543841c978a4cc2197db5ad720c04376ebb59f783826dbf5b35"
+    },
+    "bathroom-builder/bathtub/masonry.png": {
+      "size": 2644799,
+      "sha256": "61f1f26106c09ba984513e6ba396c660b85b770c20ef2f8dc509608ffd610047"
+    },
+    "bathroom-builder/bathtub/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/bathtub/standard.png": {
+      "size": 2467328,
+      "sha256": "7108628dfa3d516125e66918f88cb8087f379dd1070bd53a377928e23424cb75"
+    },
+    "bathroom-builder/cabinet/led-mirror-cabinet.png": {
+      "size": 2305540,
+      "sha256": "974bd30b8fc9af1c8184989e8089dc20dc682a21640d3e54ed2d36f7065827b5"
+    },
+    "bathroom-builder/cabinet/led-mirror.png": {
+      "size": 2356831,
+      "sha256": "0f9edfedd56981119b1ad41b76abb8e18a64e266106ae73b6fcf48e444bdb6ff"
+    },
+    "bathroom-builder/cabinet/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/cabinet/sliding-mirror.png": {
+      "size": 2131776,
+      "sha256": "02a6ffaf399e857467fc47150dac07841b9625c7c59354c52d01d910fab46d6e"
+    },
+    "bathroom-builder/cabinet/standard-mirror.png": {
+      "size": 2232404,
+      "sha256": "661f87d87e741cacaa0dfc8d634645222d85605de58f6bc3952a41f04f3becaa"
+    },
+    "bathroom-builder/ceiling/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/ceiling/smc-dome.png": {
+      "size": 1788646,
+      "sha256": "95f7355c69d14575f8f99fa9ef2f25a6e9acbecc7aa1db7f2f91f0ed7523407b"
+    },
+    "bathroom-builder/ceiling/smc-flat.png": {
+      "size": 1847943,
+      "sha256": "0e897ef2f7b697374c8d9d04e858ea4aca110c736a256f9dce13956ec193b223"
+    },
+    "bathroom-builder/demolition/full-demolition.jpg": {
+      "size": 636047,
+      "sha256": "a58b4a7ad17fe9574b2d67b85dbb4f2edcc512c67298f148c872907e2d4e6782"
+    },
+    "bathroom-builder/demolition/overlay.jpg": {
+      "size": 377656,
+      "sha256": "8c06cd0b8c44eb6a4c93244112dc3d20fa4b2489ad15639730d03519a22576f8"
+    },
+    "bathroom-builder/demolition/partial-demolition-overlay.jpg": {
+      "size": 424115,
+      "sha256": "2f5629b0e753e64e05ce136ad8c7c35e85d2e418d2ea55efb8b5ec6563971ca4"
+    },
+    "bathroom-builder/demolition/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/drainage/linear-drain.png": {
+      "size": 2725821,
+      "sha256": "a7fb5178b6f94010a056780e58b24ff9ddee4a8da79f6f0b7e836ffa5ce58176"
+    },
+    "bathroom-builder/drainage/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/drainage/square-drain.png": {
+      "size": 2390499,
+      "sha256": "00b7afa508e02c670093138966edfa6619d2b922db521bc4590d51ad3ce90338"
+    },
+    "bathroom-builder/drainage/tile-insert-drain.png": {
+      "size": 2457402,
+      "sha256": "afc6dcf29faeda6cdc9e2630e226f6c13c7ea143b79c1e735463c5cec631eb3c"
+    },
+    "bathroom-builder/drainage/trench-drain.png": {
+      "size": 2757907,
+      "sha256": "77f7996863c64291648138da2307f01a7a6e6b98bd95f754f3f37d5210789831"
+    },
+    "bathroom-builder/fallback/placeholder.svg": {
+      "size": 573,
+      "sha256": "73b9736201c7222bcfb4637540a28bae397f517e2d7cbca189b2b8e130c76118"
+    },
+    "bathroom-builder/faucet/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/grout/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/inbox/.gitkeep": {
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bathroom-builder/inbox/LED 거울.png": {
+      "size": 2356831,
+      "sha256": "0f9edfedd56981119b1ad41b76abb8e18a64e266106ae73b6fcf48e444bdb6ff"
+    },
+    "bathroom-builder/inbox/LED 거울장.png": {
+      "size": 2305540,
+      "sha256": "974bd30b8fc9af1c8184989e8089dc20dc682a21640d3e54ed2d36f7065827b5"
+    },
+    "bathroom-builder/inbox/smc 돔천장.png": {
+      "size": 1788646,
+      "sha256": "95f7355c69d14575f8f99fa9ef2f25a6e9acbecc7aa1db7f2f91f0ed7523407b"
+    },
+    "bathroom-builder/inbox/smc 평천장.png": {
+      "size": 1847943,
+      "sha256": "0e897ef2f7b697374c8d9d04e858ea4aca110c736a256f9dce13956ec193b223"
+    },
+    "bathroom-builder/inbox/SMC 평천장2.png": {
+      "size": 2011072,
+      "sha256": "2e6e3239f09bae65da3c7f53757f99a4fd9107fb7d0cbba35389a1892febc711"
+    },
+    "bathroom-builder/inbox/그레이 타일.png": {
+      "size": 2066023,
+      "sha256": "2c5ff1ab0e1a3bd2c9e7a07b65bbd44d1f451608281bb11256d86bbd6c18f59f"
+    },
+    "bathroom-builder/inbox/니켈 액세서리.png": {
+      "size": 2450652,
+      "sha256": "de81d68e4a6dfca19e32b6a44609911e8b7ffefce9694f81b7adb9975b8d79ef"
+    },
+    "bathroom-builder/inbox/다크 타일.png": {
+      "size": 2215867,
+      "sha256": "c0c7a49fed617270db17e5bcf81d0f65a891e2475015fb9b70b0b4ba5390aca7"
+    },
+    "bathroom-builder/inbox/도막 방수.png": {
+      "size": 2026451,
+      "sha256": "ea2bcb7ecd6468714634229af23035341bb490e28a7c584c89172a67fb3f5bf0"
+    },
+    "bathroom-builder/inbox/라인 배수구.png": {
+      "size": 2725821,
+      "sha256": "a7fb5178b6f94010a056780e58b24ff9ddee4a8da79f6f0b7e836ffa5ce58176"
+    },
+    "bathroom-builder/inbox/라인 배수구2.png": {
+      "size": 2877505,
+      "sha256": "833f886a506678ebde15904af1bfb98ff0778b6b95de8d53d6c49956c63be6fd"
+    },
+    "bathroom-builder/inbox/무광 타일.png": {
+      "size": 2050783,
+      "sha256": "fb2cd4834a8892470743b73eba5b39d1e9529c18c5f3e97b262f074d1680fe17"
+    },
+    "bathroom-builder/inbox/문턱 인조대리석 마감.png": {
+      "size": 2617013,
+      "sha256": "a1f34fee9587d85cf2dedaea6322eb57a9895e6120b8b52fb0c53ee721d3d0e5"
+    },
+    "bathroom-builder/inbox/문턱 타일 마감.png": {
+      "size": 2738064,
+      "sha256": "b0e3ba69dcd986295c7afe43d07ab066f83180ada0a6474b49e417a57ba1bc61"
+    },
+    "bathroom-builder/inbox/반신욕 욕조.png": {
+      "size": 2488877,
+      "sha256": "f44f6895801b1543841c978a4cc2197db5ad720c04376ebb59f783826dbf5b35"
+    },
+    "bathroom-builder/inbox/벽 타일 300x600.png": {
+      "size": 2096834,
+      "sha256": "4feff83365862156a7bdf2163b231fce113f9b31f4bd6e4a13ca51cd0db6ca16"
+    },
+    "bathroom-builder/inbox/벽 타일 600x1200.png": {
+      "size": 1990043,
+      "sha256": "5aaf850e3f26ff4749bb0a40a37eabf078d6ac2d926b6581b7b1acd25ce1f31b"
+    },
+    "bathroom-builder/inbox/벽 타일 600x600.png": {
+      "size": 1990623,
+      "sha256": "790038a126323f35f03a8288015f9d954dba1b2ca219f0561cd774f870ed3ff8"
+    },
+    "bathroom-builder/inbox/벽걸이형 변기.png": {
+      "size": 2328324,
+      "sha256": "9ad93aaa2d83002971951d0e9ceee32eedcfac9f3e37b2d600f4940a4609e770"
+    },
+    "bathroom-builder/inbox/샤워부스 유리 고정형.png": {
+      "size": 1759412,
+      "sha256": "3fb6eb0ac3dbbc462fef1dcbad1399de341b0396edf906dd9b1a7c4fd131c984"
+    },
+    "bathroom-builder/inbox/샤워부스 유리 도어형.png": {
+      "size": 1823363,
+      "sha256": "b926668b1bcc23494a2a1b589422829a8c6ed7fed5589e8b2dcb3f51fa25022f"
+    },
+    "bathroom-builder/inbox/슬라이딩 거울장.png": {
+      "size": 2131776,
+      "sha256": "02a6ffaf399e857467fc47150dac07841b9625c7c59354c52d01d910fab46d6e"
+    },
+    "bathroom-builder/inbox/아이보리 타일.png": {
+      "size": 1797789,
+      "sha256": "6ddb19f2898480fa4da6e4c020ccd16f69dd2954e129c3a86c21b01a01239822"
+    },
+    "bathroom-builder/inbox/액체 방수.png": {
+      "size": 2133648,
+      "sha256": "a6128ce473f34ec9706d4225b15d2d6c2af36c6c434c04f2db2f80420d595441"
+    },
+    "bathroom-builder/inbox/액체+도막 방수.png": {
+      "size": 2266296,
+      "sha256": "82735132fba6a56bad5948da304221f1917db18733b130621f400fd2d4cdc749"
+    },
+    "bathroom-builder/inbox/언더볼 세면대.png": {
+      "size": 2169001,
+      "sha256": "9a13ab45bc7bf091b21586d262677ba3a327d40f9a505c3720881834ec798e57"
+    },
+    "bathroom-builder/inbox/욕실장 간접 조명.png": {
+      "size": 1725213,
+      "sha256": "6a22a60f9a1af79a9f6d74de7ab624c5006af370f42942df3d03bb9ca40592a1"
+    },
+    "bathroom-builder/inbox/원피스 변기.png": {
+      "size": 2164386,
+      "sha256": "5180074449a76c6cfa279d775991eb86e491d24b35e1f14690c5d2c5cbf685fc"
+    },
+    "bathroom-builder/inbox/유광 타일.png": {
+      "size": 1760384,
+      "sha256": "f92419e0dd80ebf2fe25535fecac5ce5345e202261ea0185038a71a9f344a2db"
+    },
+    "bathroom-builder/inbox/일반 거울.png": {
+      "size": 2232404,
+      "sha256": "661f87d87e741cacaa0dfc8d634645222d85605de58f6bc3952a41f04f3becaa"
+    },
+    "bathroom-builder/inbox/일반 사각 배수구.png": {
+      "size": 2390499,
+      "sha256": "00b7afa508e02c670093138966edfa6619d2b922db521bc4590d51ad3ce90338"
+    },
+    "bathroom-builder/inbox/일반 사각 배수구2.png": {
+      "size": 2705236,
+      "sha256": "d62ecb891e0cc838811509b7754f8eae34f230f8682cd2edac5e14cfb4c56855"
+    },
+    "bathroom-builder/inbox/일반 샤워 수전.png": {
+      "size": 2394697,
+      "sha256": "78b6bfb0b6e58522793dfa38dcfd7923c1f8098e4ca5146b619ae049b3d736a9"
+    },
+    "bathroom-builder/inbox/일반 세면 수전.png": {
+      "size": 1884303,
+      "sha256": "ade1f4474accf78d6bbcd4b6f7d0aae00aa07c0546286db081443921b9477232"
+    },
+    "bathroom-builder/inbox/일반 세면대.png": {
+      "size": 2196014,
+      "sha256": "0c1a97861923f540963df365a2b7ce3fda232148faa80c8b2c484a0d17ae21c9"
+    },
+    "bathroom-builder/inbox/일반 욕조.png": {
+      "size": 2467328,
+      "sha256": "7108628dfa3d516125e66918f88cb8087f379dd1070bd53a377928e23424cb75"
+    },
+    "bathroom-builder/inbox/조적 욕조.png": {
+      "size": 2644799,
+      "sha256": "61f1f26106c09ba984513e6ba396c660b85b770c20ef2f8dc509608ffd610047"
+    },
+    "bathroom-builder/inbox/천장 간접 조명.png": {
+      "size": 2173058,
+      "sha256": "3161defe314444667cd2e92a3fe475d59b03587491e5ddad40a1bfc3b2b39154"
+    },
+    "bathroom-builder/inbox/천장 간접 조명2.png": {
+      "size": 2079431,
+      "sha256": "4b984d2d944e3da0265d52ab6ec35e63230683d977062d78ed09b9a202b1cc5b"
+    },
+    "bathroom-builder/inbox/천장 매립 조명2.png": {
+      "size": 2075654,
+      "sha256": "42b19f077744b6369236be9ff15b33e8e18cd67bb2fc54eed4e3dee4aafdbcf9"
+    },
+    "bathroom-builder/inbox/크롬 액세서리.png": {
+      "size": 2567259,
+      "sha256": "5eee64e3211f3bbdf8b479612623e842d1ba48d2d962b99ed7803d71e5247d78"
+    },
+    "bathroom-builder/inbox/타일 삽입형 배수구.png": {
+      "size": 2457402,
+      "sha256": "afc6dcf29faeda6cdc9e2630e226f6c13c7ea143b79c1e735463c5cec631eb3c"
+    },
+    "bathroom-builder/inbox/타일 삽입형 배수구2.png": {
+      "size": 2651880,
+      "sha256": "300c156a647997af3ba7dfc5ff1c8321344b9c4820abde9dbda5bd2104680d1c"
+    },
+    "bathroom-builder/inbox/탑볼 세면대.png": {
+      "size": 2158034,
+      "sha256": "3936433d9e400ac8437fa93095d240b3712db3656c4462a67d5a2a174df2bd6e"
+    },
+    "bathroom-builder/inbox/투피스 변기.png": {
+      "size": 2185359,
+      "sha256": "8a70e1728ba4a0ad17860ffc0b39106c08946d438ec17921d719088e2e3b9089"
+    },
+    "bathroom-builder/inbox/트렌치 드레인 배수구.png": {
+      "size": 2757907,
+      "sha256": "77f7996863c64291648138da2307f01a7a6e6b98bd95f754f3f37d5210789831"
+    },
+    "bathroom-builder/inbox/트렌치 드레인 배수구2.png": {
+      "size": 2611724,
+      "sha256": "d8ba7bd0bd731a97d666e7ab2451edcf2c84be102a37b28cc94b548341efa547"
+    },
+    "bathroom-builder/inbox/화이트 타일.png": {
+      "size": 1573065,
+      "sha256": "9e3bf4104dfc54fa94ca0d4b4e3d79528c963ee762c6697776716032e294c0f3"
+    },
+    "bathroom-builder/jendai/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/lighting/indirect-ceiling.png": {
+      "size": 2173058,
+      "sha256": "3161defe314444667cd2e92a3fe475d59b03587491e5ddad40a1bfc3b2b39154"
+    },
+    "bathroom-builder/lighting/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/lighting/recessed-ceiling.png": {
+      "size": 2045220,
+      "sha256": "01646546e4abf84d07a3adb5c6137421b80ddde2ebb758a540733674410d0c93"
+    },
+    "bathroom-builder/partition/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/structure/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/threshold/artificial-stone.png": {
+      "size": 2617013,
+      "sha256": "a1f34fee9587d85cf2dedaea6322eb57a9895e6120b8b52fb0c53ee721d3d0e5"
+    },
+    "bathroom-builder/threshold/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/threshold/tile.png": {
+      "size": 2738064,
+      "sha256": "b0e3ba69dcd986295c7afe43d07ab066f83180ada0a6474b49e417a57ba1bc61"
+    },
+    "bathroom-builder/tile/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/toilet/one-piece.png": {
+      "size": 2164386,
+      "sha256": "5180074449a76c6cfa279d775991eb86e491d24b35e1f14690c5d2c5cbf685fc"
+    },
+    "bathroom-builder/toilet/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/toilet/two-piece.png": {
+      "size": 2185359,
+      "sha256": "8a70e1728ba4a0ad17860ffc0b39106c08946d438ec17921d719088e2e3b9089"
+    },
+    "bathroom-builder/toilet/wall-hung.png": {
+      "size": 2328324,
+      "sha256": "9ad93aaa2d83002971951d0e9ceee32eedcfac9f3e37b2d600f4940a4609e770"
+    },
+    "bathroom-builder/ventilation/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/waterproofing/coating.png": {
+      "size": 2026451,
+      "sha256": "ea2bcb7ecd6468714634229af23035341bb490e28a7c584c89172a67fb3f5bf0"
+    },
+    "bathroom-builder/waterproofing/liquid-plus-coating.png": {
+      "size": 2266296,
+      "sha256": "82735132fba6a56bad5948da304221f1917db18733b130621f400fd2d4cdc749"
+    },
+    "bathroom-builder/waterproofing/liquid.png": {
+      "size": 2133648,
+      "sha256": "a6128ce473f34ec9706d4225b15d2d6c2af36c6c434c04f2db2f80420d595441"
+    },
+    "bathroom-builder/waterproofing/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/accessories/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/basin/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/bathtub/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/cabinet/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/ceiling/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/demolition/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/drainage/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/faucet/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/grout/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/lighting/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/structure/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/threshold/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/tile/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/toilet/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/ventilation/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "design/waterproofing/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/accessories/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/basin/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/bathtub/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/cabinet/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/ceiling/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/demolition/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/drainage/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/faucet/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/grout/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/lighting/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/structure/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/threshold/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/tile/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/toilet/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/ventilation/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "options/waterproofing/placeholder.jpg": {
+      "size": 2177391,
+      "sha256": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a"
+    },
+    "bathroom-builder/faucet/basin/.gitkeep": {
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bathroom-builder/faucet/basin/concealed.jpg": {
+      "size": 329830,
+      "sha256": "24f11930a7f090b0e92600d6f00c5ad780e5d749524570f8d964ac2c002e8c17"
+    },
+    "bathroom-builder/faucet/shower/.gitkeep": {
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bathroom-builder/faucet/shower/concealed.jpg": {
+      "size": 340273,
+      "sha256": "97f9caca484d360290727b941be119589361ce96361aca44be946de8119e715a"
+    },
+    "bathroom-builder/structure/embedded/.gitkeep": {
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bathroom-builder/structure/embedded/basin-faucet.jpg": {
+      "size": 329830,
+      "sha256": "24f11930a7f090b0e92600d6f00c5ad780e5d749524570f8d964ac2c002e8c17"
+    },
+    "bathroom-builder/structure/embedded/bathtub-faucet.jpg": {
+      "size": 297527,
+      "sha256": "f5b20529fedbc6e3df4961a030b0cdfd3fa3ef5e835f37b790e5a3e86a7ae098"
+    },
+    "bathroom-builder/structure/embedded/shower-faucet.jpg": {
+      "size": 340273,
+      "sha256": "97f9caca484d360290727b941be119589361ce96361aca44be946de8119e715a"
+    },
+    "bathroom-builder/structure/embedded/toilet-paper-holder.jpg": {
+      "size": 261251,
+      "sha256": "7b7ada43ad18fd57641396575b992d20a1cc5ab9ddb195d29825426472543820"
+    },
+    "bathroom-builder/structure/jendai/.gitkeep": {
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bathroom-builder/structure/jendai/basin-jendai.jpg": {
+      "size": 284646,
+      "sha256": "10b3efd08062769d9d8c111fe79673f4867310ccd42135475f6fab4c6a366e1b"
+    },
+    "bathroom-builder/structure/jendai/new.jpg": {
+      "size": 314584,
+      "sha256": "8c2127a7bab9ff5b804b871634c40142e8c0b81fcfeaa46fb44a3147d0a5aae8"
+    },
+    "bathroom-builder/structure/jendai/shower-jendai.jpg": {
+      "size": 264219,
+      "sha256": "10df7bb937108c447a545d96c74ed7456c8edbb17e4ebb1ef461a9dd87f6da74"
+    },
+    "bathroom-builder/structure/jendai/toilet-jendai.jpg": {
+      "size": 309238,
+      "sha256": "29b326ec0c17825a5de94421da3841d74c4508e668f2b95ca727cd492875413b"
+    },
+    "bathroom-builder/structure/niche/.gitkeep": {
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bathroom-builder/structure/niche/shower-niche.jpg": {
+      "size": 315596,
+      "sha256": "eb6e2e781db41f2f3103b633b1f618384df1ab27930580be93b63156b0bf0944"
+    },
+    "bathroom-builder/structure/niche/sink-niche.jpg": {
+      "size": 315752,
+      "sha256": "5b470c6b75c4956d2c57245878ef496d49fed40c0d638028ace4b87538c553e9"
+    },
+    "bathroom-builder/structure/partition/.gitkeep": {
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bathroom-builder/structure/partition/full-partition.jpg": {
+      "size": 297234,
+      "sha256": "cde48807b86c73289df60d275edd1164d2d2d475fb6ce1f1646a8aba0f7b3dde"
+    },
+    "bathroom-builder/structure/partition/half-partition.jpg": {
+      "size": 298565,
+      "sha256": "d11399bb4c702cbeef71473e30988fc36d2a40b9a87945f4ace57d04803b4d13"
+    },
+    "bathroom-builder/structure/shower-booth/.gitkeep": {
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bathroom-builder/structure/shower-booth/door.png": {
+      "size": 1823363,
+      "sha256": "b926668b1bcc23494a2a1b589422829a8c6ed7fed5589e8b2dcb3f51fa25022f"
+    },
+    "bathroom-builder/structure/shower-booth/fixed-glass.png": {
+      "size": 1759412,
+      "sha256": "3fb6eb0ac3dbbc462fef1dcbad1399de341b0396edf906dd9b1a7c4fd131c984"
+    },
+    "bathroom-builder/tile/finish/.gitkeep": {
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bathroom-builder/tile/finish/glossy.png": {
+      "size": 1760384,
+      "sha256": "f92419e0dd80ebf2fe25535fecac5ce5345e202261ea0185038a71a9f344a2db"
+    },
+    "bathroom-builder/tile/finish/matte.png": {
+      "size": 2050783,
+      "sha256": "fb2cd4834a8892470743b73eba5b39d1e9529c18c5f3e97b262f074d1680fe17"
+    },
+    "bathroom-builder/tile/floor/.gitkeep": {
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bathroom-builder/tile/tone/.gitkeep": {
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bathroom-builder/tile/tone/dark.png": {
+      "size": 2215867,
+      "sha256": "c0c7a49fed617270db17e5bcf81d0f65a891e2475015fb9b70b0b4ba5390aca7"
+    },
+    "bathroom-builder/tile/tone/gray.png": {
+      "size": 2066023,
+      "sha256": "2c5ff1ab0e1a3bd2c9e7a07b65bbd44d1f451608281bb11256d86bbd6c18f59f"
+    },
+    "bathroom-builder/tile/tone/ivory.png": {
+      "size": 1797789,
+      "sha256": "6ddb19f2898480fa4da6e4c020ccd16f69dd2954e129c3a86c21b01a01239822"
+    },
+    "bathroom-builder/tile/tone/white.png": {
+      "size": 1573065,
+      "sha256": "9e3bf4104dfc54fa94ca0d4b4e3d79528c963ee762c6697776716032e294c0f3"
+    },
+    "bathroom-builder/tile/wall/.gitkeep": {
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "bathroom-builder/tile/wall/300x600.png": {
+      "size": 2096834,
+      "sha256": "4feff83365862156a7bdf2163b231fce113f9b31f4bd6e4a13ca51cd0db6ca16"
+    },
+    "bathroom-builder/tile/wall/600x1200.png": {
+      "size": 1990043,
+      "sha256": "5aaf850e3f26ff4749bb0a40a37eabf078d6ac2d926b6581b7b1acd25ce1f31b"
+    },
+    "bathroom-builder/tile/wall/600x600.png": {
+      "size": 1990623,
+      "sha256": "790038a126323f35f03a8288015f9d954dba1b2ca219f0561cd774f870ed3ff8"
+    },
+    "bathroom-builder/tile/window/.gitkeep": {
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
