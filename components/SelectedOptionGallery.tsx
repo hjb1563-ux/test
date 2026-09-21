@@ -42,6 +42,7 @@ export default function SelectedOptionGallery({
 
   return (
     <section className={`selectedGallery selectedGallery--${variant}`}>
+      <p className="imageDisclaimer">이해를 돕기 위한 시공 예시 이미지입니다.</p>
       {resultView ? (
         <>
           <div className="galleryHead"><span>SELECTED OPTIONS</span><h2>선택한 욕실 요소</h2></div>

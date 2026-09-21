@@ -1,5 +1,6 @@
 'use client';
 
+import { siteCheck } from '../data/bathroom-consultation';
 import { Fragment } from 'react';
 import type { ChoiceGroup } from '../data/bathroom-options';
 import { customTextKey, selectedIds, type BathroomValues } from '../data/bathroom-selection';
@@ -16,6 +17,7 @@ export default function BuilderChoiceGroup({ group, values, onSelect, onCustomTe
   const draft = values[customTextKey(group.key)];
   return <section className="choiceGroup">
     <h2 id={`builder-${group.key}-title`}>{group.title}{group.multiple && <small>복수 선택 가능</small>}</h2>
+    {siteCheck(group.key, values) && <p className="siteCheckHint"><span className="siteBadge">현장 확인 필요</span> 업체 실측 후 최종 확인이 필요합니다.</p>}
     <div className="builderChoiceGrid" role={group.multiple ? 'group' : 'radiogroup'} aria-labelledby={`builder-${group.key}-title`}>
       {group.choices.map((choice, index) => {
         const selected = ids.includes(choice.id);

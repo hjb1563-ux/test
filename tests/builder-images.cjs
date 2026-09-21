@@ -10,6 +10,9 @@ const root = path.resolve(__dirname, '..');
 let slots = [], cursor = 0, effects = [], dirty = false;
 const storage = new Map();
 const params = new URLSearchParams();
+let storageFailure = false, confirmReset = false, printCalls = 0, clipboardText = '', clipboardFailure = false, navigatedTo = '';
+const browserWindow = { confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
+const browserNavigator = { clipboard: { writeText: async value => { if (clipboardFailure) throw new Error('Clipboard blocked'); clipboardText = value; } } };
 const hooks = {
   useState(initial) {
     const index = cursor++;
@@ -37,12 +40,13 @@ function evaluate(source, filename) {
     if (name === 'react') return { ...React, ...hooks };
     if (name === 'next/navigation') return { useSearchParams: () => params };
     if (name === 'next/link') return { default: props => React.createElement('a', props), __esModule: true };
+    if (name === 'next/image') return { default: props => React.createElement('img', props), __esModule: true };
     if (name === 'lucide-react') return new Proxy({}, { get: () => () => null });
     if (name.includes('guides/catalog')) return { guideBySlug: {} };
     if (name.startsWith('.')) return load(path.resolve(path.dirname(filename), name));
     return require(name);
   };
-  vm.runInNewContext(code, { exports: module.exports, module, require: localRequire, URLSearchParams, localStorage: { getItem: k => storage.get(k) ?? null, setItem: (k, v) => storage.set(k, v), removeItem: k => storage.delete(k) } }, { filename });
+  vm.runInNewContext(code, { exports: module.exports, module, require: localRequire, URLSearchParams, window: browserWindow, navigator: browserNavigator, localStorage: { getItem: k => { if (storageFailure) throw new Error('Storage blocked'); return storage.get(k) ?? null; }, setItem: (k, v) => { if (storageFailure) throw new Error('Storage blocked'); storage.set(k, v); }, removeItem: k => storage.delete(k) } }, { filename });
   return module.exports;
 }
 function load(file) {
@@ -117,7 +121,7 @@ try {
   assert.equal(JSON.parse(saved).values.sink, 'top-bowl');
   assert.ok(!/builderImage|https?:|\/images\//.test(saved));
   slots = []; tree = render();
-  for (let i = 0; i < 4; i++) tree = click(tree, '선택 완료');
+  assert.ok(text(tree).includes('이어서 만들기'), 'Saved step can be resumed');
   four(tree, bowl.builderImage); console.log('PASS 5: remount restores saved ID and resolves the latest source');
 } finally { bowl.builderImage = before; }
 const Image = load(path.join(root, 'components/BuilderOptionImage')).default;
@@ -223,11 +227,18 @@ console.log('PASS: consultation text, no fallback for intentional text options, 
 
 const Result = load(path.join(root, 'app/result/page')).default;
 params.set('plan', encodeURIComponent(JSON.stringify(stale)));
-let resultTree = expand(Result());
+function renderResult() {
+  let tree, rounds = 0;
+  do { dirty = false; cursor = 0; effects = []; tree = expand(Result()); effects.forEach(fn => fn()); assert.ok(++rounds < 20); } while (dirty);
+  return tree;
+}
+slots = [];
+let resultTree = renderResult();
 assert.ok(text(resultTree).includes('기타 · 벽걸이 세면대')); assert.ok(text(resultTree).includes('기타 · 작은 변기'));
 assert.ok(!text(resultTree).includes('wall-niche')); assert.ok(!text(resultTree).includes('hand-shower'));
 params.set('plan', encodeURIComponent(JSON.stringify({ sink: 'vanity-basin', sinkOther: 'HIDDEN_DRAFT' })));
-assert.ok(!text(expand(Result())).includes('HIDDEN_DRAFT'));
+slots = [];
+assert.ok(!text(renderResult()).includes('HIDDEN_DRAFT'));
 console.log('PASS: result summary uses active custom text and omits drafts/removed IDs');
 
 tree = start();
@@ -357,3 +368,100 @@ try {
   tree = click(start(7), noBath.name); four(tree, noBath.builderImage);
 } finally { Object.assign(noBath, oldNoBath); }
 console.log('PASS: all real image choices share current paths across hero/history/summary, storage remount and deselect; image-enabled none renders');
+
+// Consultation regression: exercise state, persistence and real UI event handlers.
+async function testConsultation() {
+  const consultation = load(path.join(root, 'data/bathroom-consultation'));
+  const count = groups.length;
+  const emptyRows = consultation.consultationRows({});
+  assert.equal(emptyRows.length, count);
+  assert.equal(emptyRows.filter(r => r.pending).length, count);
+  const sample = { demolition: 'full-demolition', bathroomCondition: ['unknown-condition'], partition: 'none', niche: 'shower-niche', waterproofing: 'consult', sink: 'other', sinkOther: '아이용 낮은 세면대 100%', bathtub: 'none', drainPosition: 'consult', ventilation: ['strong-fan', 'dry'], lighting: ['other'] };
+  const rows = consultation.consultationRows(sample);
+  assert.equal(rows.filter(r => !r.pending).length, 6, 'Count categories rather than individual multi selections');
+  assert.equal(rows.filter(r => r.pending).length, count - 6);
+  for (const key of ['bathroomCondition','waterproofing','drainPosition','lighting']) assert.ok(rows.find(r => r.key === key).pending);
+  assert.ok(!rows.find(r => r.key === 'bathtub').pending);
+  assert.ok(!rows.find(r => r.key === 'partition').site, 'No partition does not imply structural work');
+  assert.ok(rows.find(r => r.key === 'niche').site);
+  assert.ok(rows.find(r => r.key === 'drainPosition').site);
+  assert.equal(consultation.consultationRows({ sink: 'other', sinkOther: '  ' }).find(r => r.key === 'sink').reason, '기타 내용 미입력');
+  const allDecided = Object.fromEntries(groups.map(g => [g.key, g.multiple ? [g.choices[0].id] : g.choices[0].id]));
+  assert.equal(consultation.consultationRows(allDecided).filter(r => r.pending).length, 0);
+  const copied = consultation.consultationText(rows, ['청소 편의'], '아이와 사용합니다.\n수납이 필요해요.');
+  assert.ok(copied.indexOf('01 철거') < copied.indexOf('16 욕실'));
+  for (const value of ['욕조 없음', '아이용 낮은 세면대 100%', '상담 후 결정', '아직 결정하지 않은 항목', '현장에서 확인해주세요', '수납이 필요해요.']) assert.ok(copied.includes(value), value);
+  console.log('PASS: category counts, unknown/consult/unselected/empty-other, none, multi-select, conditional site checks and ordered copy text');
+
+  params.delete('plan'); params.delete('priorities');
+  storage.set(stateKey, JSON.stringify({ values: sample, priorities: ['청소 편의'], current: 16, memo: '기존 메모', checks: {} }));
+  slots = []; tree = render();
+  for (const heading of ['상담 전 최종 검토', '선택 완료', '아직 결정하지 않은 항목', '현장 확인이 필요한 항목']) assert.ok(text(tree).includes(heading));
+  assert.equal(JSON.parse(storage.get(stateKey)).memo, '기존 메모', 'Builder saves preserve report metadata');
+  assert.ok(all(tree, n => n.props.className === 'mobileBuilderNav').length);
+  assert.equal(all(tree, n => n.type === 'progress')[0].props.value, 17);
+
+  slots = []; resultTree = renderResult();
+  assert.ok(text(resultTree).includes('욕조 없음'));
+  assert.equal(all(resultTree, n => n.props.id === 'consultation-memo')[0].props.value, '기존 메모');
+  all(resultTree, n => n.props.id === 'consultation-memo')[0].props.onChange({ target: { value: '보관할 메모\n두 번째 줄' } });
+  resultTree = renderResult();
+  assert.equal(JSON.parse(storage.get(stateKey)).memo, '보관할 메모\n두 번째 줄');
+  const button = label => all(resultTree, n => n.type === 'button' && text(n) === label)[0];
+  await button('선택 내용 복사').props.onClick(); resultTree = renderResult();
+  assert.ok(clipboardText.includes('보관할 메모\n두 번째 줄'));
+  assert.ok(text(resultTree).includes('선택 내용을 복사했어요'));
+  clipboardFailure = true;
+  await button('선택 내용 복사').props.onClick(); resultTree = renderResult();
+  assert.ok(all(resultTree, n => n.type === 'textarea' && n.props.readOnly)[0].props.value.includes('욕조 없음'));
+  clipboardFailure = false;
+  button('인쇄 / PDF 저장').props.onClick(); assert.equal(printCalls, 1);
+  button('업체 전달용 보기').props.onClick(); resultTree = renderResult();
+  assert.equal(all(resultTree, n => n.type === 'img').length, 0, 'Contractor view is text first');
+  assert.ok(text(resultTree).includes('CLIENT SELECTION'));
+  let checks = all(resultTree, n => n.type === 'input' && n.props.type === 'checkbox');
+  assert.equal(checks.length, count);
+  checks[0].props.onChange({ target: { checked: true } }); resultTree = renderResult();
+  assert.ok(JSON.parse(storage.get(stateKey)).checks.demolition);
+  slots = []; resultTree = renderResult(); button('업체 전달용 보기').props.onClick(); resultTree = renderResult();
+  assert.equal(all(resultTree, n => n.type === 'input' && n.props.type === 'checkbox')[0].props.checked, true);
+  const changed = JSON.parse(storage.get(stateKey)); changed.values.demolition = 'overlay'; storage.set(stateKey, JSON.stringify(changed));
+  slots = []; resultTree = renderResult(); button('업체 전달용 보기').props.onClick(); resultTree = renderResult();
+  assert.equal(all(resultTree, n => n.type === 'input' && n.props.type === 'checkbox')[0].props.checked, false, 'Changed selection invalidates field confirmation');
+  button('선택 수정').props.onClick(); assert.equal(navigatedTo, '/design?step=17');
+  console.log('PASS: STEP 17 review, result, memo/checkbox reload, changed-choice check invalidation, copy success/fallback, print handler and edit navigation');
+
+  const beforeForeign = storage.get(stateKey);
+  params.set('plan', encodeURIComponent(JSON.stringify({ bathtub: 'none', sink: 'other', sinkOther: '외부 상담 100%' })));
+  slots = []; resultTree = renderResult();
+  assert.equal(all(resultTree, n => n.props.id === 'consultation-memo')[0].props.value, '', 'Foreign URL cannot inherit unrelated memo');
+  all(resultTree, n => n.props.id === 'consultation-memo')[0].props.onChange({ target: { value: '외부 메모' } });
+  resultTree = renderResult(); assert.equal(storage.get(stateKey), beforeForeign);
+  slots = []; resultTree = renderResult();
+  assert.equal(all(resultTree, n => n.props.id === 'consultation-memo')[0].props.value, '외부 메모');
+  params.set('plan', JSON.stringify({ sink: 'other', sinkOther: '100% 그대로' })); slots = []; resultTree = renderResult();
+  assert.ok(text(resultTree).includes('100% 그대로'));
+  params.set('plan', '%invalid'); slots = []; resultTree = renderResult();
+  assert.ok(text(resultTree).includes('링크의 선택 내용을 읽지 못해'));
+  params.delete('plan');
+
+  storageFailure = true; slots = []; tree = render();
+  assert.ok(!text(tree).includes('자동 저장됨'));
+  slots = []; resultTree = renderResult();
+  all(resultTree, n => n.props.id === 'consultation-memo')[0].props.onChange({ target: { value: '저장 실패에도 화면 보존' } });
+  resultTree = renderResult(); assert.ok(text(resultTree).includes('자동 저장할 수 없어요'));
+  assert.equal(all(resultTree, n => n.props.id === 'consultation-memo')[0].props.value, '저장 실패에도 화면 보존');
+  storageFailure = false;
+
+  tree = start(2, { demolition: 'overlay' });
+  let beforeReset = storage.get(stateKey);
+  confirmReset = false; tree = click(tree, '처음부터 다시 만들기'); assert.equal(storage.get(stateKey), beforeReset);
+  confirmReset = true; tree = click(tree, '처음부터 다시 만들기'); assert.equal(JSON.stringify(state()), '{}');
+  assert.equal(all(tree, n => n.type === 'progress')[0].props.value, 1);
+  assert.equal(JSON.parse(storage.get(stateKey)).memo, '');
+  assert.ok(all(tree, n => n.props.className === 'mobileBuilderNav').length);
+  const css = fs.readFileSync(path.join(root, 'app/consultation.css'), 'utf8');
+  for (const rule of ['@media(max-width:680px)', 'position:fixed', 'env(safe-area-inset-bottom)', '@page{size:A4', '@media print', 'break-inside:avoid-page', '.printOnly{display:block!important}', '.sheetImages{display:none}']) assert.ok(css.includes(rule));
+  console.log('PASS: legacy URLs, percent/custom text, foreign report isolation, malformed URL, storage failure, confirmed/cancelled reset, mobile navigation and A4 print rules');
+}
+testConsultation().catch(error => { console.error(error); process.exitCode = 1; });
