@@ -1,4 +1,5 @@
 import type { ConsultationRow } from '../data/bathroom-consultation';
+import { builderBathroomSteps } from '../data/bathroom-builder-options';
 
 export function ConsultationCounts({ rows }: { rows: ConsultationRow[] }) {
   const pending = rows.filter(row => row.pending).length;
@@ -6,9 +7,16 @@ export function ConsultationCounts({ rows }: { rows: ConsultationRow[] }) {
 }
 
 export default function ConsultationSummary({ rows, onEdit }: { rows: ConsultationRow[]; onEdit?: (step: number) => void }) {
-  return <div className="reviewSections">{[
-    { title: '선택 완료', rows: rows.filter(row => !row.pending), empty: '원하는 항목부터 천천히 골라보세요.' },
-    { title: '아직 결정하지 않은 항목', rows: rows.filter(row => row.pending), empty: '모든 카테고리의 선택을 정리했어요.' },
-    { title: '현장 확인이 필요한 항목', rows: rows.filter(row => row.site), empty: '추가로 표시된 현장 확인 항목이 없습니다.', site: true },
-  ].map(section => <section key={section.title}><h2>{section.title} <small>{section.rows.length}</small></h2>{section.site && <p>현장 상태에 따라 달라질 수 있어요. 업체 실측 후 최종 확인이 필요합니다.</p>}{!section.rows.length && <p>{section.empty}</p>}{section.rows.map(row => <div className="reviewRow" key={row.key}><div><span>{row.title}</span><strong>{section.site ? row.site : row.label}</strong>{row.pending && !section.site && <small>{row.reason}</small>}</div>{onEdit && <button className="secondary" aria-label={`${row.title} 수정`} onClick={() => onEdit(row.stepIndex)}>수정</button>}</div>)}</section>)}</div>;
+  const pending = rows.filter(row => row.pending);
+  const site = rows.filter(row => row.site);
+  return <div className="reviewSections">
+    <div className="reviewCategoryGrid">{builderBathroomSteps.slice(0, 16).map((step, index) => <section className="reviewCategory" key={step.key}>
+      <header><h2><span>{String(index + 1).padStart(2, '0')}</span>{step.title}</h2>{onEdit && <button type="button" aria-label={`${step.title} 수정`} onClick={() => onEdit(index)}>수정 →</button>}</header>
+      <dl>{rows.filter(row => row.stepIndex === index).map(row => <div key={row.key} className={row.pending ? 'reviewPending' : undefined}><dt>{row.title}</dt><dd>{row.label}</dd></div>)}</dl>
+    </section>)}</div>
+    <div className="reviewFollowups">
+      <section><h2>아직 결정하지 않은 항목 <small>{pending.length}</small></h2><ul>{pending.map(row => <li key={row.key}><b>{row.title}</b><span>{row.reason}</span></li>)}</ul>{!pending.length && <p>모든 항목을 선택했어요.</p>}</section>
+      <section><h2>현장 확인이 필요한 항목 <small>{site.length}</small></h2><ul>{site.map(row => <li key={row.key}><b>{row.title}</b><span>{row.site}</span></li>)}</ul>{!site.length && <p>현장 확인 항목이 없습니다.</p>}</section>
+    </div>
+  </div>;
 }

@@ -1,9 +1,9 @@
 {
   "total": 122,
-  "matchedFiles": 104,
+  "matchedFiles": 103,
   "newImages": 0,
-  "updatedImages": 1,
-  "unmatched": 0,
+  "updatedImages": 0,
+  "unmatched": 1,
   "ambiguous": 0,
   "files": [
     {
@@ -512,9 +512,8 @@
     },
     {
       "file": "structure/embedded/toilet-paper-holder.jpg",
-      "status": "MATCHED",
-      "url": "/images/bathroom-builder/structure/embedded/toilet-paper-holder.jpg",
-      "option": "concealed:concealed-paper"
+      "status": "UNMATCHED",
+      "url": "/images/bathroom-builder/structure/embedded/toilet-paper-holder.jpg"
     },
     {
       "file": "structure/jendai/basin-jendai.jpg",
@@ -1163,20 +1162,6 @@
       },
       "next": {
         "builderImage": "/images/bathroom-builder/structure/embedded/bathtub-faucet.jpg",
-        "showBuilderImage": true
-      }
-    },
-    {
-      "key": "concealed:concealed-paper",
-      "name": "매립 휴지걸이",
-      "category": "매립 설비",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": "/images/bathroom-builder/structure/embedded/toilet-paper-holder.jpg",
-        "showBuilderImage": true
-      },
-      "next": {
-        "builderImage": "/images/bathroom-builder/structure/embedded/toilet-paper-holder.jpg",
         "showBuilderImage": true
       }
     },
@@ -2262,9 +2247,9 @@
       "key": "lighting:light-recessed",
       "name": "천장 매립 조명",
       "category": "조명",
-      "action": "UPDATED",
+      "action": "UNCHANGED",
       "previous": {
-        "builderImage": "/images/bathroom-builder/lighting/recessed-ceiling.png",
+        "builderImage": "/images/bathroom-builder/inbox/%EC%B2%9C%EC%9E%A5%20%EB%A7%A4%EB%A6%BD%20%EC%A1%B0%EB%AA%852.png",
         "showBuilderImage": true
       },
       "next": {

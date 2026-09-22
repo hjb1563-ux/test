@@ -61,12 +61,12 @@ export function consultationRows(values: BathroomValues) {
 }
 export type ConsultationRow = ReturnType<typeof consultationRows>[number];
 
-export type LocalProject = { values: BathroomValues; priorities: string[]; current: number; memo: string; checks: Record<string, string> };
+export type LocalProject = { values: BathroomValues; specialNotes: string; current: number; memo: string; checks: Record<string, string> };
 export function normalizeProject(input: unknown): LocalProject {
   const raw = input && typeof input === 'object' && !Array.isArray(input) ? input as Record<string, unknown> : {};
   return {
     values: normalizeBathroomValues(raw.values, steps),
-    priorities: Array.isArray(raw.priorities) ? raw.priorities.filter((v): v is string => typeof v === 'string').slice(0, 3) : [],
+    specialNotes: typeof raw.specialNotes === 'string' ? raw.specialNotes.slice(0, 500) : '',
     current: typeof raw.current === 'number' && Number.isInteger(raw.current) ? Math.max(0, Math.min(16, raw.current)) : 0,
     memo: typeof raw.memo === 'string' ? raw.memo : '',
     checks: raw.checks && typeof raw.checks === 'object' && !Array.isArray(raw.checks) ? Object.fromEntries(Object.entries(raw.checks).filter((entry): entry is [string, string] => typeof entry[1] === 'string')) : {},
@@ -77,7 +77,7 @@ export function readProject(): LocalProject {
 }
 // Store the selection fingerprint: changing a choice invalidates its old field check.
 export const checkFingerprint = (row: ConsultationRow) => JSON.stringify([row.label, row.site]);
-export function consultationText(rows: ConsultationRow[], priorities: string[], memo: string) {
+export function consultationText(rows: ConsultationRow[], specialNotes: string, memo: string) {
   const pending = rows.filter(row => row.pending);
   const site = rows.filter(row => row.site);
   return ['[욕실 리모델링 상담 내용]', `선택 완료 ${rows.length - pending.length} · 미결정 ${pending.length} · 현장 확인 ${site.length}`, '집계 기준: 선택 카테고리 수',
@@ -85,6 +85,7 @@ export function consultationText(rows: ConsultationRow[], priorities: string[], 
     '\n아직 결정하지 않은 항목', ...pending.map(row => `${row.title}: ${row.reason} (${row.label})`), ...(pending.length ? [] : ['없음']),
     '\n현장에서 확인해주세요', ...site.map(row => `□ ${row.title}: ${row.site}`),
     '\n업체 실측 후 최종 확인이 필요합니다. 선택 내용은 상담을 위한 희망 사항입니다.',
-    `\n우선순위: ${priorities.join(' · ') || '미입력'}`, `\n업체에 전달할 메모\n${memo.trim() || '미입력'}`,
+    `\n업체에 전달할 메모\n${memo.trim() || '미입력'}`,
+    ...(specialNotes.trim() ? [`\n[특이사항]\n${specialNotes.trim()}`] : []),
   ].join('\n');
 }

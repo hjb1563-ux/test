@@ -131,10 +131,6 @@
     "builderImage": "/images/bathroom-builder/structure/embedded/bathtub-faucet.jpg",
     "showBuilderImage": true
   },
-  "concealed:concealed-paper": {
-    "builderImage": "/images/bathroom-builder/structure/embedded/toilet-paper-holder.jpg",
-    "showBuilderImage": true
-  },
   "concealed:none": {
     "builderImage": null,
     "showBuilderImage": false

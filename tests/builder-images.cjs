@@ -133,9 +133,9 @@ assert.ok(fs.readFileSync(path.join(root, 'public', src), 'utf8').includes('대�
 console.log('PASS 6: missing image switches to fallback once without looping');
 tree = render(); for (let i = 0; i < 5; i++) tree = click(tree, '선택 완료');
 tree = click(tree, '일반 샤워수전'); tree = click(tree, '매립 샤워');
-assert.deepEqual(JSON.parse(storage.get('bath-designer-selections-v2')).values.showerFaucet, ['shower', 'concealed-shower']);
+assert.equal(JSON.parse(storage.get('bath-designer-selections-v2')).values.showerFaucet, 'concealed-shower');
 tree = click(tree, '일반 샤워수전');
-assert.deepEqual(JSON.parse(storage.get('bath-designer-selections-v2')).values.showerFaucet, ['concealed-shower']);
+assert.equal(JSON.parse(storage.get('bath-designer-selections-v2')).values.showerFaucet, 'shower');
 console.log('PASS: multi-select, deselect, navigation, all option paths and documentation');
 
 const stateKey = 'bath-designer-selections-v2';
@@ -190,7 +190,7 @@ for (const key of customGroups) {
   const other = group.choices.find(c => c.id === 'other');
   assert.ok(other.requiresCustomText); assert.equal(other.showBuilderImage, false);
   tree = start(stepIndex);
-  const section = all(tree, n => n.props.className === 'choiceGroup' && text(n.children[0]).startsWith(group.title))[0];
+  const section = all(tree, n => n.props.className === 'choiceGroup' && all(n, child => child.type === 'h2' && child.props.id === `builder-${group.key}-title`).length === 1)[0];
   const otherButton = all(section, n => n.type === 'button' && text(n).startsWith(other.name))[0];
   otherButton.props.onClick(); tree = render();
   const input = all(tree, n => n.type === 'input' && n.props.id === `builder-${key}-other`)[0];
@@ -200,12 +200,12 @@ for (const key of customGroups) {
   assert.equal(state()[`${key}Other`], draft); assert.ok(text(region(tree, 'summary')).includes(draft)); noSelectedImages(tree);
   const saved = state(); tree = start(stepIndex, saved);
   assert.equal(all(tree, n => n.type === 'input')[0].props.value, draft);
-  const activeSection = all(tree, n => n.props.className === 'choiceGroup' && text(n.children[0]).startsWith(group.title))[0];
+  const activeSection = all(tree, n => n.props.className === 'choiceGroup' && all(n, child => child.type === 'h2' && child.props.id === `builder-${group.key}-title`).length === 1)[0];
   all(activeSection, n => n.type === 'button' && text(n).startsWith(other.name))[0].props.onClick(); tree = render();
   assert.ok(!text(region(tree, 'summary')).includes(draft)); assert.equal(state()[`${key}Other`], draft);
   tree = start(stepIndex, saved);
   const regular = group.choices.find(c => c.id !== 'other' && c.id !== 'undecided' && c.id !== 'none');
-  const sectionAgain = all(tree, n => n.props.className === 'choiceGroup' && text(n.children[0]).startsWith(group.title))[0];
+  const sectionAgain = all(tree, n => n.props.className === 'choiceGroup' && all(n, child => child.type === 'h2' && child.props.id === `builder-${group.key}-title`).length === 1)[0];
   all(sectionAgain, n => n.type === 'button' && text(n).startsWith(regular.name))[0].props.onClick(); tree = render();
   if (group.multiple) { assert.ok(state()[key].includes('other')); assert.ok(text(region(tree, 'summary')).includes(draft)); }
   else { assert.equal(state()[key], regular.id); assert.ok(!text(region(tree, 'summary')).includes(draft)); }
@@ -216,7 +216,7 @@ tree = click(start(10), '업체와 상담 후 결정'); noSelectedImages(tree);
 assert.ok(text(region(tree, 'summary')).includes('업체와 상담 후 결정'));
 const stale = { niche: 'wall-niche', faucet: 'tall', showerFaucet: ['bath', 'hand-shower', 'shower'], sink: 'other', sinkOther: '벽걸이 세면대', toilet: 'other', toiletOther: '작은 변기' };
 tree = start(4, stale);
-assert.equal(state().niche, undefined); assert.equal(state().faucet, undefined); assert.deepEqual(state().showerFaucet, ['shower']);
+assert.equal(state().niche, undefined); assert.equal(state().faucet, undefined); assert.equal(state().showerFaucet, 'shower');
 assert.equal(state().sinkOther, '벽걸이 세면대'); assert.equal(state().toiletOther, '작은 변기');
 const normalize = load(path.join(root, 'data/bathroom-selection')).normalizeBathroomValues;
 for (const invalid of [null, [], 42, 'bad']) assert.equal(JSON.stringify(normalize(invalid)), '{}');
@@ -258,17 +258,17 @@ for (const group of groups) {
   const index = builderSteps.findIndex(s => s.groups.includes(group));
   const first = group.choices.find(c => c.id !== 'undecided' && c.id !== 'none');
   tree = start(index, { [group.key]: group.multiple ? [first.id] : first.id });
-  let section = all(tree, n => n.props.className === 'choiceGroup' && text(n.children[0]).startsWith(group.title))[0];
+  let section = all(tree, n => n.props.className === 'choiceGroup' && all(n, child => child.type === 'h2' && child.props.id === `builder-${group.key}-title`).length === 1)[0];
   all(section, n => n.type === 'button' && text(n) === '아직 모르겠어요')[0].props.onClick(); tree = render();
   assert.equal(JSON.stringify(state()[group.key]), JSON.stringify(group.multiple ? ['undecided'] : 'undecided'));
   noSelectedImages(tree);
   assert.ok(text(region(tree, 'summary')).includes('아직 모르겠어요'));
-  section = all(tree, n => n.props.className === 'choiceGroup' && text(n.children[0]).startsWith(group.title))[0];
+  section = all(tree, n => n.props.className === 'choiceGroup' && all(n, child => child.type === 'h2' && child.props.id === `builder-${group.key}-title`).length === 1)[0];
   const selectedButton = all(section, n => n.type === 'button' && text(n) === '아직 모르겠어요')[0];
   assert.equal(selectedButton.props['aria-checked'], true);
   assert.ok(selectedButton.props.className.includes('selected'));
   tree = start(index, state());
-  section = all(tree, n => n.props.className === 'choiceGroup' && text(n.children[0]).startsWith(group.title))[0];
+  section = all(tree, n => n.props.className === 'choiceGroup' && all(n, child => child.type === 'h2' && child.props.id === `builder-${group.key}-title`).length === 1)[0];
   all(section, n => n.type === 'button' && text(n) === first.name)[0].props.onClick(); render();
   assert.equal(JSON.stringify(state()[group.key]), JSON.stringify(group.multiple ? [first.id] : first.id));
 }
@@ -352,11 +352,11 @@ console.log('PASS: no bathtub single-select/restore; merged tile label and legac
 for (const group of groups) for (const choice of group.choices.filter(c => c.showBuilderImage)) {
   const index = builderSteps.findIndex(s => s.groups.includes(group));
   tree = start(index);
-  const selectedGroup = all(tree, n => n.props.className === 'choiceGroup' && text(n.children[0]).startsWith(group.title))[0];
+  const selectedGroup = all(tree, n => n.props.className === 'choiceGroup' && all(n, child => child.type === 'h2' && child.props.id === `builder-${group.key}-title`).length === 1)[0];
   all(selectedGroup, n => n.type === 'button' && text(n) === choice.name)[0].props.onClick(); tree = render();
   four(tree, choice.builderImage);
   tree = start(index, state()); four(tree, choice.builderImage);
-  const restoredGroup = all(tree, n => n.props.className === 'choiceGroup' && text(n.children[0]).startsWith(group.title))[0];
+  const restoredGroup = all(tree, n => n.props.className === 'choiceGroup' && all(n, child => child.type === 'h2' && child.props.id === `builder-${group.key}-title`).length === 1)[0];
   all(restoredGroup, n => n.type === 'button' && text(n) === choice.name)[0].props.onClick(); tree = render();
   assert.equal(sources(tree, choice.builderImage).length, 0);
 }
@@ -370,8 +370,89 @@ try {
 console.log('PASS: all real image choices share current paths across hero/history/summary, storage remount and deselect; image-enabled none renders');
 
 // Consultation regression: exercise state, persistence and real UI event handlers.
+// Selection-mode migration and mutually exclusive construction choices.
+{
+  const selection = load(path.join(root, 'data/bathroom-selection'));
+  const groupSection = (screen, key) => all(screen, n => n.props.className === 'choiceGroup'
+    && all(n, child => child.props.id === `builder-${key}-title`).length === 1)[0];
+  const choose = (screen, key, id) => {
+    const choice = groups.find(g => g.key === key).choices.find(c => c.id === id);
+    const button = all(groupSection(screen, key), n => n.type === 'button' && text(n) === choice.name)[0];
+    assert.ok(!button.props.disabled, `${key}:${id} should be enabled`);
+    button.props.onClick(); return render();
+  };
+  tree = choose(start(1), 'jendai', 'sink-ledger');
+  tree = choose(tree, 'jendai', 'toilet-ledger');
+  assert.deepEqual(state().jendai, ['sink-ledger', 'toilet-ledger']);
+  assert.ok(text(groupSection(tree, 'jendai')).includes('복수 선택'));
+  assert.ok(all(groupSection(tree, 'jendai'), n => n.type === 'button').every(n => n.props.role === 'checkbox'));
+  for (const id of state().jendai) {
+    const choice = groups.find(g => g.key === 'jendai').choices.find(c => c.id === id);
+    assert.ok(sources(region(tree, 'selectedGallery selectedGallery--current'), choice.builderImage).length);
+    assert.ok(text(region(tree, 'summary')).includes(choice.name));
+  }
+  tree = choose(tree, 'jendai', 'toilet-ledger');
+  assert.deepEqual(state().jendai, ['sink-ledger']);
+  const removedSource = groups.find(g => g.key === 'jendai').choices.find(c => c.id === 'toilet-ledger').builderImage;
+  assert.equal(sources(tree, removedSource).length, 0);
+  tree = choose(tree, 'jendai', 'none'); assert.deepEqual(state().jendai, ['none']);
+  tree = choose(tree, 'jendai', 'sink-ledger'); assert.deepEqual(state().jendai, ['sink-ledger']);
+  tree = choose(tree, 'jendai', 'undecided'); assert.deepEqual(state().jendai, ['undecided']);
+  tree = choose(tree, 'jendai', 'keep');
+  tree = choose(tree, 'jendai', 'remove'); assert.deepEqual(state().jendai, ['remove']);
+  tree = choose(tree, 'jendai', 'keep'); assert.deepEqual(state().jendai, ['keep']);
+  tree = choose(tree, 'jendai', 'new');
+  tree = choose(tree, 'jendai', 'sink-ledger'); assert.ok(state().jendai.includes('new'));
+  tree = choose(tree, 'partition', 'half-partition');
+  assert.equal(all(groupSection(tree, 'showerBooth'), n => n.type === 'button' && n.props.disabled).length, 2);
+  assert.equal(all(groupSection(tree, 'showerBooth'), n => n.props.className === 'builderRestriction').length, 1);
+  tree = choose(tree, 'showerBooth', 'undecided');
+  tree = choose(tree, 'partition', 'none');
+  tree = choose(tree, 'showerBooth', 'fixed-glass');
+  assert.equal(all(groupSection(tree, 'partition'), n => n.type === 'button' && n.props.disabled).length, 2);
+  const switched = selection.toggleSelection({ showerBooth: 'door-booth' }, 'partition', 'full-partition');
+  assert.equal(switched.showerBooth, undefined);
+  assert.equal(selection.toggleSelection(switched, 'showerBooth', 'fixed-glass').partition, undefined);
+  const migrated = normalize({ jendai: 'sink-ledger', showerFaucet: ['invalid', 'shower', 'concealed-shower'], concealed: ['concealed-paper', 'concealed-basin'], partition: 'half-partition', showerBooth: 'door-booth' });
+  assert.equal(JSON.stringify(migrated.jendai), '["sink-ledger"]');
+  assert.equal(migrated.showerFaucet, 'shower');
+  assert.equal(JSON.stringify(migrated.concealed), '["concealed-basin"]');
+  assert.equal(migrated.showerBooth, undefined);
+  assert.ok(!groups.find(g => g.key === 'concealed').choices.some(c => c.id === 'concealed-paper'));
+  tree = start(9);
+  assert.ok(!text(groupSection(tree, 'showerFaucet')).includes('복수 선택'));
+  assert.ok(all(groupSection(tree, 'showerFaucet'), n => n.type === 'button').every(n => n.props.role === 'radio'));
+  console.log('PASS: jendai combinations/exclusivity/images, structure disabling/replacement, removed option and old-save migration');
+}
+
 async function testConsultation() {
   const consultation = load(path.join(root, 'data/bathroom-consultation'));
+  // Dense review: every category, multi selections, pending values and long notes.
+  const dense = Object.fromEntries(groups.map(g => [g.key, g.multiple
+    ? g.choices.filter(c => !['none', 'undecided', 'other', 'remove'].includes(c.id)).map(c => c.id)
+    : g.choices.find(c => !['none', 'undecided', 'other'].includes(c.id)).id]));
+  dense.sink = 'undecided';
+  params.delete('plan');
+  storage.set(stateKey, JSON.stringify({ values: dense, current: 16, specialNotes: '긴 요청사항입니다. '.repeat(35) }));
+  slots = []; tree = render();
+  assert.equal(all(tree, n => n.props.className === 'reviewCategory').length, 16);
+  assert.equal(all(tree, n => n.type === 'img').length, 0);
+  for (const stepIndex of [3, 7]) {
+    const title = builderSteps[stepIndex].title;
+    all(tree, n => n.type === 'button' && n.props['aria-label'] === `${title} 수정`)[0].props.onClick();
+    tree = render();
+    assert.equal(JSON.parse(storage.get(stateKey)).current, stepIndex);
+    const saved = JSON.parse(storage.get(stateKey)); saved.current = 16;
+    storage.set(stateKey, JSON.stringify(saved)); slots = []; tree = render();
+  }
+  slots = []; resultTree = renderResult();
+  assert.equal(all(resultTree, n => n.type === 'img' || n.props.className === 'sheetImages').length, 0);
+  assert.equal(all(resultTree, n => n.props.className === 'sheetColumn').length, 2);
+  assert.equal(all(resultTree, n => n.props.className === 'sheetStep').length, 16);
+  assert.equal(all(resultTree, n => n.props.className === 'siteBadge').length, 0);
+  assert.ok(text(resultTree).includes('긴 요청사항입니다.'));
+  assert.equal(all(region(resultTree, 'resultActions printHide'), n => n.type === 'button').length, 3);
+  console.log('PASS: dense text-only review/report, 16 categories, direct tile/bathtub editing, no report images/wrappers/badges');
   const count = groups.length;
   const emptyRows = consultation.consultationRows({});
   assert.equal(emptyRows.length, count);
@@ -388,7 +469,7 @@ async function testConsultation() {
   assert.equal(consultation.consultationRows({ sink: 'other', sinkOther: '  ' }).find(r => r.key === 'sink').reason, '기타 내용 미입력');
   const allDecided = Object.fromEntries(groups.map(g => [g.key, g.multiple ? [g.choices[0].id] : g.choices[0].id]));
   assert.equal(consultation.consultationRows(allDecided).filter(r => r.pending).length, 0);
-  const copied = consultation.consultationText(rows, ['청소 편의'], '아이와 사용합니다.\n수납이 필요해요.');
+  const copied = consultation.consultationText(rows, '청소 편의', '아이와 사용합니다.\n수납이 필요해요.');
   assert.ok(copied.indexOf('01 철거') < copied.indexOf('16 욕실'));
   for (const value of ['욕조 없음', '아이용 낮은 세면대 100%', '상담 후 결정', '아직 결정하지 않은 항목', '현장에서 확인해주세요', '수납이 필요해요.']) assert.ok(copied.includes(value), value);
   console.log('PASS: category counts, unknown/consult/unselected/empty-other, none, multi-select, conditional site checks and ordered copy text');
@@ -396,12 +477,22 @@ async function testConsultation() {
   params.delete('plan'); params.delete('priorities');
   storage.set(stateKey, JSON.stringify({ values: sample, priorities: ['청소 편의'], current: 16, memo: '기존 메모', checks: {} }));
   slots = []; tree = render();
+  assert.ok(!text(tree).includes('내 우선순위'));
+  const notesInput = () => all(tree, n => n.props.id === 'builder-special-notes')[0];
+  assert.equal(notesInput().props.maxLength, 500);
+  assert.ok(!notesInput().props.required);
+  notesInput().props.onChange({ target: { value: '청소가 쉽고 수납이 많은 욕실\n특별 요청 100%' } }); tree = render();
+  assert.equal(JSON.parse(storage.get(stateKey)).specialNotes, '청소가 쉽고 수납이 많은 욕실\n특별 요청 100%');
+  slots = []; tree = render();
+  assert.equal(notesInput().props.value, '청소가 쉽고 수납이 많은 욕실\n특별 요청 100%');
+  assert.equal(JSON.parse(storage.get(stateKey)).priorities, undefined);
   for (const heading of ['상담 전 최종 검토', '선택 완료', '아직 결정하지 않은 항목', '현장 확인이 필요한 항목']) assert.ok(text(tree).includes(heading));
   assert.equal(JSON.parse(storage.get(stateKey)).memo, '기존 메모', 'Builder saves preserve report metadata');
   assert.ok(all(tree, n => n.props.className === 'mobileBuilderNav').length);
   assert.equal(all(tree, n => n.type === 'progress')[0].props.value, 17);
 
   slots = []; resultTree = renderResult();
+  assert.ok(text(resultTree).includes('청소가 쉽고 수납이 많은 욕실'));
   assert.ok(text(resultTree).includes('욕조 없음'));
   assert.equal(all(resultTree, n => n.props.id === 'consultation-memo')[0].props.value, '기존 메모');
   all(resultTree, n => n.props.id === 'consultation-memo')[0].props.onChange({ target: { value: '보관할 메모\n두 번째 줄' } });
@@ -410,6 +501,7 @@ async function testConsultation() {
   const button = label => all(resultTree, n => n.type === 'button' && text(n) === label)[0];
   await button('선택 내용 복사').props.onClick(); resultTree = renderResult();
   assert.ok(clipboardText.includes('보관할 메모\n두 번째 줄'));
+  assert.ok(clipboardText.includes('[특이사항]\n청소가 쉽고 수납이 많은 욕실'));
   assert.ok(text(resultTree).includes('선택 내용을 복사했어요'));
   clipboardFailure = true;
   await button('선택 내용 복사').props.onClick(); resultTree = renderResult();
@@ -419,6 +511,7 @@ async function testConsultation() {
   button('업체 전달용 보기').props.onClick(); resultTree = renderResult();
   assert.equal(all(resultTree, n => n.type === 'img').length, 0, 'Contractor view is text first');
   assert.ok(text(resultTree).includes('CLIENT SELECTION'));
+  assert.ok(text(resultTree).includes('청소가 쉽고 수납이 많은 욕실'));
   let checks = all(resultTree, n => n.type === 'input' && n.props.type === 'checkbox');
   assert.equal(checks.length, count);
   checks[0].props.onChange({ target: { checked: true } }); resultTree = renderResult();

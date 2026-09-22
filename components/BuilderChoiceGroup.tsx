@@ -1,28 +1,37 @@
 'use client';
 
-import { siteCheck } from '../data/bathroom-consultation';
 import { Fragment } from 'react';
 import type { ChoiceGroup } from '../data/bathroom-options';
-import { customTextKey, selectedIds, type BathroomValues } from '../data/bathroom-selection';
+import { customTextKey, selectedIds, structureBlocked, isActualStructure, type BathroomValues } from '../data/bathroom-selection';
 import BuilderChoiceCard from './BuilderChoiceCard';
 
-export default function BuilderChoiceGroup({ group, values, onSelect, onCustomText }: {
+export default function BuilderChoiceGroup({ group, number, values, onSelect, onCustomText }: {
   group: ChoiceGroup;
+  number?: number;
   values: BathroomValues;
   onSelect: (key: string, id: string, multiple?: boolean) => void;
   onCustomText: (key: string, text: string) => void;
 }) {
   const ids = selectedIds(values[group.key]);
+  const blocked = structureBlocked(group.key, values);
+  const firstEnabled = group.choices.findIndex(choice => !blocked || !isActualStructure(choice.id));
   const customChoice = group.choices.find(choice => choice.requiresCustomText && ids.includes(choice.id));
   const draft = values[customTextKey(group.key)];
   return <section className="choiceGroup">
-    <h2 id={`builder-${group.key}-title`}>{group.title}{group.multiple && <small>복수 선택 가능</small>}</h2>
-    {siteCheck(group.key, values) && <p className="siteCheckHint"><span className="siteBadge">현장 확인 필요</span> 업체 실측 후 최종 확인이 필요합니다.</p>}
+    <header className="builderSectionHeader">
+      {number !== undefined && <span className="builderSectionNumber" aria-hidden="true">{String(number).padStart(2, '0')}</span>}
+      <div className="builderSectionTitleRow">
+        <h2 id={`builder-${group.key}-title`}>{group.title}</h2>
+        {group.multiple && <small>복수 선택</small>}
+      </div>
+    </header>
     <div className="builderChoiceGrid" role={group.multiple ? 'group' : 'radiogroup'} aria-labelledby={`builder-${group.key}-title`}>
       {group.choices.map((choice, index) => {
         const selected = ids.includes(choice.id);
         return <Fragment key={choice.id}><BuilderChoiceCard label={choice.name} selected={selected} multiple={group.multiple}
-          tabIndex={group.multiple || selected || (!ids.length && index === 0) ? 0 : -1}
+          disabled={blocked && isActualStructure(choice.id)}
+          describedBy={blocked ? `builder-${group.key}-restriction` : undefined}
+          tabIndex={group.multiple || selected || (!ids.length && index === firstEnabled) ? 0 : -1}
           onSelect={() => onSelect(group.key, choice.id, group.multiple)} />
     {customChoice?.id === choice.id && <label className="builderCustomText" htmlFor={`builder-${group.key}-other`}>
       {group.title} · 기타 내용
@@ -32,19 +41,27 @@ export default function BuilderChoiceGroup({ group, values, onSelect, onCustomTe
     </label>}</Fragment>;
       })}
     </div>
+    {blocked && <p className="builderRestriction" id={`builder-${group.key}-restriction`}>파티션과 샤워부스는 둘 중 하나만 선택할 수 있습니다. 다른 종류를 선택하려면 기존 선택을 먼저 해제해주세요.</p>}
     <style>{`
-      .design .options .choiceGroup{padding:14px 0;min-width:0}
-      .design .options .choiceGroup h2{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px 10px;margin:0 0 12px}
-      .design .options .choiceGroup h2 small{margin-left:0;font-size:11px;font-weight:400;color:var(--muted)}
-      .design .builderChoiceGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:9px;min-width:0}
-      .design .builderChoiceCard{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-width:0;min-height:52px;padding:12px 16px;border:1px solid var(--line);border-radius:11px;background:#fffdf9;color:var(--ink);font:500 14px/1.5 'Noto Sans KR',sans-serif;text-align:left;cursor:pointer;transition:border-color 160ms,background-color 160ms;box-shadow:none;transform:none}
+      .design .builderChoiceCard:disabled{opacity:.55;cursor:not-allowed;background:#f0ede7;border-color:#ded7cc}
+      .design .builderRestriction{margin:10px 0 0;font-size:12px;line-height:1.5;color:#716b63}
+      .design .options .choiceGroup{padding:0;min-width:0;border-top:0}
+      .design .options .choiceGroup + .choiceGroup{margin-top:32px}
+      .design .options .builderSectionHeader{margin-bottom:14px;padding:14px 16px;border-radius:10px;background:#f1ece3}
+      .design .options .builderSectionNumber{display:block;margin-bottom:5px;color:#96664f;font-size:11px;font-weight:600;line-height:1.4;letter-spacing:.1em;font-variant-numeric:tabular-nums}
+      .design .options .builderSectionHeader h2{display:block;margin:0;color:#303631;font-size:18px;font-weight:600;line-height:1.35;overflow-wrap:anywhere}
+      .design .options .builderSectionTitleRow{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0}
+      .design .options .builderSectionTitleRow h2{flex:1;min-width:0}
+      .design .options .builderSectionTitleRow small{flex-shrink:0;margin:0;color:#716b63;font-size:11px;font-weight:500;line-height:1.4;white-space:nowrap}
+      .design .builderChoiceGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0}
+      .design .builderChoiceCard{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-width:0;min-height:48px;padding:10px 16px;border:1px solid #ded7cc;border-radius:10px;background:#fcfbf8;color:#303631;font:500 14px/1.4 'Noto Sans KR',sans-serif;text-align:left;cursor:pointer;transition:border-color 160ms,background-color 160ms;box-shadow:none;transform:none}
       .design .builderChoiceCard:hover{border-color:#b6aa9a;background:#faf6ef}
-      .design .builderChoiceCard.selected{border-color:var(--accent);background:#fff2e8}
-      .design .builderChoiceCard:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+      .design .builderChoiceCard.selected{border-color:#a87359;background:#fff5ef}
+      .design .builderChoiceCard:focus-visible{outline:2px solid #a87359;outline-offset:3px}
       .design .builderChoiceLabel{min-width:0;white-space:normal;overflow-wrap:anywhere;text-align:left}
-      .design .builderChoiceIndicator{display:flex;align-items:center;justify-content:center;width:19px;height:19px;flex:0 0 19px;border:1px solid #c5beb3;border-radius:50%;color:var(--accent)}
+      .design .builderChoiceIndicator{display:flex;align-items:center;justify-content:center;width:19px;height:19px;flex:0 0 19px;border:1px solid #c5beb3;border-radius:50%;color:#96664f}
       .design .builderChoiceIndicator--multiple{border-radius:5px}
-      .design .builderChoiceCard.selected .builderChoiceIndicator{border-color:var(--accent);background:#fffaf5}
+      .design .builderChoiceCard.selected .builderChoiceIndicator{border-color:#a87359;background:#fffaf5}
       @media(prefers-reduced-motion:reduce){.design .builderChoiceCard{transition:none}}
       .design .builderCustomText{display:block;margin-top:12px;font-size:12px;color:var(--muted)}
       .design .builderCustomText input{display:block;box-sizing:border-box;width:100%;margin-top:6px;padding:12px;border:1px solid var(--line);border-radius:7px;font:inherit;color:var(--ink);background:#fffdf9}
