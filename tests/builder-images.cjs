@@ -508,18 +508,21 @@ async function testConsultation() {
   assert.ok(all(resultTree, n => n.type === 'textarea' && n.props.readOnly)[0].props.value.includes('욕조 없음'));
   clipboardFailure = false;
   button('인쇄 / PDF 저장').props.onClick(); assert.equal(printCalls, 1);
-  button('업체 전달용 보기').props.onClick(); resultTree = renderResult();
+
   assert.equal(all(resultTree, n => n.type === 'img').length, 0, 'Contractor view is text first');
-  assert.ok(text(resultTree).includes('CLIENT SELECTION'));
+  assert.ok(text(resultTree).includes('BATHROOM / CONSULTATION'));
+  assert.equal(all(resultTree, n => n.type === 'button' && /소비자용 보기|업체 전달용 보기/.test(text(n))).length, 0);
   assert.ok(text(resultTree).includes('청소가 쉽고 수납이 많은 욕실'));
+  assert.equal(all(resultTree, n => n.type === 'input' && n.props.type === 'checkbox').length, 0);
+  button('현장 확인 기록하기').props.onClick(); resultTree = renderResult();
   let checks = all(resultTree, n => n.type === 'input' && n.props.type === 'checkbox');
   assert.equal(checks.length, count);
   checks[0].props.onChange({ target: { checked: true } }); resultTree = renderResult();
   assert.ok(JSON.parse(storage.get(stateKey)).checks.demolition);
-  slots = []; resultTree = renderResult(); button('업체 전달용 보기').props.onClick(); resultTree = renderResult();
+  slots = []; resultTree = renderResult();  button('현장 확인 기록하기').props.onClick(); resultTree = renderResult();
   assert.equal(all(resultTree, n => n.type === 'input' && n.props.type === 'checkbox')[0].props.checked, true);
   const changed = JSON.parse(storage.get(stateKey)); changed.values.demolition = 'overlay'; storage.set(stateKey, JSON.stringify(changed));
-  slots = []; resultTree = renderResult(); button('업체 전달용 보기').props.onClick(); resultTree = renderResult();
+  slots = []; resultTree = renderResult();  button('현장 확인 기록하기').props.onClick(); resultTree = renderResult();
   assert.equal(all(resultTree, n => n.type === 'input' && n.props.type === 'checkbox')[0].props.checked, false, 'Changed selection invalidates field confirmation');
   button('선택 수정').props.onClick(); assert.equal(navigatedTo, '/design?step=17');
   console.log('PASS: STEP 17 review, result, memo/checkbox reload, changed-choice check invalidation, copy success/fallback, print handler and edit navigation');

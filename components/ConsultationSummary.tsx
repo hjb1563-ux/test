@@ -1,6 +1,14 @@
 import type { ConsultationRow } from '../data/bathroom-consultation';
 import { builderBathroomSteps } from '../data/bathroom-builder-options';
 
+export function reviewValue(row: ConsultationRow): string {
+  if (!row.choices.length || row.choices.some(choice => choice.requiresCustomText)) return row.label;
+  const shortNames: Record<string, string> = row.key === 'jendai'
+    ? { 'sink-ledger': '세면대', 'toilet-ledger': '변기', 'shower-ledger': '샤워공간', new: '신설', keep: '기존 유지', remove: '기존 철거' }
+    : row.key === 'concealed' ? { 'concealed-basin': '세면 수전', 'concealed-shower': '샤워 수전', 'concealed-bath': '욕조 수전' } : {};
+  return row.choices.map(choice => shortNames[choice.id] ?? choice.name).join(' · ');
+}
+
 export function ConsultationCounts({ rows }: { rows: ConsultationRow[] }) {
   const pending = rows.filter(row => row.pending).length;
   return <div className="consultationCounts" aria-label="카테고리별 선택 현황"><span>선택 완료 <b>{rows.length - pending}</b></span><span>미결정 <b>{pending}</b></span><span>현장 확인 <b>{rows.filter(row => row.site).length}</b></span></div>;
@@ -12,7 +20,7 @@ export default function ConsultationSummary({ rows, onEdit }: { rows: Consultati
   return <div className="reviewSections">
     <div className="reviewCategoryGrid">{builderBathroomSteps.slice(0, 16).map((step, index) => <section className="reviewCategory" key={step.key}>
       <header><h2><span>{String(index + 1).padStart(2, '0')}</span>{step.title}</h2>{onEdit && <button type="button" aria-label={`${step.title} 수정`} onClick={() => onEdit(index)}>수정 →</button>}</header>
-      <dl>{rows.filter(row => row.stepIndex === index).map(row => <div key={row.key} className={row.pending ? 'reviewPending' : undefined}><dt>{row.title}</dt><dd>{row.label}</dd></div>)}</dl>
+      <dl>{rows.filter(row => row.stepIndex === index).map(row => <div key={row.key} className={row.pending ? 'reviewPending' : undefined}><dt>{row.title}</dt><dd>{reviewValue(row)}</dd></div>)}</dl>
     </section>)}</div>
     <div className="reviewFollowups">
       <section><h2>아직 결정하지 않은 항목 <small>{pending.length}</small></h2><ul>{pending.map(row => <li key={row.key}><b>{row.title}</b><span>{row.reason}</span></li>)}</ul>{!pending.length && <p>모든 항목을 선택했어요.</p>}</section>
