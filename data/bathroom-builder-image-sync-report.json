@@ -265,16 +265,16 @@
       "option": "toilet:wall-hung"
     },
     {
-      "file": "inbox/샤워부스 유리 고정형.png",
+      "file": "inbox/샤워부스 도어형2.png",
       "status": "MATCHED",
-      "url": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EC%9C%A0%EB%A6%AC%20%EA%B3%A0%EC%A0%95%ED%98%95.png",
-      "option": "showerBooth:fixed-glass"
+      "url": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EB%8F%84%EC%96%B4%ED%98%952.png",
+      "option": "showerBooth:door-booth"
     },
     {
-      "file": "inbox/샤워부스 유리 도어형.png",
+      "file": "inbox/샤워부스 유리 고정형2.png",
       "status": "MATCHED",
-      "url": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EC%9C%A0%EB%A6%AC%20%EB%8F%84%EC%96%B4%ED%98%95.png",
-      "option": "showerBooth:door-booth"
+      "url": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EC%9C%A0%EB%A6%AC%20%EA%B3%A0%EC%A0%95%ED%98%952.png",
+      "option": "showerBooth:fixed-glass"
     },
     {
       "file": "inbox/슬라이딩 거울장.png",
@@ -569,13 +569,13 @@
     },
     {
       "file": "structure/shower-booth/door.png",
-      "status": "MATCHED",
+      "status": "OLDER_VERSION",
       "url": "/images/bathroom-builder/structure/shower-booth/door.png",
       "option": "showerBooth:door-booth"
     },
     {
       "file": "structure/shower-booth/fixed-glass.png",
-      "status": "MATCHED",
+      "status": "OLDER_VERSION",
       "url": "/images/bathroom-builder/structure/shower-booth/fixed-glass.png",
       "option": "showerBooth:fixed-glass"
     },
@@ -1031,11 +1031,11 @@
       "category": "샤워부스",
       "action": "UNCHANGED",
       "previous": {
-        "builderImage": "/images/bathroom-builder/structure/shower-booth/fixed-glass.png",
+        "builderImage": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EC%9C%A0%EB%A6%AC%20%EA%B3%A0%EC%A0%95%ED%98%952.png",
         "showBuilderImage": true
       },
       "next": {
-        "builderImage": "/images/bathroom-builder/structure/shower-booth/fixed-glass.png",
+        "builderImage": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EC%9C%A0%EB%A6%AC%20%EA%B3%A0%EC%A0%95%ED%98%952.png",
         "showBuilderImage": true
       }
     },
@@ -1045,11 +1045,11 @@
       "category": "샤워부스",
       "action": "UNCHANGED",
       "previous": {
-        "builderImage": "/images/bathroom-builder/structure/shower-booth/door.png",
+        "builderImage": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EB%8F%84%EC%96%B4%ED%98%952.png",
         "showBuilderImage": true
       },
       "next": {
-        "builderImage": "/images/bathroom-builder/structure/shower-booth/door.png",
+        "builderImage": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EB%8F%84%EC%96%B4%ED%98%952.png",
         "showBuilderImage": true
       }
     },

@@ -65,6 +65,7 @@
     "유광 타일": "tileSurface:glossy",
     "샤워부스 유리 고정형": "showerBooth:fixed-glass",
     "샤워부스 유리 도어형": "showerBooth:door-booth",
+    "샤워부스 도어형": "showerBooth:door-booth",
     "샤워벽 니치": "niche:shower-niche",
     "세면대 벽 니치": "niche:sink-niche",
     "세면대 위 젠다이": "jendai:sink-ledger",
