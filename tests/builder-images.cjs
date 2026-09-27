@@ -11,15 +11,16 @@ let slots = [], cursor = 0, effects = [], dirty = false;
 const storage = new Map();
 const params = new URLSearchParams();
 let storageFailure = false, confirmReset = false, printCalls = 0, clipboardText = '', clipboardFailure = false, navigatedTo = '';
-const browserWindow = { confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
+const browserWindow = { scrollTo: () => {}, confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
 const browserNavigator = { clipboard: { writeText: async value => { if (clipboardFailure) throw new Error('Clipboard blocked'); clipboardText = value; } } };
 const hooks = {
   useState(initial) {
     const index = cursor++;
+    const scope = slots;
     if (!(index in slots)) slots[index] = typeof initial === 'function' ? initial() : initial;
     return [slots[index], value => {
-      const next = typeof value === 'function' ? value(slots[index]) : value;
-      if (!Object.is(next, slots[index])) { slots[index] = next; dirty = true; }
+      const next = typeof value === 'function' ? value(scope[index]) : value;
+      if (!Object.is(next, scope[index])) { scope[index] = next; dirty = true; }
     }];
   },
   useMemo(fn, deps) {
@@ -46,7 +47,7 @@ function evaluate(source, filename) {
     if (name.startsWith('.')) return load(path.resolve(path.dirname(filename), name));
     return require(name);
   };
-  vm.runInNewContext(code, { exports: module.exports, module, require: localRequire, URLSearchParams, window: browserWindow, navigator: browserNavigator, localStorage: { getItem: k => { if (storageFailure) throw new Error('Storage blocked'); return storage.get(k) ?? null; }, setItem: (k, v) => { if (storageFailure) throw new Error('Storage blocked'); storage.set(k, v); }, removeItem: k => storage.delete(k) } }, { filename });
+  vm.runInNewContext(code, { exports: module.exports, module, require: localRequire, URLSearchParams, document: { getElementById: () => null }, window: browserWindow, navigator: browserNavigator, localStorage: { getItem: k => { if (storageFailure) throw new Error('Storage blocked'); return storage.get(k) ?? null; }, setItem: (k, v) => { if (storageFailure) throw new Error('Storage blocked'); storage.set(k, v); }, removeItem: k => storage.delete(k) } }, { filename });
   return module.exports;
 }
 function load(file) {
@@ -55,11 +56,21 @@ function load(file) {
   if (!cache.has(file)) cache.set(file, evaluate(fs.readFileSync(file, 'utf8'), file));
   return cache.get(file);
 }
-function expand(node) {
-  if (Array.isArray(node)) return node.flatMap(expand);
+const componentStores = new WeakMap();
+function expand(node, identity = 'root', rootSlots = slots) {
+  if (Array.isArray(node)) return node.flatMap((child, index) => expand(child, `${identity}/${child?.key ?? index}`, rootSlots));
   if (!node || typeof node !== 'object') return node;
-  if (typeof node.type === 'function') return expand(node.type(node.props));
-  return { type: node.type, props: node.props, children: expand(node.props?.children) };
+  if (typeof node.type === 'function') {
+    if (!componentStores.has(rootSlots)) componentStores.set(rootSlots, new Map());
+    const stores = componentStores.get(rootSlots), key = `${identity}/${node.type.name}/${node.key ?? ''}`;
+    if (!stores.has(key)) stores.set(key, []);
+    const parentSlots = slots, parentCursor = cursor;
+    slots = stores.get(key); cursor = 0;
+    const result = node.type(node.props);
+    slots = parentSlots; cursor = parentCursor;
+    return expand(result, key, rootSlots);
+  }
+  return { type: node.type, props: node.props, children: expand(node.props?.children, `${identity}/${String(node.type)}`, rootSlots) };
 }
 function all(node, predicate) {
   if (Array.isArray(node)) return node.flatMap(n => all(n, predicate));
@@ -77,17 +88,19 @@ function render() {
   return tree;
 }
 function click(tree, title) {
-  const button = all(tree, n => n.type === 'button' && text(n).includes(title))[0];
+  const matches = all(tree, n => n.type === 'button' && text(n).includes(title));
+  const button = matches.find(n => ['radio', 'checkbox'].includes(n.props.role)) ?? matches[0];
   assert.ok(button, `Missing button: ${title}`); button.props.onClick(); return render();
 }
 function sources(tree, source) { return all(tree, n => n.type === 'img' && n.props.src === source); }
 function four(tree, source) {
-  for (const cls of ['selectedHeroImage', 'selectionHistoryStrip', 'summary']) {
+  for (const cls of ['selectedHeroImage', 'selectionHistoryStrip']) {
     const area = all(tree, n => n.props.className === cls)[0];
     // There are multiple option groups; search every choice grid.
     const areas = cls === 'choiceGrid' ? all(tree, n => n.props.className === cls) : [area];
     assert.equal(areas.flatMap(a => sources(a, source)).length, 1, cls);
   }
+  assert.equal(all(tree, n => n.props.className === 'summary').flatMap(a => all(a, n => n.type === 'img')).length, 0, 'Summary stays text only');
 }
 const original = evaluate(execFileSync('git', ['show', 'HEAD:data/bathroom-options.ts'], { cwd: root, encoding: 'utf8' }), path.join(root, 'data/bathroom-options.ts'));
 assert.equal(data.bathroomSteps.length, 17);
@@ -106,17 +119,17 @@ for (const group of groups) for (const choice of group.choices) {
 let tree = click(render(), '선택 완료');
 tree = click(tree, '하프 파티션');
 const half = groups.find(g => g.key === 'partition').choices.find(c => c.id === 'half-partition');
-four(tree, half.builderImage); console.log('PASS 1: half-partition uses one source in all three result surfaces');
+four(tree, half.builderImage); console.log('PASS 1: half-partition uses one source in hero/history with a text-only summary');
 tree = click(tree, '하프 파티션');
-assert.equal(sources(tree, half.builderImage).length, 0); console.log('PASS 4: deselect removes all three selected images');
+assert.equal(sources(tree, half.builderImage).length, 0); console.log('PASS 4: deselect removes selected preview/history images');
 tree = click(tree, '선택 완료'); tree = click(tree, '선택 완료'); tree = click(tree, '선택 완료');
 tree = click(tree, '탑볼 세면대');
 const bowl = groups.find(g => g.key === 'sink').choices.find(c => c.id === 'top-bowl');
-four(tree, bowl.builderImage); console.log('PASS 2: top-bowl uses one source in all three result surfaces');
+four(tree, bowl.builderImage); console.log('PASS 2: top-bowl uses one source in hero/history with a text-only summary');
 const before = bowl.builderImage;
 try {
   bowl.builderImage = '/images/bathroom-builder/fallback/placeholder.svg';
-  four(render(), bowl.builderImage); console.log('PASS 3: changed data source updates all three result surfaces');
+  four(render(), bowl.builderImage); console.log('PASS 3: changed data source updates hero/history with a text-only summary');
   const saved = storage.get('bath-designer-selections-v2');
   assert.equal(JSON.parse(saved).values.sink, 'top-bowl');
   assert.ok(!/builderImage|https?:|\/images\//.test(saved));
@@ -165,9 +178,9 @@ for (const [key, id] of [['bathtub', 'bath-standard'], ['cabinet', 'led-cabinet'
 }
 const withoutBuilderImage = steps => JSON.stringify(steps, (key, value) => key === 'builderImage' ? undefined : value);
 assert.equal(withoutBuilderImage(data.bathroomSteps), withoutBuilderImage(original.bathroomSteps));
-console.log('PASS: imported bathtub/LED cabinet PNGs on all three surfaces, deselect/reselect/storage restore; all option data except image paths unchanged');
+console.log('PASS: imported bathtub/LED cabinet PNGs on hero/history, deselect/reselect/storage restore; all option data except image paths unchanged');
 tree = click(start(), '누수 이력이 있어요');
-assert.ok(all(tree, n => n.type === 'button' && text(n).includes('누수 이력'))[0].props['aria-checked']);
+assert.ok(all(tree, n => n.props.role === 'checkbox' && text(n).includes('누수 이력'))[0].props['aria-checked']);
 assert.ok(text(region(tree, 'summary')).includes('누수 이력이 있어요'));
 noSelectedImages(tree);
 tree = click(start(1), '기존 젠다이 유지'); noSelectedImages(tree);
@@ -348,7 +361,7 @@ for (const key of ['drain', 'accessoryFinish', 'bathtub']) {
 assert.equal(JSON.stringify(data.bathroomSteps), JSON.stringify(original.bathroomSteps));
 console.log('PASS: no bathtub single-select/restore; merged tile label and legacy floor values; all five text-only groups and multi-select restore; drain/finish/bathtub images retained; shared route data unchanged');
 
-// Every live photo uses the same source on all three surfaces, including replacements.
+// Every live photo uses the same source on hero/history, including replacements.
 for (const group of groups) for (const choice of group.choices.filter(c => c.showBuilderImage)) {
   const index = builderSteps.findIndex(s => s.groups.includes(group));
   tree = start(index);
@@ -367,7 +380,7 @@ try {
   noBath.showBuilderImage = true; noBath.builderImage = '/images/bathroom-builder/bathtub/standard.png';
   tree = click(start(7), noBath.name); four(tree, noBath.builderImage);
 } finally { Object.assign(noBath, oldNoBath); }
-console.log('PASS: all real image choices share current paths across hero/history/summary, storage remount and deselect; image-enabled none renders');
+console.log('PASS: all real image choices share current paths across hero/history, storage remount and deselect; image-enabled none renders');
 
 // Consultation regression: exercise state, persistence and real UI event handlers.
 // Selection-mode migration and mutually exclusive construction choices.
@@ -385,7 +398,7 @@ console.log('PASS: all real image choices share current paths across hero/histor
   tree = choose(tree, 'jendai', 'toilet-ledger');
   assert.deepEqual(state().jendai, ['sink-ledger', 'toilet-ledger']);
   assert.ok(text(groupSection(tree, 'jendai')).includes('복수 선택'));
-  assert.ok(all(groupSection(tree, 'jendai'), n => n.type === 'button').every(n => n.props.role === 'checkbox'));
+  assert.ok(all(groupSection(tree, 'jendai'), n => n.props.className?.includes('builderChoiceCard')).every(n => n.props.role === 'checkbox'));
   for (const id of state().jendai) {
     const choice = groups.find(g => g.key === 'jendai').choices.find(c => c.id === id);
     assert.ok(sources(region(tree, 'selectedGallery selectedGallery--current'), choice.builderImage).length);
@@ -421,7 +434,7 @@ console.log('PASS: all real image choices share current paths across hero/histor
   assert.ok(!groups.find(g => g.key === 'concealed').choices.some(c => c.id === 'concealed-paper'));
   tree = start(9);
   assert.ok(!text(groupSection(tree, 'showerFaucet')).includes('복수 선택'));
-  assert.ok(all(groupSection(tree, 'showerFaucet'), n => n.type === 'button').every(n => n.props.role === 'radio'));
+  assert.ok(all(groupSection(tree, 'showerFaucet'), n => n.props.className?.includes('builderChoiceCard')).every(n => n.props.role === 'radio'));
   console.log('PASS: jendai combinations/exclusivity/images, structure disabling/replacement, removed option and old-save migration');
 }
 

@@ -1,23 +1,30 @@
 'use client';
 
 import { Fragment } from 'react';
+import { ChevronDown } from 'lucide-react';
 import type { ChoiceGroup } from '../data/bathroom-options';
-import { customTextKey, selectedIds, structureBlocked, isActualStructure, type BathroomValues } from '../data/bathroom-selection';
+import { customTextKey, selectedIds, selectionLabel, structureBlocked, isActualStructure, type BathroomValues } from '../data/bathroom-selection';
 import BuilderChoiceCard from './BuilderChoiceCard';
 
-export default function BuilderChoiceGroup({ group, number, values, onSelect, onCustomText }: {
+export default function BuilderChoiceGroup({ group, number, values, onSelect, onCustomText, accordion }: {
   group: ChoiceGroup;
   number?: number;
   values: BathroomValues;
   onSelect: (key: string, id: string, multiple?: boolean) => void;
   onCustomText: (key: string, text: string) => void;
+  accordion?: { open: boolean; toggle: () => void; advance: () => void };
 }) {
   const ids = selectedIds(values[group.key]);
   const blocked = structureBlocked(group.key, values);
   const firstEnabled = group.choices.findIndex(choice => !blocked || !isActualStructure(choice.id));
   const customChoice = group.choices.find(choice => choice.requiresCustomText && ids.includes(choice.id));
   const draft = values[customTextKey(group.key)];
-  return <section className="choiceGroup">
+  return <section className="choiceGroup" data-accordion={!!accordion} data-open={accordion?.open ?? true}>
+    {accordion && <button type="button" id={`builder-${group.key}-toggle`} className="builderSectionToggle"
+      aria-expanded={accordion.open} aria-controls={`builder-${group.key}-content`} onClick={accordion.toggle}>
+      <span className="builderSectionTitleRow"><span>{number !== undefined && <em>{String(number).padStart(2, '0')}</em>}{group.title}</span>{group.multiple && <small>복수 선택</small>}<ChevronDown size={18} aria-hidden="true" /></span>
+      <span className="builderSectionSelection">{ids.length ? selectionLabel(values, group) : '선택해주세요'}</span>
+    </button>}
     <header className="builderSectionHeader">
       {number !== undefined && <span className="builderSectionNumber" aria-hidden="true">{String(number).padStart(2, '0')}</span>}
       <div className="builderSectionTitleRow">
@@ -25,14 +32,18 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
         {group.multiple && <small>복수 선택</small>}
       </div>
     </header>
-    <div className="builderChoiceGrid" role={group.multiple ? 'group' : 'radiogroup'} aria-labelledby={`builder-${group.key}-title`}>
+    <div className="builderSectionContent" id={`builder-${group.key}-content`}>
+    <div className="builderChoiceGrid" role={group.multiple ? 'group' : 'radiogroup'} aria-label={group.title}>
       {group.choices.map((choice, index) => {
         const selected = ids.includes(choice.id);
         return <Fragment key={choice.id}><BuilderChoiceCard label={choice.name} selected={selected} multiple={group.multiple}
           disabled={blocked && isActualStructure(choice.id)}
           describedBy={blocked ? `builder-${group.key}-restriction` : undefined}
           tabIndex={group.multiple || selected || (!ids.length && index === firstEnabled) ? 0 : -1}
-          onSelect={() => onSelect(group.key, choice.id, group.multiple)} />
+          onSelect={(event) => {
+            onSelect(group.key, choice.id, group.multiple);
+            if (accordion && !group.multiple && !selected && !choice.requiresCustomText && event?.detail && window.matchMedia('(max-width: 767px)').matches) accordion.advance();
+          }} />
     {customChoice?.id === choice.id && <label className="builderCustomText" htmlFor={`builder-${group.key}-other`}>
       {group.title} · 기타 내용
       <input id={`builder-${group.key}-other`} type="text" value={typeof draft === 'string' ? draft : ''}
@@ -42,6 +53,7 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
       })}
     </div>
     {blocked && <p className="builderRestriction" id={`builder-${group.key}-restriction`}>파티션과 샤워부스는 둘 중 하나만 선택할 수 있습니다. 다른 종류를 선택하려면 기존 선택을 먼저 해제해주세요.</p>}
+    </div>
     <style>{`
       .design .builderChoiceCard:disabled{opacity:.55;cursor:not-allowed;background:#f0ede7;border-color:#ded7cc}
       .design .builderRestriction{margin:10px 0 0;font-size:12px;line-height:1.5;color:#716b63}

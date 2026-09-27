@@ -1,6 +1,7 @@
 'use client';
 
 import { Check } from 'lucide-react';
+import type { MouseEvent } from 'react';
 
 export default function BuilderChoiceCard({ label, selected, multiple = false, disabled = false, describedBy, tabIndex, onSelect }: {
   label: string;
@@ -9,7 +10,7 @@ export default function BuilderChoiceCard({ label, selected, multiple = false, d
   disabled?: boolean;
   describedBy?: string;
   tabIndex?: number;
-  onSelect: () => void;
+  onSelect: (event?: MouseEvent<HTMLButtonElement>) => void;
 }) {
   return <button type="button" role={multiple ? 'checkbox' : 'radio'} aria-checked={selected}
     disabled={disabled} aria-describedby={describedBy} tabIndex={tabIndex} onClick={onSelect}

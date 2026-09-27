@@ -4,12 +4,11 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { AlertTriangle, ArrowLeft, ArrowRight, BookOpen, RotateCcw, X } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-import BuilderChoiceGroup from './BuilderChoiceGroup';
+import BuilderSelectionSections from './BuilderSelectionSections';
+import BuilderDisclosure from './BuilderDisclosure';
 import BuilderSiteNotice from './BuilderSiteNotice';
 import { customTextKey, normalizeBathroomValues, selectionLabel, toggleSelection, type BathroomValues } from '../data/bathroom-selection';
-import BuilderOptionImage from './BuilderOptionImage';
 import SelectedOptionGallery from './SelectedOptionGallery';
-import DesignVisualStyles from './DesignVisualStyles';
 import { defaultBathroomValues } from '../data/bathroom-options';
 import { builderBathroomSteps as bathroomSteps } from '../data/bathroom-builder-options';
 import { guideBySlug } from '../data/guides/catalog';
@@ -44,6 +43,14 @@ export default function Configurator() {
   const step = bathroomSteps[current];
   const guide = guideBySlug[step.guide];
   const selectedItems = step.groups.flatMap((group) => { const value = values[group.key]; const ids = Array.isArray(value) ? value : value ? [value] : []; return ids.map((id) => ({ title: group.title, choice: group.choices.find((choice) => choice.id === id)! })).filter((item) => item.choice); });
+  const imageCount = selectedItems.filter(item => item.choice.showBuilderImage && item.choice.builderImage).length;
+  const pendingCount = rows.filter(row => row.pending).length;
+
+  useEffect(() => {
+    if (!hydrated) return;
+    document.getElementById('builder-question')?.focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [current, hydrated]);
 
   useEffect(() => {
     try {
@@ -89,22 +96,21 @@ export default function Configurator() {
   }
 
   const progress = <section className="builderProgress" aria-label="욕실 구성 진행도">
-    <div className="progressHeading"><span>욕실 구성하기 · {current + 1} / 17</span><small role="status">{saveStatus}</small></div>
+    <div className="progressHeading"><span>STEP {String(current + 1).padStart(2, '0')} / 17</span><small role="status">{saveStatus}</small></div>
     <progress max={17} value={current + 1} aria-label={`17단계 중 ${current + 1}단계`} />
     <ol>{phases.map(item => <li key={item.title} aria-current={phase === item ? 'step' : undefined}>{item.title}</li>)}</ol>
-    <p>약 5~10분이면 업체에 전달할 욕실 상담서를 만들 수 있습니다.</p>
-    <div className="mobileSelectionCounts"><ConsultationCounts rows={rows} /><p>카테고리 기준 · 미결정은 상담하며 정해도 괜찮아요.</p></div>
+    <p className="builderPhase">{phase.title}</p>
+    <p className="builderProgressHelp">약 5~10분이면 업체에 전달할 욕실 상담서를 만들 수 있습니다.</p>
     {resumeStep !== null && <button className="resumeLink" onClick={() => { setCurrent(resumeStep); setResumeStep(null); }}>이어서 만들기 · 저장된 STEP {resumeStep + 1}</button>}
   </section>;
 
   if (step.key === 'checklist') return <main className="design">
-    <DesignVisualStyles />
-    <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>나의 욕실 정리</span><button onClick={reset}><RotateCcw size={15} /> 처음부터 다시 만들기</button></header>
+    <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>나의 욕실 정리</span><button onClick={reset} aria-label="처음부터 다시 만들기"><RotateCcw size={15} /><span className="resetFull">처음부터 다시 만들기</span><span className="resetShort">초기화</span></button></header>
     {progress}
     <div className="designGrid finalGrid">
       <section className="options finalCheck">
         <div className="stepMeta">STEP 17 / 17 <span>상담 전 최종 검토</span></div>
-        <h1>최종 검토</h1>
+        <h1 id="builder-question" tabIndex={-1}>최종 검토</h1>
         <p className="stepIntro">지금까지 선택한 내용을 확인해주세요.</p>
         <ConsultationCounts rows={rows} />
         <p className="consultationNote">카테고리 기준 집계 · 현장 확인은 선택 완료·미결정 항목과 겹칠 수 있습니다.</p>
@@ -130,21 +136,25 @@ export default function Configurator() {
   </main>;
 
   return <main className="design">
-    <DesignVisualStyles />
-    <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>내 욕실 만들기</span><button onClick={reset}><RotateCcw size={15} /> 처음부터 다시 만들기</button></header>
+    <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>내 욕실 만들기</span><button onClick={reset} aria-label="처음부터 다시 만들기"><RotateCcw size={15} /><span className="resetFull">처음부터 다시 만들기</span><span className="resetShort">초기화</span></button></header>
     {progress}
     <div className="designGrid">
       <section className="options">
         <div className="stepMeta">STEP {String(current + 1).padStart(2, '0')} / 17 <span>{step.title}</span></div>
-        <div className="stepHeading"><h1>{step.question}</h1><button className="guideButton" onClick={() => setGuideOpen(true)}><BookOpen size={15} /> 가이드 보기</button></div>
-        <p className="stepIntro"><strong>왜 선택하나요?</strong><br />{stepReasons[current]}</p>
-        <p className="stepIntro">모르는 항목은 ‘아직 모르겠어요’로 남겨도 괜찮습니다.</p>
+        <div className="stepHeading"><h1 id="builder-question" tabIndex={-1}>{step.question}</h1><button className="guideButton" onClick={() => setGuideOpen(true)}><BookOpen size={15} /> 가이드 보기</button></div>
+        <p className="stepIntro"><strong>왜 선택하나요?</strong><br /><span className="stepReasonFull">{stepReasons[current]}</span><span className="stepReasonShort">{stepReasons[current].split('. ')[0].replace(/\.$/, '')}.</span></p>
+        {current === 0 && <p className="stepIntro builderFirstHint">모르는 항목은 ‘아직 모르겠어요’로 남겨도 괜찮습니다.</p>}
         <BuilderSiteNotice placement="mobile" />
-        {step.groups.map((group, index) => <BuilderChoiceGroup key={group.key} group={group} number={step.groups.length > 1 ? index + 1 : undefined} values={values} onSelect={update} onCustomText={(key, text) => setValues(old => ({ ...old, [customTextKey(key)]: text }))} />)}
+        <BuilderSelectionSections key={step.key} groups={step.groups} values={values} onSelect={update} onCustomText={(key, text) => setValues(old => ({ ...old, [customTextKey(key)]: text }))} />
         {warning && <div className="selectionWarning"><AlertTriangle size={16} /><div>{warning}<small>확인이 필요한 조합입니다. 실제 시공 가능 여부는 현장에서 확인하세요.</small></div></div>}
         <div className="navButtons"><button className="secondary" disabled={current === 0} onClick={() => setCurrent((index) => index - 1)}><ArrowLeft size={17} /> 이전</button><button className="secondary" onClick={() => setCurrent((index) => Math.min(16, index + 1))}>건너뛰기</button><button className="button" onClick={() => setCurrent((index) => Math.min(16, index + 1))}>선택 완료 <ArrowRight size={17} /></button></div>
       </section>
-      <aside className="live"><SelectedOptionGallery items={selectedItems} empty="이 단계에서 선택한 항목이 사진과 함께 표시됩니다." /><section className="summary"><h2>현재 욕실 선택 요약</h2><ConsultationCounts rows={rows} /><BuilderSiteNotice placement="sidebar" /><p className="consultationNote">카테고리 기준 · 미결정은 상담하며 정해도 괜찮아요.</p>{bathroomSteps.slice(0, current + 1).flatMap((item) => item.groups.map((group) => { const value=values[group.key]; const first=group.choices.find(choice=>choice.id===(Array.isArray(value)?value[0]:value)); return <div className="summaryRow" key={group.key}>{first?.showBuilderImage&&<BuilderOptionImage option={first} />}<div><span>{group.title}</span><b style={{ whiteSpace: 'normal', overflowWrap: 'anywhere' }}>{selectionLabel(values, group)}</b></div></div> }))}</section></aside>
+      <BuilderDisclosure key={`preview-${step.key}`} id="builder-preview" title="선택한 욕실 미리보기" count={imageCount} className={`builderPreviewPanel${selectedItems.length ? '' : ' builderPreviewPanel--empty'}`}>
+        <SelectedOptionGallery items={selectedItems} empty="옵션을 선택하면 시공 예시 이미지가 여기에 표시됩니다." />
+      </BuilderDisclosure>
+      <BuilderDisclosure key={`summary-${step.key}`} id="builder-summary" title="현재 선택" count={selectedItems.length} className="builderSummaryPanel">
+        <section className="summary"><h2>현재 욕실 선택 요약</h2><p className="builderSummaryCounts">선택 {rows.length - pendingCount} · 미정 {pendingCount}<small>전체 카테고리 기준</small></p><h3>{step.title}</h3>{step.groups.map(group => <div className="summaryRow" key={group.key}><div><span>{group.title}</span><b>{selectionLabel(values, group)}</b></div></div>)}</section>
+      </BuilderDisclosure>
     </div>
     <nav className="mobileBuilderNav" aria-label="단계 이동"><button className="secondary" disabled={current === 0} onClick={() => setCurrent(current - 1)}>이전</button><span>{current + 1} / 17</span><button className="button" onClick={() => setCurrent(Math.min(16, current + 1))}>다음</button></nav>
     {guideOpen && <div className="guideDrawer" role="dialog" aria-modal="true"><div><button className="drawerClose" onClick={() => setGuideOpen(false)} aria-label="가이드 닫기"><X size={18} /></button><span>GUIDE</span><h2>{guide?.title}</h2><p>{guide?.oneLine}</p>{guide?.options.slice(0, 3).map((option) => <article key={option.id}><b>{option.title}</b><p>{option.shortDescription}</p></article>)}<Link className="button" href={`/guide/${step.guide}`}>전체 가이드 보기</Link></div></div>}

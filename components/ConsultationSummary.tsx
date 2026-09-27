@@ -1,5 +1,6 @@
 import type { ConsultationRow } from '../data/bathroom-consultation';
 import { builderBathroomSteps } from '../data/bathroom-builder-options';
+import BuilderDisclosure from './BuilderDisclosure';
 
 export function reviewValue(row: ConsultationRow): string {
   if (!row.choices.length || row.choices.some(choice => choice.requiresCustomText)) return row.label;
@@ -20,10 +21,12 @@ export default function ConsultationSummary({ rows, onEdit }: { rows: Consultati
   return <div className="reviewSections">
     <div className="reviewCategoryGrid">{builderBathroomSteps.slice(0, 16).map((step, index) => <section className="reviewCategory" key={step.key}>
       <header><h2><span>{String(index + 1).padStart(2, '0')}</span>{step.title}</h2>{onEdit && <button type="button" aria-label={`${step.title} 수정`} onClick={() => onEdit(index)}>수정 →</button>}</header>
-      <dl>{rows.filter(row => row.stepIndex === index).map(row => <div key={row.key} className={row.pending ? 'reviewPending' : undefined}><dt>{row.title}</dt><dd>{reviewValue(row)}</dd></div>)}</dl>
+      <BuilderDisclosure id={`review-${step.key}`} title={rows.filter(row => row.stepIndex === index).map(reviewValue).join(' · ')} className="reviewCategoryDetail">
+        <dl>{rows.filter(row => row.stepIndex === index).map(row => <div key={row.key} className={row.pending ? 'reviewPending' : undefined}><dt>{row.title}</dt><dd>{reviewValue(row)}</dd></div>)}</dl>
+      </BuilderDisclosure>
     </section>)}</div>
-    <div className="reviewFollowups">
-      <section><h2>아직 결정하지 않은 항목 <small>{pending.length}</small></h2><ul>{pending.map(row => <li key={row.key}><b>{row.title}</b><span>{row.reason}</span></li>)}</ul>{!pending.length && <p>모든 항목을 선택했어요.</p>}</section>
+    <div className={`reviewFollowups${pending.length ? '' : ' reviewFollowups--resolved'}`}>
+      {pending.length ? <section><h2>아직 결정하지 않은 항목 <small>{pending.length}</small></h2><ul>{pending.map(row => <li key={row.key}><b>{row.title}</b><span>{row.reason}</span></li>)}</ul></section> : <p className="reviewResolved">✓ 미결정 항목 없음</p>}
       <section><h2>현장 확인이 필요한 항목 <small>{site.length}</small></h2><ul>{site.map(row => <li key={row.key}><b>{row.title}</b><span>{row.site}</span></li>)}</ul>{!site.length && <p>현장 확인 항목이 없습니다.</p>}</section>
     </div>
   </div>;

@@ -3,6 +3,7 @@
 import { type WheelEvent } from 'react';
 import BuilderOptionImage from './BuilderOptionImage';
 import type { Choice } from '../data/bathroom-options';
+import BuilderDisclosure from './BuilderDisclosure';
 
 type Item = { title: string; choice: Choice };
 
@@ -26,7 +27,7 @@ export default function SelectedOptionGallery({
   variant?: 'current' | 'history';
 }) {
   const selectedItems = Array.from(
-    new Map(items.filter(item => item.choice.showBuilderImage).map((item) => [`${item.title}:${item.choice.id}`, item])).values(),
+    new Map(items.filter(item => item.choice.showBuilderImage && item.choice.builderImage).map((item) => [`${item.title}:${item.choice.id}`, item])).values(),
   );
 
   const wheel = (event: WheelEvent<HTMLElement>) => {
@@ -38,11 +39,11 @@ export default function SelectedOptionGallery({
   };
 
   const representative = selectedItems.at(-1);
-  const resultView = selectedItems.length > 8;
+  const resultView = variant === 'history' && selectedItems.length > 8;
 
   return (
     <section className={`selectedGallery selectedGallery--${variant}`}>
-      <p className="imageDisclaimer">이해를 돕기 위한 시공 예시 이미지입니다.</p>
+      {!!selectedItems.length && <p className="imageDisclaimer">이해를 돕기 위한 시공 예시 이미지입니다.</p>}
       {resultView ? (
         <>
           <div className="galleryHead"><span>SELECTED OPTIONS</span><h2>선택한 욕실 요소</h2></div>
@@ -57,14 +58,15 @@ export default function SelectedOptionGallery({
             <div className="selectedHeroImage">
               <BuilderOptionImage option={representative.choice} alt={representative.choice.name} />
             </div>
-          ) : <p>{empty}</p>}
-          {variant === 'current' && (
-            <div className="selectionHistory">
+          ) : <p>{items.length ? items.map(item => item.choice.name).join(' · ') : empty}</p>}
+          {representative && <p className="selectedHeroLabel">{representative.choice.name}</p>}
+          {variant === 'current' && selectedItems.length > 0 && (
+            <BuilderDisclosure id="builder-history" title="지금까지 선택한 항목" count={selectedItems.length} className="selectionHistory">
               <div className="galleryHead"><span>SELECTION HISTORY</span><h2>지금까지 선택한 항목</h2></div>
               <div className="selectionHistoryStrip" onWheel={wheel}>
                 {selectedItems.map((item) => <HistoryCard key={`history-${item.title}-${item.choice.id}`} item={item} />)}
               </div>
-            </div>
+            </BuilderDisclosure>
           )}
         </>
       )}
