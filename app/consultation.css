@@ -206,3 +206,6 @@ body .consultationSheet .consultationCounts b{font-size:28px;font-weight:600;mar
 }
 
 .consultationSheet .sheetRow--pending strong{color:var(--review-muted);font-weight:500}
+
+/* Missing Builder selections use neutral text on the consultation sheet. */
+.consultationSheet .sheetRow--pending strong{color:var(--review-muted);font-weight:400}

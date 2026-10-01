@@ -3,7 +3,7 @@
 import { Fragment } from 'react';
 import { ChevronDown } from 'lucide-react';
 import type { ChoiceGroup } from '../data/bathroom-options';
-import { customTextKey, selectedIds, selectionLabel, structureBlocked, isActualStructure, type BathroomValues } from '../data/bathroom-selection';
+import { customTextKey, selectedIds, selectionLabel, type BathroomValues } from '../data/bathroom-selection';
 import BuilderChoiceCard from './BuilderChoiceCard';
 
 export default function BuilderChoiceGroup({ group, number, values, onSelect, onCustomText, accordion }: {
@@ -15,15 +15,14 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
   accordion?: { open: boolean; toggle: () => void; advance: () => void };
 }) {
   const ids = selectedIds(values[group.key]);
-  const blocked = structureBlocked(group.key, values);
-  const firstEnabled = group.choices.findIndex(choice => !blocked || !isActualStructure(choice.id));
+
   const customChoice = group.choices.find(choice => choice.requiresCustomText && ids.includes(choice.id));
   const draft = values[customTextKey(group.key)];
   return <section className="choiceGroup" data-accordion={!!accordion} data-open={accordion?.open ?? true}>
     {accordion && <button type="button" id={`builder-${group.key}-toggle`} className="builderSectionToggle"
       aria-expanded={accordion.open} aria-controls={`builder-${group.key}-content`} onClick={accordion.toggle}>
       <span className="builderSectionTitleRow"><span>{number !== undefined && <em>{String(number).padStart(2, '0')}</em>}{group.title}</span>{group.multiple && <small>복수 선택</small>}<ChevronDown size={18} aria-hidden="true" /></span>
-      <span className="builderSectionSelection">{ids.length ? selectionLabel(values, group) : '선택해주세요'}</span>
+      <span className="builderSectionSelection">{selectionLabel(values, group)}</span>
     </button>}
     <header className="builderSectionHeader">
       {number !== undefined && <span className="builderSectionNumber" aria-hidden="true">{String(number).padStart(2, '0')}</span>}
@@ -33,13 +32,17 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
       </div>
     </header>
     <div className="builderSectionContent" id={`builder-${group.key}-content`}>
-    <div className="builderChoiceGrid" role={group.multiple ? 'group' : 'radiogroup'} aria-label={group.title}>
+    {group.key === 'accessory' && <label className="builderCustomText" htmlFor="builder-accessory-other">
+      직접 입력
+      <input id="builder-accessory-other" type="text" value={typeof draft === 'string' ? draft : ''}
+        placeholder="(ex : 휴지걸이, 수건걸이, 코너 선반· ·)"
+        onChange={event => onCustomText(group.key, event.target.value)} />
+    </label>}
+    {group.choices.length > 0 && <div className="builderChoiceGrid" role={group.multiple ? 'group' : 'radiogroup'} aria-label={group.title}>
       {group.choices.map((choice, index) => {
         const selected = ids.includes(choice.id);
         return <Fragment key={choice.id}><BuilderChoiceCard label={choice.name} selected={selected} multiple={group.multiple}
-          disabled={blocked && isActualStructure(choice.id)}
-          describedBy={blocked ? `builder-${group.key}-restriction` : undefined}
-          tabIndex={group.multiple || selected || (!ids.length && index === firstEnabled) ? 0 : -1}
+          tabIndex={group.multiple || selected || (!ids.length && index === 0) ? 0 : -1}
           onSelect={(event) => {
             onSelect(group.key, choice.id, group.multiple);
             if (accordion && !group.multiple && !selected && !choice.requiresCustomText && event?.detail && window.matchMedia('(max-width: 767px)').matches) accordion.advance();
@@ -51,8 +54,7 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
         onChange={event => onCustomText(group.key, event.target.value)} />
     </label>}</Fragment>;
       })}
-    </div>
-    {blocked && <p className="builderRestriction" id={`builder-${group.key}-restriction`}>파티션과 샤워부스는 둘 중 하나만 선택할 수 있습니다. 다른 종류를 선택하려면 기존 선택을 먼저 해제해주세요.</p>}
+    </div>}
     </div>
     <style>{`
       .design .builderChoiceCard:disabled{opacity:.55;cursor:not-allowed;background:#f0ede7;border-color:#ded7cc}
@@ -77,6 +79,7 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
       @media(prefers-reduced-motion:reduce){.design .builderChoiceCard{transition:none}}
       .design .builderCustomText{display:block;margin-top:12px;font-size:12px;color:var(--muted)}
       .design .builderCustomText input{display:block;box-sizing:border-box;width:100%;margin-top:6px;padding:12px;border:1px solid var(--line);border-radius:7px;font:inherit;color:var(--ink);background:#fffdf9}
+      .design #builder-accessory-other{min-height:48px;font-size:14px}
       .design .builderCustomText input:focus{outline:2px solid var(--accent);outline-offset:2px}
     `}</style>
   </section>;

@@ -18,7 +18,8 @@
     "일반 거울": "mirror:mirror",
     "LED 거울장": "cabinet:led-cabinet",
     "슬라이딩 거울장": "cabinet:sliding-mirror",
-    "벽걸이형 변기": "toilet:wall-hung"
+    "벽걸이형 변기": "toilet:wall-hung",
+    "언더볼 세면대": "sink:undermount-basin"
   },
   "keywords": {
     "거울": [
@@ -30,10 +31,7 @@
       "bathtub:bath-masonry",
       "bathtub:bath-half-body"
     ],
-    "매립 샤워 수전": [
-      "concealed:concealed-shower",
-      "showerFaucet:concealed-shower"
-    ],
+    "매립 샤워 수전": "showerFaucet:concealed-shower",
     "벽 타일 600x600": "wallTileSize:600x600",
     "바닥 타일 600x600": "floorTileSize:600x600",
     "벽 타일 600x1200": "wallTileSize:600x1200",
@@ -54,7 +52,7 @@
     "원피스 변기": "toilet:one-piece",
     "투피스 변기": "toilet:two-piece",
     "언더볼": "sink:undermount-basin",
-    "풀 파티션": "partition:full-partition",
+    "풀 파티션": "partitionShower:full-partition",
     "액체 방수": "waterproofing:liquid-waterproofing",
     "액체+도막 방수": "waterproofing:combined-waterproofing",
     "화이트 타일": "tile:white",
@@ -63,19 +61,20 @@
     "다크 타일": "tile:dark",
     "무광 타일": "tileSurface:matte",
     "유광 타일": "tileSurface:glossy",
-    "샤워부스 유리 고정형": "showerBooth:fixed-glass",
-    "샤워부스 유리 도어형": "showerBooth:door-booth",
-    "샤워부스 도어형": "showerBooth:door-booth",
+    "샤워부스 유리 고정형": "partitionShower:fixed-glass",
+    "샤워부스 유리 도어형": "partitionShower:door-booth",
+    "샤워부스 도어형": "partitionShower:door-booth",
     "샤워벽 니치": "niche:shower-niche",
     "세면대 벽 니치": "niche:sink-niche",
-    "세면대 위 젠다이": "jendai:sink-ledger",
-    "변기 위 젠다이": "jendai:toilet-ledger",
     "타일 덧방": "demolition:overlay",
     "일반 세면 수전": "faucet:one-hole",
     "일반 샤워 수전": "showerFaucet:shower",
-    "파티션 없음": "partition:none",
-    "샤워부스 없음": "showerBooth:none",
-    "욕실 창문 있음": "window:yes",
-    "욕실 창문 없음": "window:no"
+    "파티션 없음": "partitionShower:none",
+    "샤워부스 없음": "partitionShower:none",
+    "전체 파티션": "partitionShower:full-partition",
+    "일반 샤워&욕조 수전": "showerFaucet:shower",
+    "매립 샤워&욕조 수전": "showerFaucet:concealed-shower",
+    "일반 샤워수전": "showerFaucet:shower",
+    "매립 샤워": "showerFaucet:concealed-shower"
   }
 }

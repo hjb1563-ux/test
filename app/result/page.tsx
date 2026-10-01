@@ -61,7 +61,7 @@ function Content() {
     catch { setCopyFallback(text); setStatus('클립보드에 접근할 수 없어요. 아래 내용을 선택해 직접 복사해주세요.'); }
   }
 
-  function edit(step = 17) {
+  function edit(step = steps.length) {
     try {
       localStorage.setItem(STORAGE, JSON.stringify({ ...project, current: step - 1 }));
       window.location.assign(`/design?step=${step}`);
@@ -82,7 +82,7 @@ function Content() {
       {copyFallback && <label className="copyFallback printHide">복사할 상담 내용<textarea readOnly value={copyFallback} onFocus={event => event.currentTarget.select()} /></label>}
       <section className="sheetSelections"><h2>STEP별 선택 내용</h2>
         <button className="recordModeToggle secondary printHide" aria-pressed={recordMode} onClick={() => setRecordMode(!recordMode)}>{recordMode ? '현장 확인 기록 닫기' : '현장 확인 기록하기'}</button>
-        <div className="sheetColumns">{[0, 8].map(start => <div className="sheetColumn" key={start}>{steps.slice(start, start + 8).map((step, offset) => { const index = start + offset; return <section className="sheetStep" key={step.key}><header><h3><span>{String(index + 1).padStart(2, '0')}</span> {step.title}</h3><button className="printHide resumeLink" aria-label={`${step.title} 수정`} onClick={() => edit(index + 1)}>수정</button></header>
+        <div className="sheetColumns">{[0, 8].map(start => <div className="sheetColumn" key={start}>{steps.slice(0, -1).slice(start, start + 8).map((step, offset) => { const index = start + offset; return <section className="sheetStep" key={step.key}><header><h3><span>{String(index + 1).padStart(2, '0')}</span> {step.title}</h3><button className="printHide resumeLink" aria-label={`${step.title} 수정`} onClick={() => edit(index + 1)}>수정</button></header>
           <dl>{rows.filter(row => row.stepIndex === index).map(row => <div className={`sheetRow${row.pending ? ' sheetRow--pending' : ''}`} key={row.key}><dt>{row.title}</dt><dd><strong>{row.choices.length && !row.choices.some(choice => choice.requiresCustomText) ? row.choices.map(choice => choice.name).join(' · ') : row.label}</strong><div className="rowStatus">{row.pending && <span>{row.reason}</span>}</div>
             {recordMode && <label className="fieldCheck printHide"><input type="checkbox" checked={project.checks[row.key] === checkFingerprint(row)} onChange={event => updateMetadata({ checks: { ...project.checks, [row.key]: event.target.checked ? checkFingerprint(row) : '' } })} /> 현장 확인 기록</label>}
           </dd></div>)}</dl></section>; })}</div>)}</div>

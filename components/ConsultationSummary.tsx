@@ -5,8 +5,8 @@ import BuilderDisclosure from './BuilderDisclosure';
 export function reviewValue(row: ConsultationRow): string {
   if (!row.choices.length || row.choices.some(choice => choice.requiresCustomText)) return row.label;
   const shortNames: Record<string, string> = row.key === 'jendai'
-    ? { 'sink-ledger': '세면대', 'toilet-ledger': '변기', 'shower-ledger': '샤워공간', new: '신설', keep: '기존 유지', remove: '기존 철거' }
-    : row.key === 'concealed' ? { 'concealed-basin': '세면 수전', 'concealed-shower': '샤워 수전', 'concealed-bath': '욕조 수전' } : {};
+    ? { new: '신설', keep: '기존 유지', remove: '기존 철거' }
+    : {};
   return row.choices.map(choice => shortNames[choice.id] ?? choice.name).join(' · ');
 }
 
@@ -19,7 +19,7 @@ export default function ConsultationSummary({ rows, onEdit }: { rows: Consultati
   const pending = rows.filter(row => row.pending);
   const site = rows.filter(row => row.site);
   return <div className="reviewSections">
-    <div className="reviewCategoryGrid">{builderBathroomSteps.slice(0, 16).map((step, index) => <section className="reviewCategory" key={step.key}>
+    <div className="reviewCategoryGrid">{builderBathroomSteps.slice(0, -1).map((step, index) => <section className="reviewCategory" key={step.key}>
       <header><h2><span>{String(index + 1).padStart(2, '0')}</span>{step.title}</h2>{onEdit && <button type="button" aria-label={`${step.title} 수정`} onClick={() => onEdit(index)}>수정 →</button>}</header>
       <BuilderDisclosure id={`review-${step.key}`} title={rows.filter(row => row.stepIndex === index).map(reviewValue).join(' · ')} className="reviewCategoryDetail">
         <dl>{rows.filter(row => row.stepIndex === index).map(row => <div key={row.key} className={row.pending ? 'reviewPending' : undefined}><dt>{row.title}</dt><dd>{reviewValue(row)}</dd></div>)}</dl>

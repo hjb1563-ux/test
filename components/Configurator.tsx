@@ -7,9 +7,9 @@ import { useSearchParams } from 'next/navigation';
 import BuilderSelectionSections from './BuilderSelectionSections';
 import BuilderDisclosure from './BuilderDisclosure';
 import BuilderSiteNotice from './BuilderSiteNotice';
-import { customTextKey, normalizeBathroomValues, selectionLabel, toggleSelection, type BathroomValues } from '../data/bathroom-selection';
+import { updateCustomText, normalizeBathroomValues, selectionLabel, toggleSelection, type BathroomValues } from '../data/bathroom-selection';
 import SelectedOptionGallery from './SelectedOptionGallery';
-import { defaultBathroomValues } from '../data/bathroom-options';
+import { defaultBathroomValues, bathroomSteps as legacySteps } from '../data/bathroom-options';
 import { builderBathroomSteps as bathroomSteps } from '../data/bathroom-builder-options';
 import { guideBySlug } from '../data/guides/catalog';
 import { STORAGE, readProject, phases, stepReasons, consultationRows } from '../data/bathroom-consultation';
@@ -25,7 +25,13 @@ function querySelections(params: URLSearchParams): Values {
     const choice = group.choices.find((item) => item.id === query || item.name === query);
     if (choice) selected[group.key] = group.multiple ? [choice.id] : choice.id;
   }));
-  return selected;
+  for (const key of ['partition', 'showerBooth', 'showerFaucet']) {
+    const query = params.get(key);
+    const group = legacySteps.flatMap(step => step.groups).find(group => group.key === key);
+    const choice = group?.choices.find(choice => choice.id === query || choice.name === query);
+    if (query) selected[key] = choice?.id ?? query;
+  }
+  return normalizeBathroomValues(selected);
 }
 
 export default function Configurator() {
@@ -59,7 +65,7 @@ export default function Configurator() {
       setSpecialNotes(saved.specialNotes);
       const requested = Number(params.get('step'));
       const guideStep = bathroomSteps.findIndex(item => item.groups.some(group => guideValues[group.key]));
-      if (params.has('step') && Number.isInteger(requested) && requested >= 1 && requested <= 17) setCurrent(requested - 1);
+      if (params.has('step') && Number.isInteger(requested) && requested >= 1 && requested <= bathroomSteps.length) setCurrent(requested - 1);
       else if (guideStep >= 0) setCurrent(guideStep);
       else { setCurrent(saved.current); if (Object.keys(saved.values).length) setResumeStep(saved.current); }
     } catch { setValues(guideValues); setSaveStatus('저장된 내용을 불러오지 못했어요.'); }
@@ -71,15 +77,6 @@ export default function Configurator() {
     try { const saved = readProject(); localStorage.setItem(STORAGE, JSON.stringify({ ...saved, values, specialNotes, current })); setSaveStatus('자동 저장됨'); } catch { setSaveStatus('자동 저장할 수 없어요. 상담 내용을 복사해 보관해주세요.'); }
   }, [values, specialNotes, current, hydrated]);
 
-  useEffect(() => {
-    setValues((old) => {
-      const concealed = Array.isArray(old.concealed) ? old.concealed : [];
-      const next = { ...old };
-      if (concealed.includes('concealed-basin') && !next.faucet) next.faucet = 'concealed';
-      if (concealed.includes('concealed-shower') && !next.showerFaucet) next.showerFaucet = 'concealed-shower';
-      return next;
-    });
-  }, [values.concealed]);
 
   function update(key: string, id: string, multiple?: boolean) {
     setValues(old => toggleSelection(old, key, id, multiple));
@@ -96,8 +93,8 @@ export default function Configurator() {
   }
 
   const progress = <section className="builderProgress" aria-label="욕실 구성 진행도">
-    <div className="progressHeading"><span>STEP {String(current + 1).padStart(2, '0')} / 17</span><small role="status">{saveStatus}</small></div>
-    <progress max={17} value={current + 1} aria-label={`17단계 중 ${current + 1}단계`} />
+    <div className="progressHeading"><span>STEP {String(current + 1).padStart(2, '0')} / {bathroomSteps.length}</span><small role="status">{saveStatus}</small></div>
+    <progress max={bathroomSteps.length} value={current + 1} aria-label={`${bathroomSteps.length}단계 중 ${current + 1}단계`} />
     <ol>{phases.map(item => <li key={item.title} aria-current={phase === item ? 'step' : undefined}>{item.title}</li>)}</ol>
     <p className="builderPhase">{phase.title}</p>
     <p className="builderProgressHelp">약 5~10분이면 업체에 전달할 욕실 상담서를 만들 수 있습니다.</p>
@@ -109,7 +106,7 @@ export default function Configurator() {
     {progress}
     <div className="designGrid finalGrid">
       <section className="options finalCheck">
-        <div className="stepMeta">STEP 17 / 17 <span>상담 전 최종 검토</span></div>
+        <div className="stepMeta">STEP {bathroomSteps.length} / {bathroomSteps.length} <span>상담 전 최종 검토</span></div>
         <h1 id="builder-question" tabIndex={-1}>최종 검토</h1>
         <p className="stepIntro">지금까지 선택한 내용을 확인해주세요.</p>
         <ConsultationCounts rows={rows} />
@@ -129,10 +126,10 @@ export default function Configurator() {
             .design .builderSpecialNotes small{display:block;margin-top:6px;text-align:right;font-size:11px;color:var(--muted)}
           `}</style>
         </section>
-        <div className="navButtons"><button className="secondary" onClick={() => setCurrent(15)}>이전</button><Link className="button" href={{ pathname: '/result', query: { plan: encodeURIComponent(JSON.stringify(values)), specialNotes } }}>욕실 리모델링 상담서 보기 <ArrowRight size={17} /></Link></div>
+        <div className="navButtons"><button className="secondary" onClick={() => setCurrent(bathroomSteps.length - 2)}>이전</button><Link className="button" href={{ pathname: '/result', query: { plan: encodeURIComponent(JSON.stringify(values)), specialNotes } }}>욕실 리모델링 상담서 보기 <ArrowRight size={17} /></Link></div>
       </section>
     </div>
-    <nav className="mobileBuilderNav" aria-label="최종 검토 이동"><button className="secondary" onClick={() => setCurrent(15)}>이전</button><span>17 / 17</span><Link className="button" href={{ pathname: '/result', query: { plan: encodeURIComponent(JSON.stringify(values)), specialNotes } }}>상담서 보기</Link></nav>
+    <nav className="mobileBuilderNav" aria-label="최종 검토 이동"><button className="secondary" onClick={() => setCurrent(bathroomSteps.length - 2)}>이전</button><span>{bathroomSteps.length} / {bathroomSteps.length}</span><Link className="button" href={{ pathname: '/result', query: { plan: encodeURIComponent(JSON.stringify(values)), specialNotes } }}>상담서 보기</Link></nav>
   </main>;
 
   return <main className="design">
@@ -140,23 +137,23 @@ export default function Configurator() {
     {progress}
     <div className="designGrid">
       <section className="options">
-        <div className="stepMeta">STEP {String(current + 1).padStart(2, '0')} / 17 <span>{step.title}</span></div>
+        <div className="stepMeta">STEP {String(current + 1).padStart(2, '0')} / {bathroomSteps.length} <span>{step.title}</span></div>
         <div className="stepHeading"><h1 id="builder-question" tabIndex={-1}>{step.question}</h1><button className="guideButton" onClick={() => setGuideOpen(true)}><BookOpen size={15} /> 가이드 보기</button></div>
         <p className="stepIntro"><strong>왜 선택하나요?</strong><br /><span className="stepReasonFull">{stepReasons[current]}</span><span className="stepReasonShort">{stepReasons[current].split('. ')[0].replace(/\.$/, '')}.</span></p>
-        {current === 0 && <p className="stepIntro builderFirstHint">모르는 항목은 ‘아직 모르겠어요’로 남겨도 괜찮습니다.</p>}
+        {current === 0 && <p className="stepIntro builderFirstHint">모르는 항목은 선택하지 않고 넘어가도 괜찮아요. 선택하지 않은 항목은 자동으로 미정으로 정리됩니다.</p>}
         <BuilderSiteNotice placement="mobile" />
-        <BuilderSelectionSections key={step.key} groups={step.groups} values={values} onSelect={update} onCustomText={(key, text) => setValues(old => ({ ...old, [customTextKey(key)]: text }))} />
+        <BuilderSelectionSections key={step.key} groups={step.groups} values={values} onSelect={update} onCustomText={(key, text) => setValues(old => updateCustomText(old, key, text))} />
         {warning && <div className="selectionWarning"><AlertTriangle size={16} /><div>{warning}<small>확인이 필요한 조합입니다. 실제 시공 가능 여부는 현장에서 확인하세요.</small></div></div>}
-        <div className="navButtons"><button className="secondary" disabled={current === 0} onClick={() => setCurrent((index) => index - 1)}><ArrowLeft size={17} /> 이전</button><button className="secondary" onClick={() => setCurrent((index) => Math.min(16, index + 1))}>건너뛰기</button><button className="button" onClick={() => setCurrent((index) => Math.min(16, index + 1))}>선택 완료 <ArrowRight size={17} /></button></div>
+        <div className="navButtons"><button className="secondary" disabled={current === 0} onClick={() => setCurrent((index) => index - 1)}><ArrowLeft size={17} /> 이전</button><button className="secondary" onClick={() => setCurrent((index) => Math.min(bathroomSteps.length - 1, index + 1))}>건너뛰기</button><button className="button" onClick={() => setCurrent((index) => Math.min(bathroomSteps.length - 1, index + 1))}>다음 <ArrowRight size={17} /></button></div>
       </section>
       <BuilderDisclosure key={`preview-${step.key}`} id="builder-preview" title="선택한 욕실 미리보기" count={imageCount} className={`builderPreviewPanel${selectedItems.length ? '' : ' builderPreviewPanel--empty'}`}>
         <SelectedOptionGallery items={selectedItems} empty="옵션을 선택하면 시공 예시 이미지가 여기에 표시됩니다." />
       </BuilderDisclosure>
       <BuilderDisclosure key={`summary-${step.key}`} id="builder-summary" title="현재 선택" count={selectedItems.length} className="builderSummaryPanel">
-        <section className="summary"><h2>현재 욕실 선택 요약</h2><p className="builderSummaryCounts">선택 {rows.length - pendingCount} · 미정 {pendingCount}<small>전체 카테고리 기준</small></p><h3>{step.title}</h3>{step.groups.map(group => <div className="summaryRow" key={group.key}><div><span>{group.title}</span><b>{selectionLabel(values, group)}</b></div></div>)}</section>
+        <section className="summary"><h2>현재 욕실 선택 요약</h2><p className="builderSummaryCounts">선택 {rows.length - pendingCount} · 미정 {pendingCount}<small>전체 카테고리 기준</small></p><h3>{step.title}</h3>{step.groups.map(group => <div className="summaryRow" key={group.key}><div><span>{group.title}</span><b style={selectionLabel(values, group) === '미정' ? { color: 'var(--muted)', fontWeight: 400 } : undefined}>{selectionLabel(values, group)}</b></div></div>)}</section>
       </BuilderDisclosure>
     </div>
-    <nav className="mobileBuilderNav" aria-label="단계 이동"><button className="secondary" disabled={current === 0} onClick={() => setCurrent(current - 1)}>이전</button><span>{current + 1} / 17</span><button className="button" onClick={() => setCurrent(Math.min(16, current + 1))}>다음</button></nav>
+    <nav className="mobileBuilderNav" aria-label="단계 이동"><button className="secondary" disabled={current === 0} onClick={() => setCurrent(current - 1)}>이전</button><span>{current + 1} / {bathroomSteps.length}</span><button className="button" onClick={() => setCurrent(Math.min(bathroomSteps.length - 1, current + 1))}>다음</button></nav>
     {guideOpen && <div className="guideDrawer" role="dialog" aria-modal="true"><div><button className="drawerClose" onClick={() => setGuideOpen(false)} aria-label="가이드 닫기"><X size={18} /></button><span>GUIDE</span><h2>{guide?.title}</h2><p>{guide?.oneLine}</p>{guide?.options.slice(0, 3).map((option) => <article key={option.id}><b>{option.title}</b><p>{option.shortDescription}</p></article>)}<Link className="button" href={`/guide/${step.guide}`}>전체 가이드 보기</Link></div></div>}
   </main>;
 }

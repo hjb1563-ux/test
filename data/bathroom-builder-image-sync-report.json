@@ -1,9 +1,9 @@
 {
-  "total": 122,
-  "matchedFiles": 103,
+  "total": 123,
+  "matchedFiles": 98,
   "newImages": 0,
   "updatedImages": 0,
-  "unmatched": 1,
+  "unmatched": 7,
   "ambiguous": 0,
   "files": [
     {
@@ -268,13 +268,13 @@
       "file": "inbox/샤워부스 도어형2.png",
       "status": "MATCHED",
       "url": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EB%8F%84%EC%96%B4%ED%98%952.png",
-      "option": "showerBooth:door-booth"
+      "option": "partitionShower:door-booth"
     },
     {
       "file": "inbox/샤워부스 유리 고정형2.png",
       "status": "MATCHED",
       "url": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EC%9C%A0%EB%A6%AC%20%EA%B3%A0%EC%A0%95%ED%98%952.png",
-      "option": "showerBooth:fixed-glass"
+      "option": "partitionShower:fixed-glass"
     },
     {
       "file": "inbox/슬라이딩 거울장.png",
@@ -365,6 +365,12 @@
       "status": "MATCHED",
       "url": "/images/bathroom-builder/inbox/%EC%9D%BC%EB%B0%98%20%EC%9A%95%EC%A1%B0.png",
       "option": "bathtub:bath-standard"
+    },
+    {
+      "file": "inbox/젠다이 신설2.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/inbox/%EC%A0%A0%EB%8B%A4%EC%9D%B4%20%EC%8B%A0%EC%84%A42.png",
+      "option": "jendai:new"
     },
     {
       "file": "inbox/조적 욕조.png",
@@ -494,21 +500,18 @@
     },
     {
       "file": "structure/embedded/basin-faucet.jpg",
-      "status": "MATCHED",
-      "url": "/images/bathroom-builder/structure/embedded/basin-faucet.jpg",
-      "option": "concealed:concealed-basin"
+      "status": "UNMATCHED",
+      "url": "/images/bathroom-builder/structure/embedded/basin-faucet.jpg"
     },
     {
       "file": "structure/embedded/bathtub-faucet.jpg",
-      "status": "MATCHED",
-      "url": "/images/bathroom-builder/structure/embedded/bathtub-faucet.jpg",
-      "option": "concealed:concealed-bath"
+      "status": "UNMATCHED",
+      "url": "/images/bathroom-builder/structure/embedded/bathtub-faucet.jpg"
     },
     {
       "file": "structure/embedded/shower-faucet.jpg",
-      "status": "MATCHED",
-      "url": "/images/bathroom-builder/structure/embedded/shower-faucet.jpg",
-      "option": "concealed:concealed-shower"
+      "status": "UNMATCHED",
+      "url": "/images/bathroom-builder/structure/embedded/shower-faucet.jpg"
     },
     {
       "file": "structure/embedded/toilet-paper-holder.jpg",
@@ -517,27 +520,24 @@
     },
     {
       "file": "structure/jendai/basin-jendai.jpg",
-      "status": "MATCHED",
-      "url": "/images/bathroom-builder/structure/jendai/basin-jendai.jpg",
-      "option": "jendai:sink-ledger"
+      "status": "UNMATCHED",
+      "url": "/images/bathroom-builder/structure/jendai/basin-jendai.jpg"
     },
     {
       "file": "structure/jendai/new.jpg",
-      "status": "MATCHED",
+      "status": "OLDER_VERSION",
       "url": "/images/bathroom-builder/structure/jendai/new.jpg",
       "option": "jendai:new"
     },
     {
       "file": "structure/jendai/shower-jendai.jpg",
-      "status": "MATCHED",
-      "url": "/images/bathroom-builder/structure/jendai/shower-jendai.jpg",
-      "option": "jendai:shower-ledger"
+      "status": "UNMATCHED",
+      "url": "/images/bathroom-builder/structure/jendai/shower-jendai.jpg"
     },
     {
       "file": "structure/jendai/toilet-jendai.jpg",
-      "status": "MATCHED",
-      "url": "/images/bathroom-builder/structure/jendai/toilet-jendai.jpg",
-      "option": "jendai:toilet-ledger"
+      "status": "UNMATCHED",
+      "url": "/images/bathroom-builder/structure/jendai/toilet-jendai.jpg"
     },
     {
       "file": "structure/niche/shower-niche.jpg",
@@ -555,13 +555,13 @@
       "file": "structure/partition/full-partition.jpg",
       "status": "MATCHED",
       "url": "/images/bathroom-builder/structure/partition/full-partition.jpg",
-      "option": "partition:full-partition"
+      "option": "partitionShower:full-partition"
     },
     {
       "file": "structure/partition/half-partition.jpg",
       "status": "MATCHED",
       "url": "/images/bathroom-builder/structure/partition/half-partition.jpg",
-      "option": "partition:half-partition"
+      "option": "partitionShower:half-partition"
     },
     {
       "file": "structure/placeholder.jpg",
@@ -571,13 +571,13 @@
       "file": "structure/shower-booth/door.png",
       "status": "OLDER_VERSION",
       "url": "/images/bathroom-builder/structure/shower-booth/door.png",
-      "option": "showerBooth:door-booth"
+      "option": "partitionShower:door-booth"
     },
     {
       "file": "structure/shower-booth/fixed-glass.png",
       "status": "OLDER_VERSION",
       "url": "/images/bathroom-builder/structure/shower-booth/fixed-glass.png",
-      "option": "showerBooth:fixed-glass"
+      "option": "partitionShower:fixed-glass"
     },
     {
       "file": "threshold/artificial-stone.png",
@@ -746,20 +746,6 @@
       }
     },
     {
-      "key": "demolition:undecided",
-      "name": "아직 모르겠어요",
-      "category": "시공 방식",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
       "key": "bathroomCondition:cracked",
       "name": "기존 타일이 깨져 있어요",
       "category": "현재 욕실 상태",
@@ -816,34 +802,6 @@
       }
     },
     {
-      "key": "bathroomCondition:unknown-condition",
-      "name": "현재 상태를 잘 모르겠어요",
-      "category": "현재 욕실 상태",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "bathroomCondition:undecided",
-      "name": "아직 모르겠어요",
-      "category": "현재 욕실 상태",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
       "key": "jendai:none",
       "name": "없음",
       "category": "젠다이",
@@ -872,20 +830,6 @@
       }
     },
     {
-      "key": "jendai:new",
-      "name": "젠다이 신설",
-      "category": "젠다이",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": "/images/bathroom-builder/structure/jendai/new.jpg",
-        "showBuilderImage": true
-      },
-      "next": {
-        "builderImage": "/images/bathroom-builder/structure/jendai/new.jpg",
-        "showBuilderImage": true
-      }
-    },
-    {
       "key": "jendai:remove",
       "name": "기존 젠다이 철거",
       "category": "젠다이",
@@ -900,65 +844,23 @@
       }
     },
     {
-      "key": "jendai:sink-ledger",
-      "name": "세면대 젠다이",
+      "key": "jendai:new",
+      "name": "젠다이 신설",
       "category": "젠다이",
       "action": "UNCHANGED",
       "previous": {
-        "builderImage": "/images/bathroom-builder/structure/jendai/basin-jendai.jpg",
+        "builderImage": "/images/bathroom-builder/inbox/%EC%A0%A0%EB%8B%A4%EC%9D%B4%20%EC%8B%A0%EC%84%A42.png",
         "showBuilderImage": true
       },
       "next": {
-        "builderImage": "/images/bathroom-builder/structure/jendai/basin-jendai.jpg",
+        "builderImage": "/images/bathroom-builder/inbox/%EC%A0%A0%EB%8B%A4%EC%9D%B4%20%EC%8B%A0%EC%84%A42.png",
         "showBuilderImage": true
       }
     },
     {
-      "key": "jendai:toilet-ledger",
-      "name": "변기 젠다이",
-      "category": "젠다이",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": "/images/bathroom-builder/structure/jendai/toilet-jendai.jpg",
-        "showBuilderImage": true
-      },
-      "next": {
-        "builderImage": "/images/bathroom-builder/structure/jendai/toilet-jendai.jpg",
-        "showBuilderImage": true
-      }
-    },
-    {
-      "key": "jendai:shower-ledger",
-      "name": "샤워공간 젠다이",
-      "category": "젠다이",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": "/images/bathroom-builder/structure/jendai/shower-jendai.jpg",
-        "showBuilderImage": true
-      },
-      "next": {
-        "builderImage": "/images/bathroom-builder/structure/jendai/shower-jendai.jpg",
-        "showBuilderImage": true
-      }
-    },
-    {
-      "key": "jendai:undecided",
-      "name": "아직 모르겠어요",
-      "category": "젠다이",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "partition:none",
+      "key": "partitionShower:none",
       "name": "없음",
-      "category": "파티션",
+      "category": "파티션 & 샤워부스",
       "action": "UNCHANGED",
       "previous": {
         "builderImage": null,
@@ -970,9 +872,9 @@
       }
     },
     {
-      "key": "partition:half-partition",
+      "key": "partitionShower:half-partition",
       "name": "하프 파티션",
-      "category": "파티션",
+      "category": "파티션 & 샤워부스",
       "action": "UNCHANGED",
       "previous": {
         "builderImage": "/images/bathroom-builder/structure/partition/half-partition.jpg",
@@ -984,9 +886,9 @@
       }
     },
     {
-      "key": "partition:full-partition",
-      "name": "전체 파티션",
-      "category": "파티션",
+      "key": "partitionShower:full-partition",
+      "name": "풀 파티션",
+      "category": "파티션 & 샤워부스",
       "action": "UNCHANGED",
       "previous": {
         "builderImage": "/images/bathroom-builder/structure/partition/full-partition.jpg",
@@ -998,37 +900,9 @@
       }
     },
     {
-      "key": "partition:undecided",
-      "name": "아직 모르겠어요",
-      "category": "파티션",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "showerBooth:none",
-      "name": "없음",
-      "category": "샤워부스",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "showerBooth:fixed-glass",
-      "name": "고정 유리",
-      "category": "샤워부스",
+      "key": "partitionShower:fixed-glass",
+      "name": "고정 유리형 샤워부스",
+      "category": "파티션 & 샤워부스",
       "action": "UNCHANGED",
       "previous": {
         "builderImage": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EC%9C%A0%EB%A6%AC%20%EA%B3%A0%EC%A0%95%ED%98%952.png",
@@ -1040,9 +914,9 @@
       }
     },
     {
-      "key": "showerBooth:door-booth",
-      "name": "도어형",
-      "category": "샤워부스",
+      "key": "partitionShower:door-booth",
+      "name": "도어형 샤워부스",
+      "category": "파티션 & 샤워부스",
       "action": "UNCHANGED",
       "previous": {
         "builderImage": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EB%8F%84%EC%96%B4%ED%98%952.png",
@@ -1051,20 +925,6 @@
       "next": {
         "builderImage": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EB%8F%84%EC%96%B4%ED%98%952.png",
         "showBuilderImage": true
-      }
-    },
-    {
-      "key": "showerBooth:undecided",
-      "name": "아직 모르겠어요",
-      "category": "샤워부스",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
       }
     },
     {
@@ -1107,90 +967,6 @@
       "next": {
         "builderImage": "/images/bathroom-builder/structure/niche/sink-niche.jpg",
         "showBuilderImage": true
-      }
-    },
-    {
-      "key": "niche:undecided",
-      "name": "아직 모르겠어요",
-      "category": "니치",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "concealed:concealed-basin",
-      "name": "매립 세면 수전",
-      "category": "매립 설비",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": "/images/bathroom-builder/structure/embedded/basin-faucet.jpg",
-        "showBuilderImage": true
-      },
-      "next": {
-        "builderImage": "/images/bathroom-builder/structure/embedded/basin-faucet.jpg",
-        "showBuilderImage": true
-      }
-    },
-    {
-      "key": "concealed:concealed-shower",
-      "name": "매립 샤워 수전",
-      "category": "매립 설비",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": "/images/bathroom-builder/structure/embedded/shower-faucet.jpg",
-        "showBuilderImage": true
-      },
-      "next": {
-        "builderImage": "/images/bathroom-builder/structure/embedded/shower-faucet.jpg",
-        "showBuilderImage": true
-      }
-    },
-    {
-      "key": "concealed:concealed-bath",
-      "name": "매립 욕조 수전",
-      "category": "매립 설비",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": "/images/bathroom-builder/structure/embedded/bathtub-faucet.jpg",
-        "showBuilderImage": true
-      },
-      "next": {
-        "builderImage": "/images/bathroom-builder/structure/embedded/bathtub-faucet.jpg",
-        "showBuilderImage": true
-      }
-    },
-    {
-      "key": "concealed:none",
-      "name": "사용하지 않음",
-      "category": "매립 설비",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "concealed:undecided",
-      "name": "아직 모르겠어요",
-      "category": "매립 설비",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
       }
     },
     {
@@ -1238,20 +1014,6 @@
     {
       "key": "waterproofing:consult",
       "name": "업체와 상담 후 결정",
-      "category": "방수 방식",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "waterproofing:undecided",
-      "name": "아직 모르겠어요",
       "category": "방수 방식",
       "action": "UNCHANGED",
       "previous": {
@@ -1320,20 +1082,6 @@
       }
     },
     {
-      "key": "wallTileSize:undecided",
-      "name": "아직 모르겠어요",
-      "category": "벽 & 바닥 타일 크기",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
       "key": "tile:white",
       "name": "화이트",
       "category": "타일 분위기",
@@ -1390,20 +1138,6 @@
       }
     },
     {
-      "key": "tile:undecided",
-      "name": "아직 모르겠어요",
-      "category": "타일 분위기",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
       "key": "tileSurface:matte",
       "name": "무광",
       "category": "표면",
@@ -1429,62 +1163,6 @@
       "next": {
         "builderImage": "/images/bathroom-builder/tile/finish/glossy.png",
         "showBuilderImage": true
-      }
-    },
-    {
-      "key": "tileSurface:undecided",
-      "name": "아직 모르겠어요",
-      "category": "표면",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "window:yes",
-      "name": "있음",
-      "category": "욕실 창문",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "window:no",
-      "name": "없음",
-      "category": "욕실 창문",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "window:undecided",
-      "name": "아직 모르겠어요",
-      "category": "욕실 창문",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
       }
     },
     {
@@ -1517,7 +1195,7 @@
     },
     {
       "key": "sink:undermount-basin",
-      "name": "언더볼 세면대",
+      "name": "언더볼",
       "category": "세면대",
       "action": "UNCHANGED",
       "previous": {
@@ -1532,20 +1210,6 @@
     {
       "key": "sink:other",
       "name": "기타",
-      "category": "세면대",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "sink:undecided",
-      "name": "아직 모르겠어요",
       "category": "세면대",
       "action": "UNCHANGED",
       "previous": {
@@ -1587,7 +1251,7 @@
     },
     {
       "key": "toilet:wall-hung",
-      "name": "벽걸이형",
+      "name": "벽걸이",
       "category": "변기",
       "action": "UNCHANGED",
       "previous": {
@@ -1602,20 +1266,6 @@
     {
       "key": "toilet:other",
       "name": "기타",
-      "category": "변기",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "toilet:undecided",
-      "name": "아직 모르겠어요",
       "category": "변기",
       "action": "UNCHANGED",
       "previous": {
@@ -1684,20 +1334,6 @@
       }
     },
     {
-      "key": "cabinet:undecided",
-      "name": "아직 모르겠어요",
-      "category": "욕실장",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
       "key": "mirror:mirror",
       "name": "일반 거울",
       "category": "거울",
@@ -1742,20 +1378,6 @@
     {
       "key": "mirror:other",
       "name": "기타",
-      "category": "거울",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "mirror:undecided",
-      "name": "아직 모르겠어요",
       "category": "거울",
       "action": "UNCHANGED",
       "previous": {
@@ -1838,20 +1460,6 @@
       }
     },
     {
-      "key": "bathtub:undecided",
-      "name": "아직 모르겠어요",
-      "category": "욕조 종류",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
       "key": "ceiling:smc-flat",
       "name": "SMC 평천장",
       "category": "천장",
@@ -1882,20 +1490,6 @@
     {
       "key": "ceiling:other",
       "name": "기타",
-      "category": "천장",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "ceiling:undecided",
-      "name": "아직 모르겠어요",
       "category": "천장",
       "action": "UNCHANGED",
       "previous": {
@@ -1950,22 +1544,8 @@
       }
     },
     {
-      "key": "faucet:undecided",
-      "name": "아직 모르겠어요",
-      "category": "세면 수전",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
       "key": "showerFaucet:shower",
-      "name": "일반 샤워수전",
+      "name": "일반 샤워&욕조 수전",
       "category": "샤워 수전",
       "action": "UNCHANGED",
       "previous": {
@@ -1979,7 +1559,7 @@
     },
     {
       "key": "showerFaucet:concealed-shower",
-      "name": "매립 샤워",
+      "name": "매립 샤워&욕조 수전",
       "category": "샤워 수전",
       "action": "UNCHANGED",
       "previous": {
@@ -1989,20 +1569,6 @@
       "next": {
         "builderImage": "/images/bathroom-builder/faucet/shower/concealed.jpg",
         "showBuilderImage": true
-      }
-    },
-    {
-      "key": "showerFaucet:undecided",
-      "name": "아직 모르겠어요",
-      "category": "샤워 수전",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
       }
     },
     {
@@ -2076,20 +1642,6 @@
       }
     },
     {
-      "key": "drain:undecided",
-      "name": "아직 모르겠어요",
-      "category": "배수구",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
       "key": "drainPosition:keep",
       "name": "현재 위치 유지",
       "category": "배수 위치",
@@ -2120,20 +1672,6 @@
     {
       "key": "drainPosition:consult",
       "name": "업체와 상담 후 결정",
-      "category": "배수 위치",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "drainPosition:undecided",
-      "name": "아직 모르겠어요",
       "category": "배수 위치",
       "action": "UNCHANGED",
       "previous": {
@@ -2230,20 +1768,6 @@
       }
     },
     {
-      "key": "ventilation:undecided",
-      "name": "아직 모르겠어요",
-      "category": "환기 & 건조",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
       "key": "lighting:light-recessed",
       "name": "천장 매립 조명",
       "category": "조명",
@@ -2300,20 +1824,6 @@
       }
     },
     {
-      "key": "lighting:undecided",
-      "name": "아직 모르겠어요",
-      "category": "조명",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
       "key": "accessoryFinish:chrome",
       "name": "크롬",
       "category": "액세서리 마감",
@@ -2345,132 +1855,6 @@
       "key": "accessoryFinish:other",
       "name": "기타",
       "category": "액세서리 마감",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "accessoryFinish:undecided",
-      "name": "아직 모르겠어요",
-      "category": "액세서리 마감",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "accessory:paper-holder",
-      "name": "휴지걸이",
-      "category": "액세서리 종류",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "accessory:towel-bar",
-      "name": "수건걸이",
-      "category": "액세서리 종류",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "accessory:soap-holder",
-      "name": "비누걸이",
-      "category": "액세서리 종류",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "accessory:cup",
-      "name": "컵",
-      "category": "액세서리 종류",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "accessory:corner-shelf",
-      "name": "코너 선반",
-      "category": "액세서리 종류",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "accessory:straight-shelf",
-      "name": "일자 선반",
-      "category": "액세서리 종류",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "accessory:other",
-      "name": "기타",
-      "category": "액세서리 종류",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
-      "key": "accessory:undecided",
-      "name": "아직 모르겠어요",
-      "category": "액세서리 종류",
       "action": "UNCHANGED",
       "previous": {
         "builderImage": null,
@@ -2524,20 +1908,6 @@
       }
     },
     {
-      "key": "grout:undecided",
-      "name": "아직 모르겠어요",
-      "category": "줄눈",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
-      }
-    },
-    {
       "key": "threshold:threshold-tile",
       "name": "타일 마감",
       "category": "문턱 마감",
@@ -2563,20 +1933,6 @@
       "next": {
         "builderImage": "/images/bathroom-builder/threshold/artificial-stone.png",
         "showBuilderImage": true
-      }
-    },
-    {
-      "key": "threshold:undecided",
-      "name": "아직 모르겠어요",
-      "category": "문턱 마감",
-      "action": "UNCHANGED",
-      "previous": {
-        "builderImage": null,
-        "showBuilderImage": false
-      },
-      "next": {
-        "builderImage": null,
-        "showBuilderImage": false
       }
     }
   ]
