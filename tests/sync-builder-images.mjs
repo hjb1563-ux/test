@@ -17,7 +17,7 @@ assert.equal(matchFilename('럭셔리 욕조2.png', options, aliases).status, 'U
 assert.equal(matchFilename('600x1200.png', options, aliases).option.key, 'wallTileSize:600x1200');
 assert.equal(matchFilename('600x1200.png', options, aliases).version, 1);
 assert.equal(matchFilename('바닥 타일 600x600.png', options, aliases).status, 'OPTION_NOT_FOUND');
-assert.equal(matchFilename('강한 환기2.png', options, aliases).status, 'MATCHED');
+assert.equal(matchFilename('강한 환기2.png', options, aliases).status, 'UNMATCHED');
 assert.equal(matchFilename('욕조 없음.png', options, aliases).status, 'MATCHED');
 const fixture = await fs.mkdtemp(path.join(os.tmpdir(), 'bath-image-sync-'));
 const imageDir = path.join(fixture, 'public/images/bathroom-builder');
@@ -30,13 +30,14 @@ try {
   const different = await fs.readFile('public/images/bathroom-builder/bathtub/masonry.png');
   const add = (name, bytes = png) => fs.writeFile(path.join(imageDir, name), bytes);
   await add('천장 간접 조명.png'); await add('nested/천장 간접 조명2.png'); await add('nested/천장 간접 조명3.png');
-  await add('강한 환기.png'); await add('건조 기능2.png'); await add('욕조 없음.png');
+  await add('폴리우레아 줄눈.png'); await add('에폭시 줄눈2.png'); await add('욕조 없음.png');
   await add('600x1200.png'); await add('아직 모르겠어요.png'); await add('기타.png'); await add('업체와 상담 후 결정.png'); await add('거울2.png');
   let report = await run(), settings = await getSettings();
   assert.equal(decodeURIComponent(settings['lighting:indirect'].builderImage), '/images/bathroom-builder/nested/천장 간접 조명3.png');
   assert.equal(report.files.filter(f => f.status === 'OLDER_VERSION').length, 2);
-  for (const key of ['ventilation:strong-fan', 'ventilation:dry', 'bathtub:none']) assert.equal(settings[key].showBuilderImage, true);
-  assert.equal(settings['ventilation:dehumidify'].showBuilderImage, false);
+  for (const key of ['grout:grout-polyurea', 'grout:grout-epoxy', 'bathtub:none']) assert.equal(settings[key].showBuilderImage, true);
+  assert.equal(settings['ventilation:other'], undefined);
+  assert.equal(settings['ventilation:strong-fan'], undefined);
   for (const o of options.filter(o => o.id === 'undecided' || o.id === 'other' || /상담.*결정/.test(o.name))) assert.equal(settings[o.key].showBuilderImage, false);
   assert.equal(report.files.find(f => f.file === '거울2.png').status, 'AMBIGUOUS');
   const stable = await fs.readFile(generated, 'utf8');
@@ -48,8 +49,18 @@ try {
   await fs.unlink(path.join(imageDir, '천장 간접 조명3 (1).png'));
   await fs.unlink(path.join(imageDir, 'nested/천장 간접 조명3.png'));
   await run(); settings = await getSettings(); assert.ok(decodeURIComponent(settings['lighting:indirect'].builderImage).endsWith('조명2.png'));
-  await fs.unlink(path.join(imageDir, '강한 환기.png')); await run(); assert.equal((await getSettings())['ventilation:strong-fan'].showBuilderImage, false);
-  await add('강한 환기.jpg'); report = await run(); assert.equal(report.files.find(f => f.file === '강한 환기.jpg').status, 'INVALID_FORMAT');
+  await fs.unlink(path.join(imageDir, '폴리우레아 줄눈.png')); await run(); assert.equal((await getSettings())['grout:grout-polyurea'].showBuilderImage, false);
+  await add('폴리우레아 줄눈.jpg'); report = await run(); assert.equal(report.files.find(f => f.file === '폴리우레아 줄눈.jpg').status, 'INVALID_FORMAT');
+  await add('샤워 니치.png'); await run();
+  await add('샤워 샴푸박스.png', different); await run();
+  assert.ok(decodeURIComponent((await getSettings())['niche:shower-niche'].builderImage).endsWith('샤워 샴푸박스.png'));
+  await add('샤워 니치2.png'); await run();
+  assert.ok(decodeURIComponent((await getSettings())['niche:shower-niche'].builderImage).endsWith('샤워 니치2.png'));
+  await fs.mkdir(path.join(imageDir, 'inbox'));
+  await add('inbox/벽 타일 600x600.png', different); await run();
+  assert.ok(decodeURIComponent((await getSettings())['wallTileSize:600x600'].builderImage).endsWith('inbox/벽 타일 600x600.png'));
+  await add('벽 타일 600x6002.png'); await run();
+  assert.ok(decodeURIComponent((await getSettings())['wallTileSize:600x600'].builderImage).endsWith('벽 타일 600x6002.png'));
   assert.deepEqual(await fs.readFile(path.join(imageDir, '천장 간접 조명.png')), png);
   console.log('PASS: recursive scan, versions, dimensions, new per-option images, none images, protected choices, ambiguity, deleted paths, idempotence, format validation and original preservation');
 } finally {

@@ -32,6 +32,11 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
       </div>
     </header>
     <div className="builderSectionContent" id={`builder-${group.key}-content`}>
+    {group.key === 'ventilation' && <label className="builderCustomText" htmlFor="builder-ventilation-other">
+      환풍기
+      <input id="builder-ventilation-other" type="text" value={typeof draft === 'string' ? draft : ''}
+        placeholder="환풍기 제품명 입력" onChange={event => onCustomText(group.key, event.target.value)} />
+    </label>}
     {group.key === 'accessory' && <label className="builderCustomText" htmlFor="builder-accessory-other">
       직접 입력
       <input id="builder-accessory-other" type="text" value={typeof draft === 'string' ? draft : ''}
@@ -79,7 +84,7 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
       @media(prefers-reduced-motion:reduce){.design .builderChoiceCard{transition:none}}
       .design .builderCustomText{display:block;margin-top:12px;font-size:12px;color:var(--muted)}
       .design .builderCustomText input{display:block;box-sizing:border-box;width:100%;margin-top:6px;padding:12px;border:1px solid var(--line);border-radius:7px;font:inherit;color:var(--ink);background:#fffdf9}
-      .design #builder-accessory-other{min-height:48px;font-size:14px}
+      .design #builder-accessory-other,.design #builder-ventilation-other{min-height:48px;font-size:14px}
       .design .builderCustomText input:focus{outline:2px solid var(--accent);outline-offset:2px}
     `}</style>
   </section>;

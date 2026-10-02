@@ -170,7 +170,7 @@ body .consultationSheet .consultationCounts b{font-size:28px;font-weight:600;mar
 .consultationSheet.unifiedSheet .sheetRow{grid-template-columns:100px minmax(0,1fr);min-height:42px;padding:9px 0;border-color:#e7e0d6}
 .consultationSheet.unifiedSheet .sheetRow dt{font-size:13px;font-weight:400}
 .consultationSheet.unifiedSheet .sheetRow strong{font-size:14px;font-weight:500;line-height:1.5}
-.consultationSheet .sheetOverview{align-items:start;gap:16px}
+.consultationSheet .sheetOverview{grid-template-columns:minmax(0,1fr);align-items:start;gap:16px}
 .consultationSheet .sheetOverview>section{padding:16px;border:1px solid var(--review-border);border-radius:8px;background:var(--review-paper)}
 .consultationSheet .sheetOverview h2{font-size:17px}
 .consultationSheet .sheetOverview ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px}
@@ -209,3 +209,6 @@ body .consultationSheet .consultationCounts b{font-size:28px;font-weight:600;mar
 
 /* Missing Builder selections use neutral text on the consultation sheet. */
 .consultationSheet .sheetRow--pending strong{color:var(--review-muted);font-weight:400}
+.consultationSheet .sheetCompleted{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px;margin:12px 0;font-size:13px}
+.consultationSheet .sheetCompleted b{font-size:20px;font-weight:600;color:var(--ink)}
+.consultationSheet .sheetCompleted small{font-size:11px;color:var(--muted)}

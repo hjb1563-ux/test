@@ -1,4 +1,12 @@
 {
+  "preferredNames": ["샤워 샴푸박스", "세면대 샴푸박스", "일반 세면 수전"],
+  "preferredFiles": {
+    "wallTileSize:300x600": "inbox/벽 타일 300x600.png",
+    "wallTileSize:600x600": "inbox/벽 타일 600x600.png",
+    "wallTileSize:600x1200": "inbox/벽타일600x1200.png",
+    "lighting:light-recessed": "inbox/천장 매립 조명.png",
+    "lighting:indirect": "inbox/천장 간접 조명.png"
+  },
   "exact": {
     "문턱 인조대리석 마감": "threshold:threshold-artificial-stone",
     "문턱 타일 마감": "threshold:threshold-tile",
@@ -16,7 +24,11 @@
     "일반 욕조": "bathtub:bath-standard",
     "LED 거울": "mirror:led-mirror",
     "일반 거울": "mirror:mirror",
-    "LED 거울장": "cabinet:led-cabinet",
+    "일반 거울장": "cabinet:standard-cabinet",
+    "샤워 샴푸박스": "niche:shower-niche",
+    "세면대 샴푸박스": "niche:sink-niche",
+    "폴리우레아 줄눈": "grout:grout-polyurea",
+    "시멘트(메지) 줄눈": "grout:grout-cement",
     "슬라이딩 거울장": "cabinet:sliding-mirror",
     "벽걸이형 변기": "toilet:wall-hung",
     "언더볼 세면대": "sink:undermount-basin"
@@ -53,7 +65,6 @@
     "투피스 변기": "toilet:two-piece",
     "언더볼": "sink:undermount-basin",
     "풀 파티션": "partitionShower:full-partition",
-    "액체 방수": "waterproofing:liquid-waterproofing",
     "액체+도막 방수": "waterproofing:combined-waterproofing",
     "화이트 타일": "tile:white",
     "아이보리 타일": "tile:ivory",
@@ -65,9 +76,14 @@
     "샤워부스 유리 도어형": "partitionShower:door-booth",
     "샤워부스 도어형": "partitionShower:door-booth",
     "샤워벽 니치": "niche:shower-niche",
+    "샤워 니치": "niche:shower-niche",
+    "세면대 니치": "niche:sink-niche",
+    "시멘트 줄눈": "grout:grout-cement",
     "세면대 벽 니치": "niche:sink-niche",
     "타일 덧방": "demolition:overlay",
     "일반 세면 수전": "faucet:one-hole",
+    "일반 수전": "faucet:one-hole",
+    "기존 타일이 깨져있거나 들떠 있어요": "bathroomCondition:damaged-tile",
     "일반 샤워 수전": "showerFaucet:shower",
     "파티션 없음": "partitionShower:none",
     "샤워부스 없음": "partitionShower:none",

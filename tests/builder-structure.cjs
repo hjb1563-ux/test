@@ -151,6 +151,7 @@ assert.equal(all(groupSection(tree,'accessory'),n=>['radio','checkbox'].includes
 input().props.onChange({target:{value:draft}});tree=render();assert.equal(state().accessory,undefined);assert.equal(row().label,draft);
 input().props.onChange({target:{value:'   '}});tree=render();assert.equal(row().pending,true);assert.equal(row().label,'미정');
 const complete={};for(const g of groups){const c=g.choices.find(c=>!['other','undecided','consult'].includes(c.id)&&!/unknown|모르겠/.test(c.id+c.name));if(c)complete[g.key]=g.multiple?[c.id]:c.id;}complete.accessoryOther=draft;
+complete.ventilation=['other'];complete.ventilationOther='힘펠 휴젠뜨';
 const rows=consultation.consultationRows(complete);assert.equal(rows.filter(r=>r.pending).length,0);assert.equal(rows.filter(r=>r.key==='partitionShower').length,1);
 const copied=consultation.consultationText(rows,'','');assert.ok(copied.includes('05 세면대 & 변기'));assert.ok(copied.includes('15 욕실 문틀'));assert.ok(copied.includes(draft));assert.ok(!/욕실 창문|매립 설비|세면대 젠다이|변기 젠다이|샤워공간 젠다이/.test(copied));assert.ok(!copied.includes('16 최종 검토'));
 tree=mount(15,complete);assert.equal(all(tree,n=>n.props.className==='reviewCategory').length,15);assert.ok(text(tree).includes(draft));assert.ok(text(tree).includes('STEP 16 / 16'));
@@ -191,3 +192,76 @@ for(const [id,label] of [['shower','일반 샤워&욕조 수전'],['concealed-sh
  const rows=consultation.consultationRows({showerFaucet:id});assert.equal(rows.find(r=>r.key==='showerFaucet').label,label);assert.ok(consultation.consultationText(rows,'','').includes(label));
 }
 console.log('PASS: zero unknown options, 25 section counts, legacy unknown migration, empty navigation and review editing, none/consult distinction, multi-select deselection, shower labels');
+
+// Catalog update: persisted IDs, custom fields and report-only count removal.
+const getGroup = key => groups.find(group => group.key === key);
+assert.deepEqual(plain(selection.normalizeBathroomValues({bathroomCondition:['cracked','loose','leak']})).bathroomCondition,['damaged-tile','leak']);
+assert.equal(getGroup('bathroomCondition').choices[0].name,'기존타일이 깨졌거나 들떠 있다');
+assert.equal(getGroup('bathroomCondition').choices.find(c=>c.id==='leak').name,'누수 이력이 있다');
+assert.equal(getGroup('bathroomCondition').choices.find(c=>c.id==='remove-bath').name,'욕조를 철거하고 싶다');
+assert.equal(getGroup('faucet').choices.find(c=>c.id==='one-hole').name,'일반 세면 수전');
+assert.equal(getGroup('niche').title,'샴푸박스');
+assert.deepEqual(plain(getGroup('niche').choices.map(c=>c.name)),['없음','샤워 샴푸박스','세면대 샴푸박스']);
+for(const [key,id] of [['waterproofing','liquid-waterproofing'],['cabinet','led-cabinet'],['grout','grout-elastic'],...['fan','strong-fan','dehumidify','dry','heater'].map(id=>['ventilation',id])]) {
+ const migrated=selection.normalizeBathroomValues({[key]:[id]});
+ assert.equal(migrated[key],undefined);
+ assert.equal(consultation.consultationRows(migrated).find(r=>r.key===key).label,'미정');
+}
+assert.ok(getGroup('waterproofing').choices.some(c=>c.id==='combined-waterproofing'));
+assert.ok(getGroup('mirror').choices.some(c=>c.name==='LED 거울'));
+assert.deepEqual(plain(getGroup('grout').choices.map(c=>c.name)),['시멘트 줄눈(메지)','에폭시 줄눈','폴리우레아 줄눈']);
+assert.equal(builderSteps[10].title,'환풍기');
+assert.deepEqual(plain(getGroup('ventilation').choices),[]);
+assert.equal(getGroup('ventilation').multiple,false);assert.equal(getGroup('ventilation').title,'환풍기');
+for(const old of [{ventilation:['other'],ventilationOther:'힘펠 휴젠뜨'},{ventilation:['custom'],ventilationCustom:'힘펠 휴젠뜨'},{ventilationOther:'힘펠 휴젠뜨'}]) {
+ const migrated=selection.normalizeBathroomValues(old);assert.equal(migrated.ventilation,undefined);assert.equal(migrated.ventilationOther,'힘펠 휴젠뜨');
+ assert.equal(consultation.consultationRows(migrated).find(r=>r.key==='ventilation').pending,false);
+}
+for(const [key,current,draft] of [['bathroomCondition',0,'천장에서 누수 흔적 있음'],['ventilation',10,'힘펠 휴젠뜨']]) {
+ tree=mount(current); if(key!=='ventilation')tree=choose(tree,key,'기타');
+ const input=()=>all(tree,n=>n.props.id===`builder-${key}-other`)[0];
+ for(const value of ['', '   ', draft]) {
+  input().props.onChange({target:{value}});tree=render();
+  const row=consultation.consultationRows(state()).find(r=>r.key===key);
+  assert.equal(row.pending,!value.trim());
+  if(!value.trim())assert.equal(row.label,'미정');
+ }
+ slots=[];tree=render();assert.equal(input().props.value,draft);
+ if(key==='ventilation')assert.ok(text(all(tree,n=>n.props.className==='builderDisclosure builderSummaryPanel')[0]).includes('1개'));
+ assert.ok(consultation.consultationText(consultation.consultationRows(state()),'','').includes(draft));
+}
+const changed={bathroomCondition:['damaged-tile','other'],bathroomConditionOther:'누수 흔적',niche:'shower-niche',cabinet:'standard-cabinet',ventilation:['other'],ventilationOther:'힘펠 휴젠뜨',grout:'grout-polyurea'};
+tree=mount(15,changed);assert.ok(text(tree).includes('미결정'));
+assert.ok(!/니치|LED 거울장|탄성 줄눈|환기 & 건조/.test(text(tree)));
+slots=[];do{dirty=false;cursor=0;effects=[];resultTree=expand(Result());effects.forEach(f=>f());}while(dirty);
+assert.ok(!/미결정|아직 결정하지 않은 항목/.test(text(resultTree)));
+assert.ok(!text(resultTree).includes('현장 확인'));assert.ok(!text(resultTree).includes('현장에서 확인해주세요'));
+assert.equal(all(resultTree,n=>n.props.className==='sheetCompleted').length,1);
+assert.ok(consultation.consultationRows(changed).some(r=>r.site));
+const newCopy=consultation.consultationText(consultation.consultationRows(changed),'','');
+assert.ok(!/미결정|아직 결정하지 않은 항목|니치/.test(newCopy));
+assert.ok(newCopy.includes('변기: 미정'));
+assert.ok(newCopy.includes('환풍기: 힘펠 휴젠뜨'));assert.ok(!/현장 확인|현장에서 확인/.test(newCopy));
+// History may preview earlier steps without changing the persisted selection.
+tree=mount(13,{demolition:'full-demolition',partitionShower:'half-partition',wallTileSize:'600x600',grout:'grout-polyurea'});
+const beforePreview=storage.get(stateKey);
+all(tree,n=>n.props['aria-label']==='하프 파티션 이미지 크게 보기')[0].props.onClick();tree=render();
+assert.equal(text(all(tree,n=>n.props.className==='selectedHeroLabel')[0]),'하프 파티션');
+assert.equal(storage.get(stateKey),beforePreview);
+assert.equal(all(tree,n=>n.props.className==='historyPreviewButton'&&n.props['aria-pressed']).length,1);
+tree=choose(tree,'grout','에폭시 줄눈');assert.equal(text(all(tree,n=>n.props.className==='selectedHeroLabel')[0]),'에폭시 줄눈');
+tree=choose(tree,'grout','에폭시 줄눈');assert.equal(text(all(tree,n=>n.props.className==='selectedHeroLabel')[0]),'600×600');
+console.log('PASS: revised catalog, migration, custom text persistence, report/copy counts and cross-step preview selection isolation');
+
+tree=mount(0);tree=choose(tree,'demolition','전체 철거');
+assert.equal(text(all(tree,n=>n.props.className==='selectedHeroLabel')[0]),'전체 철거');
+tree=click(tree,'다음');assert.equal(all(tree,n=>n.props.className==='selectedHeroImage').length,0);
+assert.equal(state().demolition,'full-demolition');
+all(tree,n=>n.props['aria-label']==='전체 철거 이미지 크게 보기')[0].props.onClick();tree=render();
+assert.equal(text(all(tree,n=>n.props.className==='selectedHeroLabel')[0]),'전체 철거');
+tree=choose(tree,'partitionShower','하프 파티션');
+tree=click(tree,'이전');assert.equal(all(tree,n=>n.props.className==='selectedHeroImage').length,0);
+assert.equal(state().partitionShower,'half-partition');
+slots=[];tree=render();assert.equal(all(tree,n=>n.props.className==='selectedHeroImage').length,0);
+assert.equal(all(tree,n=>n.props.className==='historyPreviewButton').length,2);
+console.log('PASS: step navigation/refresh clears only preview; fan input works without option IDs; report hides site UI while metadata remains');

@@ -32,6 +32,9 @@ body .design .imageDisclaimer { font-size:12px!important;margin:0 0 14px; }
 body .design .selectedHeroLabel { font-size:14px;color:var(--ink);margin:10px 0 0; }
 body .design .selectionHistory { margin:20px 0 0;padding-top:16px; }
 body .design .selectionHistoryStrip { min-width:0;max-width:100%;overscroll-behavior-x:contain; }
+body .design .historyPreviewButton { display:block;box-sizing:border-box;width:100%;min-height:44px;min-width:44px;padding:0;border:2px solid transparent;border-radius:6px;background:none;cursor:pointer;overflow:hidden; }
+body .design .historyPreviewButton:hover,body .design .historyPreviewButton[aria-pressed=true] { border-color:var(--accent); }
+body .design .historyPreviewButton:focus-visible { outline:2px solid var(--accent);outline-offset:2px; }
 body .design .selectionHistoryStrip article { flex:0 0 calc((100% - 24px)/3);min-width:0; }
 body .design .selectionHistoryStrip img { height:110px;aspect-ratio:auto;object-fit:contain; }
 body .design .selectionHistoryStrip small { font-size:12px; }

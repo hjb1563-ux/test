@@ -133,7 +133,13 @@ export async function syncImages({ root = projectRoot, options, aliases } = {}) 
     let chosen;
     if (!isProtected(option) && candidates.length) {
       const highest = Math.max(...candidates.map(r => r.version));
-      const latest = candidates.filter(r => r.version === highest);
+      const versionCandidates = candidates.filter(r => r.version === highest);
+      // For renamed options, prefer the new upload name at the same version.
+      // A higher numbered legacy file still wins under the existing version rule.
+      const preferredFiles = versionCandidates.filter(r => r.file === aliases.preferredFiles?.[option.key]);
+      const preferred = versionCandidates.filter(r => (aliases.preferredNames ?? []).some(name =>
+        normalizeFilename(name) === r.base && normalizeFilename(option.name) === r.base));
+      const latest = preferredFiles.length ? preferredFiles : preferred.length ? preferred : versionCandidates;
       if (latest.every(r => r.hash === latest[0].hash)) {
         chosen = latest.find(r => r.url === old.builderImage) ?? latest[0];
       } else {

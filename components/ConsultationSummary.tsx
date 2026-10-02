@@ -10,9 +10,9 @@ export function reviewValue(row: ConsultationRow): string {
   return row.choices.map(choice => shortNames[choice.id] ?? choice.name).join(' · ');
 }
 
-export function ConsultationCounts({ rows }: { rows: ConsultationRow[] }) {
+export function ConsultationCounts({ rows, showPending = true }: { rows: ConsultationRow[]; showPending?: boolean }) {
   const pending = rows.filter(row => row.pending).length;
-  return <div className="consultationCounts" aria-label="카테고리별 선택 현황"><span>선택 완료 <b>{rows.length - pending}</b></span><span>미결정 <b>{pending}</b></span><span>현장 확인 <b>{rows.filter(row => row.site).length}</b></span></div>;
+  return <div className="consultationCounts" aria-label="카테고리별 선택 현황"><span>선택 완료 <b>{rows.length - pending}</b></span>{showPending && <span>미결정 <b>{pending}</b></span>}<span>현장 확인 <b>{rows.filter(row => row.site).length}</b></span></div>;
 }
 
 export default function ConsultationSummary({ rows, onEdit }: { rows: ConsultationRow[]; onEdit?: (step: number) => void }) {

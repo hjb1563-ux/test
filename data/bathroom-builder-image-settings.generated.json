@@ -11,11 +11,7 @@
     "builderImage": "/images/bathroom-builder/demolition/full-demolition.jpg",
     "showBuilderImage": true
   },
-  "bathroomCondition:cracked": {
-    "builderImage": null,
-    "showBuilderImage": false
-  },
-  "bathroomCondition:loose": {
+  "bathroomCondition:damaged-tile": {
     "builderImage": null,
     "showBuilderImage": false
   },
@@ -24,6 +20,10 @@
     "showBuilderImage": false
   },
   "bathroomCondition:remove-bath": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
+  "bathroomCondition:other": {
     "builderImage": null,
     "showBuilderImage": false
   },
@@ -75,10 +75,6 @@
     "builderImage": "/images/bathroom-builder/structure/niche/sink-niche.jpg",
     "showBuilderImage": true
   },
-  "waterproofing:liquid-waterproofing": {
-    "builderImage": "/images/bathroom-builder/waterproofing/liquid.png",
-    "showBuilderImage": true
-  },
   "waterproofing:coating-waterproofing": {
     "builderImage": "/images/bathroom-builder/waterproofing/coating.png",
     "showBuilderImage": true
@@ -92,15 +88,15 @@
     "showBuilderImage": false
   },
   "wallTileSize:300x600": {
-    "builderImage": "/images/bathroom-builder/tile/wall/300x600.png",
+    "builderImage": "/images/bathroom-builder/inbox/%EB%B2%BD%20%ED%83%80%EC%9D%BC%20300x600.png",
     "showBuilderImage": true
   },
   "wallTileSize:600x600": {
-    "builderImage": "/images/bathroom-builder/tile/wall/600x600.png",
+    "builderImage": "/images/bathroom-builder/inbox/%EB%B2%BD%20%ED%83%80%EC%9D%BC%20600x600.png",
     "showBuilderImage": true
   },
   "wallTileSize:600x1200": {
-    "builderImage": "/images/bathroom-builder/tile/wall/600x1200.png",
+    "builderImage": "/images/bathroom-builder/inbox/%EB%B2%BD%ED%83%80%EC%9D%BC600x1200.png",
     "showBuilderImage": true
   },
   "wallTileSize:other": {
@@ -167,9 +163,9 @@
     "builderImage": "/images/bathroom-builder/cabinet/sliding-mirror.png",
     "showBuilderImage": true
   },
-  "cabinet:led-cabinet": {
-    "builderImage": "/images/bathroom-builder/cabinet/led-mirror-cabinet.png",
-    "showBuilderImage": true
+  "cabinet:standard-cabinet": {
+    "builderImage": null,
+    "showBuilderImage": false
   },
   "cabinet:none": {
     "builderImage": null,
@@ -279,36 +275,12 @@
     "builderImage": null,
     "showBuilderImage": false
   },
-  "ventilation:fan": {
-    "builderImage": null,
-    "showBuilderImage": false
-  },
-  "ventilation:strong-fan": {
-    "builderImage": null,
-    "showBuilderImage": false
-  },
-  "ventilation:dehumidify": {
-    "builderImage": null,
-    "showBuilderImage": false
-  },
-  "ventilation:dry": {
-    "builderImage": null,
-    "showBuilderImage": false
-  },
-  "ventilation:heater": {
-    "builderImage": null,
-    "showBuilderImage": false
-  },
-  "ventilation:other": {
-    "builderImage": null,
-    "showBuilderImage": false
-  },
   "lighting:light-recessed": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%B2%9C%EC%9E%A5%20%EB%A7%A4%EB%A6%BD%20%EC%A1%B0%EB%AA%852.png",
+    "builderImage": "/images/bathroom-builder/inbox/%EC%B2%9C%EC%9E%A5%20%EB%A7%A4%EB%A6%BD%20%EC%A1%B0%EB%AA%85.png",
     "showBuilderImage": true
   },
   "lighting:indirect": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%B2%9C%EC%9E%A5%20%EA%B0%84%EC%A0%91%20%EC%A1%B0%EB%AA%852.png",
+    "builderImage": "/images/bathroom-builder/inbox/%EC%B2%9C%EC%9E%A5%20%EA%B0%84%EC%A0%91%20%EC%A1%B0%EB%AA%85.png",
     "showBuilderImage": true
   },
   "lighting:cabinet-indirect": {
@@ -332,16 +304,16 @@
     "showBuilderImage": false
   },
   "grout:grout-cement": {
-    "builderImage": null,
-    "showBuilderImage": false
+    "builderImage": "/images/bathroom-builder/inbox/%EC%8B%9C%EB%A9%98%ED%8A%B8(%EB%A9%94%EC%A7%80)%20%EC%A4%84%EB%88%88.png",
+    "showBuilderImage": true
   },
   "grout:grout-epoxy": {
-    "builderImage": null,
-    "showBuilderImage": false
+    "builderImage": "/images/bathroom-builder/inbox/%EC%97%90%ED%8F%AD%EC%8B%9C%20%EC%A4%84%EB%88%88.png",
+    "showBuilderImage": true
   },
-  "grout:grout-elastic": {
-    "builderImage": null,
-    "showBuilderImage": false
+  "grout:grout-polyurea": {
+    "builderImage": "/images/bathroom-builder/inbox/%ED%8F%B4%EB%A6%AC%EC%9A%B0%EB%A0%88%EC%95%84%20%EC%A4%84%EB%88%88.png",
+    "showBuilderImage": true
   },
   "threshold:threshold-tile": {
     "builderImage": "/images/bathroom-builder/threshold/tile.png",

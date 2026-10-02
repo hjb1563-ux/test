@@ -44,13 +44,22 @@ export default function Configurator() {
   const [hydrated, setHydrated] = useState(false);
   const [saveStatus, setSaveStatus] = useState('');
   const [resumeStep, setResumeStep] = useState<number | null>(null);
+  const [activePreview, setActivePreview] = useState<{ step: number; id: string } | null>(null);
   const rows = consultationRows(values);
   const phase = phases.find(item => current >= item.start && current <= item.end)!;
   const step = bathroomSteps[current];
   const guide = guideBySlug[step.guide];
   const selectedItems = step.groups.flatMap((group) => { const value = values[group.key]; const ids = Array.isArray(value) ? value : value ? [value] : []; return ids.map((id) => ({ title: group.title, choice: group.choices.find((choice) => choice.id === id)! })).filter((item) => item.choice); });
-  const imageCount = selectedItems.filter(item => item.choice.showBuilderImage && item.choice.builderImage).length;
+  const historyItems = bathroomSteps.flatMap(item => item.groups.flatMap(group => {
+    const value = values[group.key];
+    const ids = Array.isArray(value) ? value : value ? [value] : [];
+    return group.choices.filter(choice => ids.includes(choice.id)).map(choice => ({ title: group.title, choice }));
+  }));
+  const imageCount = historyItems.filter(item => item.choice.showBuilderImage && item.choice.builderImage).length;
+  const selectionCount = selectedItems.length + rows.filter(row => row.stepIndex === current && !row.choices.length && !row.pending).length;
   const pendingCount = rows.filter(row => row.pending).length;
+
+  useEffect(() => { setActivePreview(null); }, [current]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -79,6 +88,11 @@ export default function Configurator() {
 
 
   function update(key: string, id: string, multiple?: boolean) {
+    const group = step.groups.find(group => group.key === key);
+    const choice = group?.choices.find(choice => choice.id === id);
+    const before = values[key];
+    const selected = Array.isArray(before) ? before.includes(id) : before === id;
+    if (!selected && choice?.showBuilderImage && choice.builderImage) setActivePreview({ step: current, id: `${group!.title}:${id}` });
     setValues(old => toggleSelection(old, key, id, multiple));
   }
 
@@ -89,7 +103,7 @@ export default function Configurator() {
   function reset() {
     if (!window.confirm('현재 선택 내용이 삭제됩니다. 처음부터 다시 시작할까요?')) return;
     try { localStorage.removeItem(STORAGE); } catch { setSaveStatus('저장소를 초기화할 수 없어요.'); return; }
-    setValues({}); setSpecialNotes(''); setCurrent(0); setResumeStep(null);
+    setValues({}); setSpecialNotes(''); setCurrent(0); setResumeStep(null); setActivePreview(null);
   }
 
   const progress = <section className="builderProgress" aria-label="욕실 구성 진행도">
@@ -146,10 +160,10 @@ export default function Configurator() {
         {warning && <div className="selectionWarning"><AlertTriangle size={16} /><div>{warning}<small>확인이 필요한 조합입니다. 실제 시공 가능 여부는 현장에서 확인하세요.</small></div></div>}
         <div className="navButtons"><button className="secondary" disabled={current === 0} onClick={() => setCurrent((index) => index - 1)}><ArrowLeft size={17} /> 이전</button><button className="secondary" onClick={() => setCurrent((index) => Math.min(bathroomSteps.length - 1, index + 1))}>건너뛰기</button><button className="button" onClick={() => setCurrent((index) => Math.min(bathroomSteps.length - 1, index + 1))}>다음 <ArrowRight size={17} /></button></div>
       </section>
-      <BuilderDisclosure key={`preview-${step.key}`} id="builder-preview" title="선택한 욕실 미리보기" count={imageCount} className={`builderPreviewPanel${selectedItems.length ? '' : ' builderPreviewPanel--empty'}`}>
-        <SelectedOptionGallery items={selectedItems} empty="옵션을 선택하면 시공 예시 이미지가 여기에 표시됩니다." />
+      <BuilderDisclosure key={`preview-${step.key}`} id="builder-preview" title="선택한 욕실 미리보기" count={imageCount} className={`builderPreviewPanel${imageCount ? '' : ' builderPreviewPanel--empty'}`}>
+        <SelectedOptionGallery items={historyItems} activePreview={activePreview?.step === current ? activePreview.id : null} onPreview={id => setActivePreview({ step: current, id })} empty="옵션을 선택하면 시공 예시 이미지가 여기에 표시됩니다." />
       </BuilderDisclosure>
-      <BuilderDisclosure key={`summary-${step.key}`} id="builder-summary" title="현재 선택" count={selectedItems.length} className="builderSummaryPanel">
+      <BuilderDisclosure key={`summary-${step.key}`} id="builder-summary" title="현재 선택" count={selectionCount} className="builderSummaryPanel">
         <section className="summary"><h2>현재 욕실 선택 요약</h2><p className="builderSummaryCounts">선택 {rows.length - pendingCount} · 미정 {pendingCount}<small>전체 카테고리 기준</small></p><h3>{step.title}</h3>{step.groups.map(group => <div className="summaryRow" key={group.key}><div><span>{group.title}</span><b style={selectionLabel(values, group) === '미정' ? { color: 'var(--muted)', fontWeight: 400 } : undefined}>{selectionLabel(values, group)}</b></div></div>)}</section>
       </BuilderDisclosure>
     </div>

@@ -57,6 +57,8 @@ const output=path.join(require('node:os').tmpdir(),'bath-empty-selection');
  await page.emulateMedia({media:'print'});await page.pdf({path:path.join(output,'missing-consultation.pdf'),format:'A4',printBackground:true});await page.emulateMedia({media:'screen'});
  for(const [id,label] of [['shower','일반 샤워&욕조 수전'],['concealed-shower','매립 샤워&욕조 수전']]){
   await seed(8,{showerFaucet:id});assert.equal(await group('showerFaucet').getByRole('radio',{name:label,exact:true}).getAttribute('aria-checked'),'true');
+  assert.equal(await page.locator('.selectedHeroImage').count(),0);
+  await page.getByRole('button',{name:label+' 이미지 크게 보기',exact:true}).click();
   const img=page.locator('.selectedHeroImage img');assert.ok(await img.evaluate(img=>img.complete&&img.naturalWidth>0));assert.ok((await page.locator('.summary').innerText()).includes(label));
  }
  await page.goto(base+'/guide');assert.equal(await page.locator('.guideCardPro').count(),17);

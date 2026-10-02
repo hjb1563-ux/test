@@ -19,7 +19,7 @@ export const stepReasons = [
   '천장 형태는 공간의 높이감과 설비 점검 편의에 영향을 줍니다.',
   '수전은 매일 손이 닿는 설비입니다. 사용 편의와 관리 방식을 함께 생각해보세요.',
   '배수구 형태는 청소 방식과 바닥 마감에 영향을 줍니다. 배수 위치와 물이 흐르는 기울기는 현장 확인이 필요해요.',
-  '환기와 건조는 습기 관리에 도움이 됩니다. 평소 욕실을 쓰는 방식에 맞춰 골라보세요.',
+  '원하는 환풍기 제품명이 있다면 입력해주세요. 설치 조건은 업체와 함께 확인하세요.',
   '조명 위치에 따라 거울을 볼 때의 밝기와 욕실 분위기가 달라집니다.',
   '자주 쓰는 물건의 위치와 금속 색상을 정리하면 사용하기 편한 욕실을 만들 수 있어요.',
   '줄눈은 타일 사이를 마감하는 부분입니다. 청소와 관리 방식을 함께 고려하세요.',
@@ -39,7 +39,7 @@ export function siteCheck(key: string, values: BathroomValues): string | undefin
     threshold: '문턱 높이와 바깥 바닥의 단차',
   };
   if (always[key]) return always[key];
-  const structural: Record<string, string> = { jendai: '젠다이와 배관 위치', partitionShower: '파티션·샤워부스 설치 공간과 고정 조건', niche: '니치 설치 벽체와 방수' };
+  const structural: Record<string, string> = { jendai: '젠다이와 배관 위치', partitionShower: '파티션·샤워부스 설치 공간과 고정 조건', niche: '샴푸박스 설치 벽체와 방수' };
   if (structural[key] && ids.some(id => !['none', 'consult'].includes(id))) return structural[key];
   if (['faucet', 'showerFaucet'].includes(key) && ids.some(id => id.includes('concealed'))) return '매립 수전 배관과 점검 공간';
   if (key === 'toilet' && ids.includes('wall-hung')) return '벽걸이 변기 지지 구조와 배관';
@@ -53,7 +53,8 @@ export function consultationRows(values: BathroomValues) {
       if (choice.requiresCustomText && !(typeof custom === 'string' && custom.trim())) return ['기타 내용 미입력'];
       return [];
     });
-    const hasText = group.key === 'accessory' && typeof values.accessoryOther === 'string' && !!values.accessoryOther.trim();
+    const custom = values[customTextKey(group.key)];
+    const hasText = ['accessory', 'ventilation'].includes(group.key) && typeof custom === 'string' && !!custom.trim();
     if (!choices.length && !hasText) reasons.push('미정');
     return { key: group.key, title: group.title, stepTitle: step.title, stepIndex, label: selectionLabel(values, group), choices, pending: reasons.length > 0, reason: Array.from(new Set(reasons)).join(' · '), site: siteCheck(group.key, values) };
   }));
@@ -80,11 +81,8 @@ export function readProject(): LocalProject {
 export const checkFingerprint = (row: ConsultationRow) => JSON.stringify([row.label, row.site]);
 export function consultationText(rows: ConsultationRow[], specialNotes: string, memo: string) {
   const pending = rows.filter(row => row.pending);
-  const site = rows.filter(row => row.site);
-  return ['[욕실 리모델링 상담 내용]', `선택 완료 ${rows.length - pending.length} · 미결정 ${pending.length} · 현장 확인 ${site.length}`, '집계 기준: 선택 카테고리 수',
-    ...steps.slice(0, -1).map((step, index) => `\n${String(index + 1).padStart(2, '0')} ${step.title}\n${rows.filter(row => row.stepIndex === index).map(row => `${row.title}: ${row.label}${row.pending ? ` [미결정: ${row.reason}]` : ''}${row.site ? ' [현장 확인 필요]' : ''}`).join('\n')}`),
-    '\n아직 결정하지 않은 항목', ...pending.map(row => `${row.title}: ${row.reason} (${row.label})`), ...(pending.length ? [] : ['없음']),
-    '\n현장에서 확인해주세요', ...site.map(row => `□ ${row.title}: ${row.site}`),
+  return ['[욕실 리모델링 상담 내용]', `선택 완료 ${rows.length - pending.length}`, '집계 기준: 선택 카테고리 수',
+    ...steps.slice(0, -1).map((step, index) => `\n${String(index + 1).padStart(2, '0')} ${step.title}\n${rows.filter(row => row.stepIndex === index).map(row => `${row.title}: ${row.label}`).join('\n')}`),
     '\n업체 실측 후 최종 확인이 필요합니다. 선택 내용은 상담을 위한 희망 사항입니다.',
     `\n업체에 전달할 메모\n${memo.trim() || '미입력'}`,
     ...(specialNotes.trim() ? [`\n[특이사항]\n${specialNotes.trim()}`] : []),

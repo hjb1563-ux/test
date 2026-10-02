@@ -9,13 +9,13 @@ export const selectedIds = (value: string | string[] | undefined): string[] =>
 
 export function updateCustomText(values: BathroomValues, key: string, text: string): BathroomValues {
   const result = { ...values, [customTextKey(key)]: text };
-  if (key === 'accessory') delete result.accessory;
+  if (key === 'accessory' || key === 'ventilation') delete result[key];
   return result;
 }
 
 export function selectionLabel(values: BathroomValues, group: ChoiceGroup): string {
-  if (group.key === 'accessory') {
-    const draft = values.accessoryOther;
+  if (group.key === 'accessory' || group.key === 'ventilation') {
+    const draft = values[customTextKey(group.key)];
     return typeof draft === 'string' && draft.trim() ? draft.trim() : '미정';
   }
   const labels = selectedIds(values[group.key]).flatMap(id => {
@@ -23,7 +23,7 @@ export function selectionLabel(values: BathroomValues, group: ChoiceGroup): stri
     if (!choice) return [];
     if (!choice.requiresCustomText) return [choice.name];
     const draft = values[customTextKey(group.key)];
-    return [`${choice.name} · ${typeof draft === 'string' && draft.trim() ? draft.trim() : '내용 미입력'}`];
+    return [typeof draft === 'string' && draft.trim() ? `${choice.name} · ${draft.trim()}` : '미정'];
   });
   return labels.join(', ') || '미정';
 }
@@ -32,6 +32,10 @@ export function selectionLabel(values: BathroomValues, group: ChoiceGroup): stri
 export function normalizeBathroomValues(input: unknown, steps: BathroomStep[] = bathroomSteps): BathroomValues {
   if (!input || typeof input !== 'object' || Array.isArray(input)) return {};
   const raw = { ...input } as Record<string, unknown>;
+  // Keep the established custom-text field; old checkbox IDs are no longer needed.
+  if (typeof raw.ventilationOther !== 'string' && typeof raw.ventilationCustom === 'string') raw.ventilationOther = raw.ventilationCustom;
+  const conditions = Array.isArray(raw.bathroomCondition) ? raw.bathroomCondition : typeof raw.bathroomCondition === 'string' ? [raw.bathroomCondition] : [];
+  if (conditions.length) raw.bathroomCondition = conditions.map(id => ['cracked', 'loose'].includes(id) ? 'damaged-tile' : id);
   // Older links/saves may use the previous display labels rather than stable IDs.
   const showerLabels: Record<string, string> = {
     '일반 샤워 수전': 'shower', '일반 샤워수전': 'shower',
@@ -59,7 +63,7 @@ export function normalizeBathroomValues(input: unknown, steps: BathroomStep[] = 
       result[group.key] = group.multiple ? exclusive ? [exclusive] : compatible : ids[0];
     }
     const key = customTextKey(group.key);
-    if ((group.key === 'accessory' || group.choices.some(choice => choice.requiresCustomText)) && typeof raw[key] === 'string') {
+    if ((['accessory', 'ventilation'].includes(group.key) || group.choices.some(choice => choice.requiresCustomText)) && typeof raw[key] === 'string') {
       result[key] = raw[key];
     }
   }
