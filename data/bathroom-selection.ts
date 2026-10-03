@@ -38,10 +38,12 @@ export function normalizeBathroomValues(input: unknown, steps: BathroomStep[] = 
   if (conditions.length) raw.bathroomCondition = conditions.map(id => ['cracked', 'loose'].includes(id) ? 'damaged-tile' : id);
   // Older links/saves may use the previous display labels rather than stable IDs.
   const showerLabels: Record<string, string> = {
+    '해바라기 샤워': 'rain', '해바라기 샤워 수전': 'rain',
     '일반 샤워 수전': 'shower', '일반 샤워수전': 'shower',
     '매립 샤워 수전': 'concealed-shower', '매립 샤워': 'concealed-shower',
   };
-  if (typeof raw.showerFaucet === 'string') raw.showerFaucet = showerLabels[raw.showerFaucet] ?? raw.showerFaucet;
+  if (Array.isArray(raw.showerFaucet)) raw.showerFaucet = raw.showerFaucet.map(id => typeof id === 'string' ? showerLabels[id] ?? id : id);
+  else if (typeof raw.showerFaucet === 'string') raw.showerFaucet = showerLabels[raw.showerFaucet] ?? raw.showerFaucet;
   if (!('partitionShower' in raw)) {
     const aliases: Record<string, string> = { half: 'half-partition', full: 'full-partition', fixed: 'fixed-glass', door: 'door-booth' };
     const legacy = [raw.partition, raw.showerBooth].flatMap(value => Array.isArray(value) ? value : typeof value === 'string' ? [value] : [])
@@ -62,6 +64,7 @@ export function normalizeBathroomValues(input: unknown, steps: BathroomStep[] = 
         ? ids.filter(id => id !== 'remove') : ids;
       result[group.key] = group.multiple ? exclusive ? [exclusive] : compatible : ids[0];
     }
+    if (group.key === 'showerFaucet' && !ids.length) result[group.key] = [];
     const key = customTextKey(group.key);
     if ((['accessory', 'ventilation'].includes(group.key) || group.choices.some(choice => choice.requiresCustomText)) && typeof raw[key] === 'string') {
       result[key] = raw[key];

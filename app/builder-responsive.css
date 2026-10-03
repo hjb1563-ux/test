@@ -152,3 +152,10 @@ body .design .finalCheck .reviewCategory button { min-height:44px; }
 @media(prefers-reduced-motion:reduce) {
   body .design .builderDisclosureToggle svg,body .design .builderSectionToggle svg,body .design .selectedHeroImage img { transition:none;animation:none; }
 }
+
+/* Consultation edit context stays in page flow above the existing navigation. */
+body .design .builderConsultationEdit { display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 8px;margin:12px 0;padding:6px 0;border-block:1px solid var(--line);color:var(--muted);font-size:12px; }
+body .design .builderConsultationEdit a { display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:44px;padding:8px 10px;font-size:12px;white-space:nowrap; }
+
+/* Keep shower option words readable when the multi-select labels wrap. */
+body .design #builder-showerFaucet-content .builderChoiceLabel { word-break:keep-all;overflow-wrap:break-word; }

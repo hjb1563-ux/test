@@ -1,7 +1,9 @@
+import { normalizeImageHistoryOrder } from './bathroom-image-history';
 import { builderBathroomSteps as steps } from './bathroom-builder-options';
 import { customTextKey, normalizeBathroomValues, selectedIds, selectionLabel, type BathroomValues } from './bathroom-selection';
 
 export const STORAGE = 'bath-designer-selections-v2';
+export const consultationEditUrl = (stepIndex: number) => `/design?step=${stepIndex + 1}&returnTo=consultation`;
 export const phases = [
   { title: '기존 욕실과 기본 공사', start: 0, end: 2 },
   { title: '마감과 주요 욕실 기구', start: 3, end: 7 },
@@ -61,13 +63,14 @@ export function consultationRows(values: BathroomValues) {
 }
 export type ConsultationRow = ReturnType<typeof consultationRows>[number];
 
-export type LocalProject = { version: 3; values: BathroomValues; specialNotes: string; current: number; memo: string; checks: Record<string, string> };
+export type LocalProject = { version: 3; values: BathroomValues; specialNotes: string; current: number; memo: string; checks: Record<string, string>; imageHistoryOrder: string[] };
 export function normalizeProject(input: unknown): LocalProject {
   const raw = input && typeof input === 'object' && !Array.isArray(input) ? input as Record<string, unknown> : {};
   const current = typeof raw.current === 'number' && Number.isInteger(raw.current) ? raw.current : 0;
   return {
     version: 3,
     values: normalizeBathroomValues(raw.values, steps),
+    imageHistoryOrder: normalizeImageHistoryOrder(raw.imageHistoryOrder, normalizeBathroomValues(raw.values, steps)),
     specialNotes: typeof raw.specialNotes === 'string' ? raw.specialNotes.slice(0, 500) : '',
     current: Math.max(0, Math.min(steps.length - 1, raw.version === 3 || current < 5 ? current : current - 1)),
     memo: typeof raw.memo === 'string' ? raw.memo : '',

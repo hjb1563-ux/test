@@ -50,14 +50,20 @@ const builderSteps: BathroomStep[] = bathroomSteps.filter(step => step.key !== '
         choice.id === 'grout-elastic' ? textChoice('grout-polyurea', '폴리우레아 줄눈')
           : { ...choice, name: choice.id === 'grout-cement' ? '시멘트 줄눈(메지)' : choice.name }) };
       if (group.key === 'jendai') return { ...group, multiple: true, choices: ['none', 'keep', 'remove', 'new'].flatMap(id => group.choices.filter(choice => choice.id === id)) };
-      if (group.key === 'showerFaucet') return { ...group, multiple: false, choices: group.choices.map(choice => ({
-        ...choice, name: choice.id === 'shower' ? '일반 샤워&욕조 수전' : choice.id === 'concealed-shower' ? '매립 샤워&욕조 수전' : choice.name,
-      })) };
+      if (group.key === 'showerFaucet') return { ...group, multiple: true, choices: [
+        ...group.choices.filter(choice => choice.id === 'shower').map(choice => ({ ...choice, name: '일반 샤워&욕조 수전' })),
+        ...group.choices.filter(choice => choice.id === 'concealed-shower').map(choice => ({ ...choice, name: '매립 샤워&욕조 수전' })),
+        textChoice('rain', '해바라기 샤워 수전'),
+        textChoice('other', '기타', true),
+      ] };
       if (group.key === 'partition') {
         return { ...group, key: 'partitionShower', title: '파티션 & 샤워부스', multiple: false,
           choices: [...group.choices, ...showerBooth.choices.filter(choice => !['none', 'undecided'].includes(choice.id))]
             .map(choice => ({ ...choice, name: partitionLabels[choice.id] ?? choice.name })) };
       }
+      if (group.key === 'accessoryFinish') return { ...group, choices: group.choices.map(choice => ({
+        ...choice, name: choice.id === 'chrome' ? '크롬(유광)' : choice.id === 'nickel' ? '니켈(무광)' : choice.name,
+      })) };
       if (group.key === 'accessory') return { ...group, multiple: false, choices: [] };
       if (group.key === 'sink' || group.key === 'toilet') return { ...group, choices: group.choices.map(choice => ({ ...choice, name: choice.id === 'undermount-basin' ? '언더볼' : choice.id === 'wall-hung' ? '벽걸이' : choice.name })) };
       if (group.key === 'wallTileSize') return { ...group, title: '벽 & 바닥 타일 크기' };
@@ -77,6 +83,6 @@ export const builderBathroomSteps: BathroomStep[] = builderSteps.map(step => ({
     ...group,
     choices: group.choices
       .filter(choice => !/^(undecided|notSure|unknown(?:-condition)?)$/i.test(choice.id) && !/모르겠/.test(choice.name))
-      .map(choice => ({ ...choice, ...imageSettings[`${group.key}:${choice.id}`] })),
+      .map(choice => choice.id === 'other' ? { ...choice, builderImage: null, showBuilderImage: false } : { ...choice, ...imageSettings[`${group.key}:${choice.id}`] }),
   })),
 }));

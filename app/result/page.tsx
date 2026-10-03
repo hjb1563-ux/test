@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import SiteHeader from '../../components/SiteHeader';
 import { builderBathroomSteps as steps } from '../../data/bathroom-builder-options';
 import { normalizeBathroomValues } from '../../data/bathroom-selection';
-import { STORAGE, readProject, normalizeProject, consultationRows, consultationText, type LocalProject } from '../../data/bathroom-consultation';
+import { STORAGE, consultationEditUrl, readProject, normalizeProject, consultationRows, consultationText, type LocalProject } from '../../data/bathroom-consultation';
 
 function Content() {
   const params = useSearchParams();
@@ -60,7 +60,7 @@ function Content() {
   function edit(step = steps.length) {
     try {
       localStorage.setItem(STORAGE, JSON.stringify({ ...project, current: step - 1 }));
-      window.location.assign(`/design?step=${step}`);
+      window.location.assign(consultationEditUrl(step - 1));
     } catch { setStatus('수정할 내용을 저장하지 못했어요. 먼저 선택 내용을 복사해 보관해주세요.'); }
   }
 

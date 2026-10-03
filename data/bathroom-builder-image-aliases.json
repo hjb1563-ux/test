@@ -1,11 +1,21 @@
 {
-  "preferredNames": ["샤워 샴푸박스", "세면대 샴푸박스", "일반 세면 수전"],
+  "preferredNames": [
+    "샤워 샴푸박스",
+    "세면대 샴푸박스",
+    "일반 세면 수전",
+    "해바라기 샤워 수전",
+    "크롬(유광)",
+    "니켈(무광)",
+    "일반 샤워&욕조 수전",
+    "매립 샤워&욕조 수전"
+  ],
   "preferredFiles": {
     "wallTileSize:300x600": "inbox/벽 타일 300x600.png",
     "wallTileSize:600x600": "inbox/벽 타일 600x600.png",
     "wallTileSize:600x1200": "inbox/벽타일600x1200.png",
     "lighting:light-recessed": "inbox/천장 매립 조명.png",
-    "lighting:indirect": "inbox/천장 간접 조명.png"
+    "lighting:indirect": "inbox/천장 간접 조명.png",
+    "partitionShower:door-booth": "inbox/도어형 샤워부스.png"
   },
   "exact": {
     "문턱 인조대리석 마감": "threshold:threshold-artificial-stone",
@@ -91,6 +101,13 @@
     "일반 샤워&욕조 수전": "showerFaucet:shower",
     "매립 샤워&욕조 수전": "showerFaucet:concealed-shower",
     "일반 샤워수전": "showerFaucet:shower",
-    "매립 샤워": "showerFaucet:concealed-shower"
+    "매립 샤워": "showerFaucet:concealed-shower",
+    "해바라기 샤워": "showerFaucet:rain",
+    "해바라기 샤워 수전": "showerFaucet:rain",
+    "크롬(유광)": "accessoryFinish:chrome",
+    "크롬": "accessoryFinish:chrome",
+    "니켈(무광)": "accessoryFinish:nickel",
+    "니켈": "accessoryFinish:nickel",
+    "도어형 샤워부스": "partitionShower:door-booth"
   }
 }

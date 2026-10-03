@@ -47,9 +47,9 @@ export default function SelectedOptionGallery({
     }
   };
 
-  // null explicitly means an empty preview after navigation; keep history intact.
-  const representative = activePreview === null ? undefined
-    : selectedItems.find(item => itemKey(item) === activePreview) ?? selectedItems.at(-1);
+  // Explicit preview IDs never fall back to an unrelated selected image.
+  const representative = activePreview === undefined ? selectedItems.at(-1)
+    : selectedItems.find(item => itemKey(item) === activePreview);
   const resultView = variant === 'history' && selectedItems.length > 8;
 
   return (
@@ -74,7 +74,7 @@ export default function SelectedOptionGallery({
           {variant === 'current' && selectedItems.length > 0 && (
             <BuilderDisclosure id="builder-history" title="지금까지 선택한 항목" count={selectedItems.length} className="selectionHistory">
               <div className="galleryHead"><span>SELECTION HISTORY</span><h2>지금까지 선택한 항목</h2></div>
-              <div className="selectionHistoryStrip" onWheel={wheel}>
+              <div id="builder-image-history-strip" className="selectionHistoryStrip" onWheel={wheel}>
                 {selectedItems.map((item) => <HistoryCard key={`history-${item.title}-${item.choice.id}`} item={item} active={representative && itemKey(item) === itemKey(representative)} onPreview={onPreview} />)}
               </div>
             </BuilderDisclosure>

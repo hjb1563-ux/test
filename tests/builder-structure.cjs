@@ -11,7 +11,7 @@ let slots = [], cursor = 0, effects = [], dirty = false;
 const storage = new Map();
 const params = new URLSearchParams();
 let storageFailure = false, confirmReset = false, printCalls = 0, clipboardText = '', clipboardFailure = false, navigatedTo = '';
-const browserWindow = { scrollTo: () => {}, confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
+const browserWindow = { history: { replaceState: (_state, _title, url) => { navigatedTo = url; } }, scrollTo: () => {}, confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
 const browserNavigator = { clipboard: { writeText: async value => { if (clipboardFailure) throw new Error('Clipboard blocked'); clipboardText = value; } } };
 const hooks = {
   useState(initial) {
@@ -158,7 +158,7 @@ tree=mount(15,complete);assert.equal(all(tree,n=>n.props.className==='reviewCate
 const Result=load(path.join(root,'app/result/page')).default;slots=[];let resultTree;do {dirty=false;cursor=0;effects=[];resultTree=expand(Result());effects.forEach(f=>f());}while(dirty);
 assert.equal(all(resultTree,n=>n.props.className==='sheetStep').length,15);assert.ok(text(resultTree).includes(draft));assert.ok(!/욕실 창문|매립 설비/.test(text(resultTree)));
 all(resultTree,n=>n.type==='button'&&text(n)==='인쇄 / PDF 저장')[0].props.onClick();assert.equal(printCalls,1);
-all(resultTree,n=>n.type==='button'&&text(n)==='선택 수정')[0].props.onClick();assert.equal(navigatedTo,'/design?step=16');
+all(resultTree,n=>n.type==='button'&&text(n)==='선택 수정')[0].props.onClick();assert.equal(navigatedTo,'/design?step=16&returnTo=consultation');
 for(let i=0;i<16;i++){tree=mount(i);const progress=all(tree,n=>n.type==='progress')[0];assert.equal(progress.props.max,16);assert.equal(progress.props.value,i+1);assert.ok(consultation.phases.some(p=>i>=p.start&&i<=p.end));}
 params.set('showerBooth','door-booth');tree=mount();assert.equal(state().partitionShower,'door-booth');params.delete('showerBooth');
 console.log('PASS: 16 steps, removed fields, radios, independent basin/toilet, legacy migrations, custom text/refresh/exclusivity, counts, summary, report/copy/print, progress and guide links');
@@ -178,7 +178,7 @@ for(const value of ['undecided','notSure','unknown','unknown-condition','아직 
  tree=mount(15,legacyValues);assert.ok(!/아직 모르겠/.test(text(tree)));assert.equal(all(tree,n=>n.props.className==='reviewPending').length,25);
  assert.ok(!/undecided|notSure|unknown|모르겠/.test(JSON.stringify(state())));
 }
-for(const [before,after] of [['일반 샤워 수전','shower'],['일반 샤워수전','shower'],['매립 샤워 수전','concealed-shower'],['매립 샤워','concealed-shower']])assert.equal(selection.normalizeBathroomValues({showerFaucet:before}).showerFaucet,after);
+for(const [before,after] of [['일반 샤워 수전','shower'],['일반 샤워수전','shower'],['매립 샤워 수전','concealed-shower'],['매립 샤워','concealed-shower']])assert.deepEqual(Array.from(selection.normalizeBathroomValues({showerFaucet:before}).showerFaucet),[after]);
 assert.equal(selection.normalizeBathroomValues({accessory:'undecided',accessoryOther:'old hidden text'}).accessoryOther,undefined);
 assert.deepEqual(plain(selection.normalizeBathroomValues({lighting:['undecided','indirect']})).lighting,['indirect']);
 for(const [key,id] of [['bathtub','none'],['partitionShower','none'],['cabinet','none'],['waterproofing','consult'],['drainPosition','consult']]) {
@@ -250,7 +250,7 @@ assert.equal(text(all(tree,n=>n.props.className==='selectedHeroLabel')[0]),'하�
 assert.equal(storage.get(stateKey),beforePreview);
 assert.equal(all(tree,n=>n.props.className==='historyPreviewButton'&&n.props['aria-pressed']).length,1);
 tree=choose(tree,'grout','에폭시 줄눈');assert.equal(text(all(tree,n=>n.props.className==='selectedHeroLabel')[0]),'에폭시 줄눈');
-tree=choose(tree,'grout','에폭시 줄눈');assert.equal(text(all(tree,n=>n.props.className==='selectedHeroLabel')[0]),'600×600');
+tree=choose(tree,'grout','에폭시 줄눈');assert.equal(all(tree,n=>n.props.className==='selectedHeroImage').length,0);
 console.log('PASS: revised catalog, migration, custom text persistence, report/copy counts and cross-step preview selection isolation');
 
 tree=mount(0);tree=choose(tree,'demolition','전체 철거');
@@ -265,3 +265,32 @@ assert.equal(state().partitionShower,'half-partition');
 slots=[];tree=render();assert.equal(all(tree,n=>n.props.className==='selectedHeroImage').length,0);
 assert.equal(all(tree,n=>n.props.className==='historyPreviewButton').length,2);
 console.log('PASS: step navigation/refresh clears only preview; fan input works without option IDs; report hides site UI while metadata remains');
+
+const imageOrderModule = load(path.join(root, 'data/bathroom-image-history.ts'));
+const compatibleValues = { demolition: 'full-demolition', wallTileSize: '600x600' };
+const oldImageIds = Array.from(imageOrderModule.normalizeImageHistoryOrder(undefined, compatibleValues));
+assert.equal(oldImageIds.length, 2);
+assert.deepEqual(Array.from(imageOrderModule.normalizeImageHistoryOrder(['wallTileSize:600x600','deleted:id','wallTileSize:600x600',null], compatibleValues)), ['wallTileSize:600x600','demolition:full-demolition']);
+assert.deepEqual(Array.from(imageOrderModule.normalizeImageHistoryOrder({bad:true}, compatibleValues)), oldImageIds);
+assert.equal(consultation.normalizeProject({version:3,values:compatibleValues,imageHistoryOrder:['wallTileSize:600x600']}).imageHistoryOrder[0], 'wallTileSize:600x600');
+console.log('PASS: old saves, malformed/removed/duplicate image IDs and refresh order normalization');
+
+assert.deepEqual(Array.from(consultation.normalizeProject({version:3,values:{showerFaucet:'해바라기 샤워'}}).values.showerFaucet), ['rain']);
+assert.deepEqual(Array.from(consultation.normalizeProject({version:3,values:{showerFaucet:'rain'}}).values.showerFaucet), ['rain']);
+assert.equal(consultation.consultationEditUrl(2), '/design?step=3&returnTo=consultation');
+console.log('PASS: rain ID/legacy label compatibility and shared consultation edit URL');
+
+const showerMulti = getGroup('showerFaucet');
+assert.equal(showerMulti.multiple, true);
+for (const value of [null,undefined,'',[],['invalid']]) assert.deepEqual(Array.from(selection.normalizeBathroomValues({showerFaucet:value}).showerFaucet), []);
+assert.deepEqual(Array.from(selection.normalizeBathroomValues({showerFaucet:['rain','shower','rain',null,'deleted']}).showerFaucet), ['rain','shower']);
+assert.deepEqual(Array.from(selection.normalizeBathroomValues({showerFaucet:['해바라기 샤워','일반 샤워수전']}).showerFaucet), ['rain','shower']);
+const showerValues = {showerFaucet:['shower','concealed-shower','rain']};
+assert.equal(consultation.consultationRows(showerValues).filter(row=>!row.pending).length,1);
+assert.equal(consultation.consultationRows({showerFaucet:[]}).find(row=>row.key==='showerFaucet').pending,true);
+assert.equal(getGroup('accessoryFinish').multiple, false);
+for(const [id,label] of [['chrome','크롬(유광)'],['nickel','니켈(무광)']]) {
+ assert.equal(getGroup('accessoryFinish').choices.find(c=>c.id===id).name,label);
+ assert.equal(selection.normalizeBathroomValues({accessoryFinish:id}).accessoryFinish,id);
+}
+console.log('PASS: shower multi migration, empty/invalid arrays, section counts and renamed finish IDs');
