@@ -1,0 +1,56 @@
+{
+  "300x600": {
+    "gray": {
+      "matte": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%EA%B7%B8%EB%A0%88%EC%9D%B4%20%EB%AC%B4%EA%B4%91.png",
+      "glossy": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%EA%B7%B8%EB%A0%88%EC%9D%B4%20%EC%9C%A0%EA%B4%91.png"
+    },
+    "dark": {
+      "matte": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%EB%8B%A4%ED%81%AC%20%EB%AC%B4%EA%B4%91.png",
+      "glossy": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%EB%8B%A4%ED%81%AC%20%EC%9C%A0%EA%B4%91.png"
+    },
+    "ivory": {
+      "matte": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC%20%EB%AC%B4%EA%B4%91.png",
+      "glossy": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC%20%EC%9C%A0%EA%B4%91.png"
+    },
+    "white": {
+      "matte": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%ED%99%94%EC%9D%B4%ED%8A%B8%20%EB%AC%B4%EA%B4%91.png",
+      "glossy": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%ED%99%94%EC%9D%B4%ED%8A%B8%20%EC%9C%A0%EA%B4%91.png"
+    }
+  },
+  "600x1200": {
+    "gray": {
+      "matte": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%EA%B7%B8%EB%A0%88%EC%9D%B4%20%EB%AC%B4%EA%B4%91.png",
+      "glossy": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%EA%B7%B8%EB%A0%88%EC%9D%B4%20%EC%9C%A0%EA%B4%91.png"
+    },
+    "dark": {
+      "matte": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%EB%8B%A4%ED%81%AC%20%EB%AC%B4%EA%B4%91.png",
+      "glossy": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%EB%8B%A4%ED%81%AC%20%EC%9C%A0%EA%B4%91.png"
+    },
+    "ivory": {
+      "matte": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC%20%EB%AC%B4%EA%B4%91.png",
+      "glossy": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC%20%EC%9C%A0%EA%B4%91.png"
+    },
+    "white": {
+      "matte": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%ED%99%94%EC%9D%B4%ED%8A%B8%20%EB%AC%B4%EA%B4%91.png",
+      "glossy": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%ED%99%94%EC%9D%B4%ED%8A%B8%20%EC%9C%A0%EA%B4%91.png"
+    }
+  },
+  "600x600": {
+    "gray": {
+      "matte": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%EA%B7%B8%EB%A0%88%EC%9D%B4%20%EB%AC%B4%EA%B4%91.png",
+      "glossy": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%EA%B7%B8%EB%A0%88%EC%9D%B4%20%EC%9C%A0%EA%B4%91.png"
+    },
+    "dark": {
+      "matte": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%EB%8B%A4%ED%81%AC%20%EB%AC%B4%EA%B4%91.png",
+      "glossy": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%EB%8B%A4%ED%81%AC%20%EC%9C%A0%EA%B4%91.png"
+    },
+    "ivory": {
+      "matte": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC%20%EB%AC%B4%EA%B4%91.png",
+      "glossy": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC%20%EC%9C%A0%EA%B4%91.png"
+    },
+    "white": {
+      "matte": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%ED%99%94%EC%9D%B4%ED%8A%B8%20%EB%AC%B4%EA%B4%91.png",
+      "glossy": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%ED%99%94%EC%9D%B4%ED%8A%B8%20%EC%9C%A0%EA%B4%91.png"
+    }
+  }
+}

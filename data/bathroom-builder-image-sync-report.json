@@ -1,10 +1,11 @@
 {
-  "total": 143,
-  "matchedFiles": 114,
+  "total": 167,
+  "matchedFiles": 138,
   "newImages": 0,
   "updatedImages": 0,
   "unmatched": 11,
   "tileCombinations": 12,
+  "tileSurfaceCombinations": 24,
   "ambiguous": 0,
   "files": [
     {
@@ -622,6 +623,198 @@
       "status": "MATCHED",
       "url": "/images/bathroom-builder/threshold/tile.png",
       "option": "threshold:threshold-tile"
+    },
+    {
+      "file": "tile/finish/300x600/300x600각 그레이 무광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%EA%B7%B8%EB%A0%88%EC%9D%B4%20%EB%AC%B4%EA%B4%91.png",
+      "option": "tileSurface:matte",
+      "combination": "300x600:gray:matte",
+      "surface": "matte"
+    },
+    {
+      "file": "tile/finish/300x600/300x600각 그레이 유광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%EA%B7%B8%EB%A0%88%EC%9D%B4%20%EC%9C%A0%EA%B4%91.png",
+      "option": "tileSurface:glossy",
+      "combination": "300x600:gray:glossy",
+      "surface": "glossy"
+    },
+    {
+      "file": "tile/finish/300x600/300x600각 다크 무광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%EB%8B%A4%ED%81%AC%20%EB%AC%B4%EA%B4%91.png",
+      "option": "tileSurface:matte",
+      "combination": "300x600:dark:matte",
+      "surface": "matte"
+    },
+    {
+      "file": "tile/finish/300x600/300x600각 다크 유광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%EB%8B%A4%ED%81%AC%20%EC%9C%A0%EA%B4%91.png",
+      "option": "tileSurface:glossy",
+      "combination": "300x600:dark:glossy",
+      "surface": "glossy"
+    },
+    {
+      "file": "tile/finish/300x600/300x600각 아이보리 무광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC%20%EB%AC%B4%EA%B4%91.png",
+      "option": "tileSurface:matte",
+      "combination": "300x600:ivory:matte",
+      "surface": "matte"
+    },
+    {
+      "file": "tile/finish/300x600/300x600각 아이보리 유광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC%20%EC%9C%A0%EA%B4%91.png",
+      "option": "tileSurface:glossy",
+      "combination": "300x600:ivory:glossy",
+      "surface": "glossy"
+    },
+    {
+      "file": "tile/finish/300x600/300x600각 화이트 무광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%ED%99%94%EC%9D%B4%ED%8A%B8%20%EB%AC%B4%EA%B4%91.png",
+      "option": "tileSurface:matte",
+      "combination": "300x600:white:matte",
+      "surface": "matte"
+    },
+    {
+      "file": "tile/finish/300x600/300x600각 화이트 유광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/300x600/300x600%EA%B0%81%20%ED%99%94%EC%9D%B4%ED%8A%B8%20%EC%9C%A0%EA%B4%91.png",
+      "option": "tileSurface:glossy",
+      "combination": "300x600:white:glossy",
+      "surface": "glossy"
+    },
+    {
+      "file": "tile/finish/600x1200/600x1200각 그레이 무광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%EA%B7%B8%EB%A0%88%EC%9D%B4%20%EB%AC%B4%EA%B4%91.png",
+      "option": "tileSurface:matte",
+      "combination": "600x1200:gray:matte",
+      "surface": "matte"
+    },
+    {
+      "file": "tile/finish/600x1200/600x1200각 그레이 유광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%EA%B7%B8%EB%A0%88%EC%9D%B4%20%EC%9C%A0%EA%B4%91.png",
+      "option": "tileSurface:glossy",
+      "combination": "600x1200:gray:glossy",
+      "surface": "glossy"
+    },
+    {
+      "file": "tile/finish/600x1200/600x1200각 다크 무광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%EB%8B%A4%ED%81%AC%20%EB%AC%B4%EA%B4%91.png",
+      "option": "tileSurface:matte",
+      "combination": "600x1200:dark:matte",
+      "surface": "matte"
+    },
+    {
+      "file": "tile/finish/600x1200/600x1200각 다크 유광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%EB%8B%A4%ED%81%AC%20%EC%9C%A0%EA%B4%91.png",
+      "option": "tileSurface:glossy",
+      "combination": "600x1200:dark:glossy",
+      "surface": "glossy"
+    },
+    {
+      "file": "tile/finish/600x1200/600x1200각 아이보리 무광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC%20%EB%AC%B4%EA%B4%91.png",
+      "option": "tileSurface:matte",
+      "combination": "600x1200:ivory:matte",
+      "surface": "matte"
+    },
+    {
+      "file": "tile/finish/600x1200/600x1200각 아이보리 유광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC%20%EC%9C%A0%EA%B4%91.png",
+      "option": "tileSurface:glossy",
+      "combination": "600x1200:ivory:glossy",
+      "surface": "glossy"
+    },
+    {
+      "file": "tile/finish/600x1200/600x1200각 화이트 무광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%ED%99%94%EC%9D%B4%ED%8A%B8%20%EB%AC%B4%EA%B4%91.png",
+      "option": "tileSurface:matte",
+      "combination": "600x1200:white:matte",
+      "surface": "matte"
+    },
+    {
+      "file": "tile/finish/600x1200/600x1200각 화이트 유광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x1200/600x1200%EA%B0%81%20%ED%99%94%EC%9D%B4%ED%8A%B8%20%EC%9C%A0%EA%B4%91.png",
+      "option": "tileSurface:glossy",
+      "combination": "600x1200:white:glossy",
+      "surface": "glossy"
+    },
+    {
+      "file": "tile/finish/600x600/600각 그레이 무광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%EA%B7%B8%EB%A0%88%EC%9D%B4%20%EB%AC%B4%EA%B4%91.png",
+      "option": "tileSurface:matte",
+      "combination": "600x600:gray:matte",
+      "surface": "matte"
+    },
+    {
+      "file": "tile/finish/600x600/600각 그레이 유광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%EA%B7%B8%EB%A0%88%EC%9D%B4%20%EC%9C%A0%EA%B4%91.png",
+      "option": "tileSurface:glossy",
+      "combination": "600x600:gray:glossy",
+      "surface": "glossy"
+    },
+    {
+      "file": "tile/finish/600x600/600각 다크 무광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%EB%8B%A4%ED%81%AC%20%EB%AC%B4%EA%B4%91.png",
+      "option": "tileSurface:matte",
+      "combination": "600x600:dark:matte",
+      "surface": "matte"
+    },
+    {
+      "file": "tile/finish/600x600/600각 다크 유광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%EB%8B%A4%ED%81%AC%20%EC%9C%A0%EA%B4%91.png",
+      "option": "tileSurface:glossy",
+      "combination": "600x600:dark:glossy",
+      "surface": "glossy"
+    },
+    {
+      "file": "tile/finish/600x600/600각 아이보리 무광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC%20%EB%AC%B4%EA%B4%91.png",
+      "option": "tileSurface:matte",
+      "combination": "600x600:ivory:matte",
+      "surface": "matte"
+    },
+    {
+      "file": "tile/finish/600x600/600각 아이보리 유광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC%20%EC%9C%A0%EA%B4%91.png",
+      "option": "tileSurface:glossy",
+      "combination": "600x600:ivory:glossy",
+      "surface": "glossy"
+    },
+    {
+      "file": "tile/finish/600x600/600각 화이트 무광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%ED%99%94%EC%9D%B4%ED%8A%B8%20%EB%AC%B4%EA%B4%91.png",
+      "option": "tileSurface:matte",
+      "combination": "600x600:white:matte",
+      "surface": "matte"
+    },
+    {
+      "file": "tile/finish/600x600/600각 화이트 유광.png",
+      "status": "MATCHED",
+      "url": "/images/bathroom-builder/tile/finish/600x600/600%EA%B0%81%20%ED%99%94%EC%9D%B4%ED%8A%B8%20%EC%9C%A0%EA%B4%91.png",
+      "option": "tileSurface:glossy",
+      "combination": "600x600:white:glossy",
+      "surface": "glossy"
     },
     {
       "file": "tile/finish/glossy.png",

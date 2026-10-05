@@ -7,8 +7,9 @@ const root = path.resolve('.');
 const publicRoot = path.join(root,'public');
 const options = await loadOptions(root,{includeGenerated:true});
 const combinations = JSON.parse(await fs.readFile('data/bathroom-builder-tile-images.generated.json','utf8'));
+const surfaces = JSON.parse(await fs.readFile('data/bathroom-builder-tile-surface-images.generated.json','utf8'));
 const imported = JSON.parse(await fs.readFile('data/bathroom-builder-images.generated.json','utf8'));
-const refs = [...options.filter(o=>o.showBuilderImage).map(o=>o.builderImage), ...Object.values(combinations).flatMap(Object.values), ...Object.values(imported), '/images/bathroom-builder/fallback/placeholder.svg'];
+const refs = [...options.filter(o=>o.showBuilderImage).map(o=>o.builderImage), ...Object.values(combinations).flatMap(Object.values), ...Object.values(surfaces).flatMap(Object.values).flatMap(Object.values), ...Object.values(imported), '/images/bathroom-builder/fallback/placeholder.svg'];
 async function scanSources(dir){for(const item of await fs.readdir(dir,{withFileTypes:true})){const file=path.join(dir,item.name);if(item.isDirectory())await scanSources(file);else if(/\.(tsx?|css)$/.test(file)){const text=await fs.readFile(file,'utf8');for(const match of text.matchAll(/['"](\/images\/[^'"\x60]+\.(?:png|jpe?g|webp|svg|avif))['"]/gi))refs.push(match[1]);}}}
 for(const dir of ['app','components','data/guides'])await scanSources(dir);
 for(const url of new Set(refs)){
@@ -18,4 +19,6 @@ for(const url of new Set(refs)){
 }
 const inventory=JSON.parse(await fs.readFile('docs/BUILDER_IMAGE_INVENTORY.json','utf8'));
 for(const image of inventory.images){const current=await fs.readFile(image.destination);assert.equal(createHash('sha256').update(current).digest('hex'),image.hash,'Original bytes: '+image.destination);}
+const surfaceImport=JSON.parse(await fs.readFile('docs/BUILDER_TILE_SURFACE_IMPORT.json','utf8'));
+for(const image of surfaceImport.moved){const current=await fs.readFile(path.join('public/images/bathroom-builder',image.to));assert.equal(createHash('sha256').update(current).digest('hex'),image.hash,'Surface original bytes: '+image.to);assert.equal(await fs.access(path.join('public/images/bathroom-builder',image.from)).then(()=>true,()=>false),false);}
 console.log('PASS: '+refs.length+' image references ('+new Set(refs).size+' unique), exact case/Unicode paths, '+inventory.images.length+' original hashes, '+inventory.moves.length+' moves, 0 missing images');

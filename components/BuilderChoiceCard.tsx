@@ -2,14 +2,17 @@
 
 import { Check } from 'lucide-react';
 import type { MouseEvent } from 'react';
+import BuilderOptionImage from './BuilderOptionImage';
+import type { Choice } from '../data/bathroom-options';
 
-export default function BuilderChoiceCard({ label, selected, multiple = false, disabled = false, describedBy, tabIndex, onSelect }: {
+export default function BuilderChoiceCard({ label, selected, multiple = false, disabled = false, describedBy, tabIndex, onSelect, imageOption }: {
   label: string;
   selected: boolean;
   multiple?: boolean;
   disabled?: boolean;
   describedBy?: string;
   tabIndex?: number;
+  imageOption?: Choice;
   onSelect: (event?: MouseEvent<HTMLButtonElement>) => void;
 }) {
   return <button type="button" role={multiple ? 'checkbox' : 'radio'} aria-checked={selected}
@@ -25,6 +28,7 @@ export default function BuilderChoiceCard({ label, selected, multiple = false, d
       cards[next]?.focus();
       if (cards[next]?.getAttribute('aria-checked') !== 'true') cards[next]?.click();
     }}>
+    {imageOption?.showBuilderImage && <span className="builderSurfaceThumbnail" aria-hidden="true"><BuilderOptionImage option={imageOption} /></span>}
     <span className="builderChoiceLabel">{label}</span>
     <span aria-hidden="true" className={`builderChoiceIndicator${multiple ? ' builderChoiceIndicator--multiple' : ''}`}>
       {selected && <Check size={13} strokeWidth={2.5} />}

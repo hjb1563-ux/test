@@ -2,7 +2,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
-import { normalizeFilename, loadOptions, matchFilename, matchTileCombination, syncImages } from '../scripts/sync-builder-images.mjs';
+import { normalizeFilename, loadOptions, matchFilename, matchTileCombination, matchTileSurfaceCombination, syncImages } from '../scripts/sync-builder-images.mjs';
 const options = await loadOptions();
 const aliases = JSON.parse(await fs.readFile('data/bathroom-builder-image-aliases.json', 'utf8'));
 for (const [name, target] of Object.entries(aliases.exact)) {
@@ -26,6 +26,19 @@ assert.equal(matchTileCombination('tile/mood/600x600/화이트.png',options).com
 assert.equal(matchTileCombination('accessories/300x600 화이트.png',options),null);
 assert.equal(matchFilename('accessories/화이트.png',options,aliases).status,'UNMATCHED');
 assert.equal(matchTileCombination('tile/mood/600x600/300x600 화이트.png',options).status,'AMBIGUOUS');
+for (const ext of ['png','jpg','jpeg','webp']) for (const separator of ['_','-',' ']) for (const x of ['x','X','×']) {
+  const name=`600${x}600${separator}다크${separator}무광.${ext}`;
+  assert.equal(matchTileSurfaceCombination(name,options).combination,'600x600:dark:matte');
+  assert.equal(matchTileCombination(name,options),null);
+}
+assert.equal(matchTileSurfaceCombination('  600각 다크 유광3.png  ',options).version,3);
+assert.equal(matchTileSurfaceCombination('600X1200_아이보리_유광.png',options).version,1);
+assert.equal(matchTileSurfaceCombination('600x1200_다크.png',options),null);
+assert.equal(matchTileSurfaceCombination('600x600_다크_무광_유광.png',options),null);
+assert.equal(matchTileSurfaceCombination('1600x600_다크_무광.png',options),null);
+assert.equal(matchTileSurfaceCombination('tile/finish/300x600/600x600_다크_무광.png',options).status,'AMBIGUOUS');
+assert.equal(matchTileSurfaceCombination('tile/mood/600x600_다크_무광.png',options),null);
+assert.equal(matchTileSurfaceCombination('basin/600x600_다크_무광.png',options),null);
 const fixture = await fs.mkdtemp(path.join(os.tmpdir(), 'bath-image-sync-'));
 const imageDir = path.join(fixture, 'public/images/bathroom-builder');
 const generated = path.join(fixture, 'data/bathroom-builder-image-settings.generated.json');
@@ -76,6 +89,21 @@ try {
   assert.ok(report.files.find(f=>f.file==='300x600 화이트3 (1).png').status==='AMBIGUOUS');
   combos=JSON.parse(await fs.readFile(path.join(fixture,'data/bathroom-builder-tile-images.generated.json'),'utf8'));assert.ok(decodeURIComponent(combos['300x600'].white).endsWith('화이트3.png'));
   assert.equal(report.tileCombinations,1);
+  await add('600x600_다크_무광.png');await add('600x600_다크_무광2.png');await add('600x600_다크_무광3.png');await run();
+  const getSurfaces=async()=>JSON.parse(await fs.readFile(path.join(fixture,'data/bathroom-builder-tile-surface-images.generated.json'),'utf8'));
+  assert.ok(decodeURIComponent((await getSurfaces())['600x600'].dark.matte).endsWith('무광3.png'));
+  await add('600x600-다크-무광3.png',different);await run();
+  assert.ok(decodeURIComponent((await getSurfaces())['600x600'].dark.matte).endsWith('600x600_다크_무광3.png'));
+  await fs.unlink(path.join(imageDir,'600x600-다크-무광3.png'));
+  await add('600x600_dark_matte3.png',different);report=await run();
+  assert.ok(!('600x600' in await getSurfaces()));assert.ok(report.files.some(r=>r.surface && r.status==='AMBIGUOUS'));
+  await fs.unlink(path.join(imageDir,'600x600_dark_matte3.png'));await fs.unlink(path.join(imageDir,'600x600_다크_무광3.png'));await run();
+  assert.ok(decodeURIComponent((await getSurfaces())['600x600'].dark.matte).endsWith('무광2.png'));
+  await fs.mkdir(path.join(imageDir,'tile/finish/600x600'),{recursive:true});await add('tile/finish/600x600/600x600_다크_무광2.png',different);await run();
+  assert.ok((await getSurfaces())['600x600'].dark.matte.includes('/tile/finish/600x600/'));
+  const surfaceStable=JSON.stringify(await getSurfaces());await run();assert.equal(JSON.stringify(await getSurfaces()),surfaceStable);
+  assert.equal((await getSettings())['tileSurface:matte'].showBuilderImage,false);
+  console.log('PASS: surface filename tokens, separators/extensions, version priority, category preference, ambiguous/missing safety, idempotence and no 2-key interference');
   console.log('PASS: recursive scan, versions, dimensions, new per-option images, none images, protected choices, ambiguity, deleted paths, idempotence, format validation and original preservation');
 } finally {
   assert.ok(path.resolve(fixture).startsWith(path.resolve(os.tmpdir()) + path.sep + 'bath-image-sync-'));

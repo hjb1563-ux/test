@@ -106,6 +106,26 @@ export function matchTileCombination(filename, options) {
   return {status:'MATCHED', option, combination:size + ':' + moodId, size, mood:moodId, version:Number(mood[2] || 1), base:size + ':' + moodId};
 }
 
+// Dimensions are parsed before the version suffix; 600각 is the existing square alias.
+export function matchTileSurfaceCombination(filename, options) {
+  if (!categoryAllows(filename, {groupKey:'tileSurface'})) return null;
+  const fileStem = normalizeFilename(path.basename(filename).trim());
+  const name = fileStem.replace(/[_-]/g, '');
+  const parsed = name.match(/^(?:(300|600)[x+](600|1200)|600각)(?:각)?(?:타일분위기|타일|분위기)?(화이트|아이보리|그레이|다크|white|ivory|gray|dark)(무광|유광|matte|glossy)(\d*)$/);
+  if (!parsed) return null;
+  const size = parsed[1] ? `${parsed[1]}x${parsed[2]}` : '600x600';
+  const mood = ({화이트:'white',아이보리:'ivory',그레이:'gray',다크:'dark'})[parsed[3]] ?? parsed[3];
+  const surface = ({무광:'matte',유광:'glossy'})[parsed[4]] ?? parsed[4];
+  const option = options.find(o => o.groupKey === 'tileSurface' && o.id === surface);
+  if (!option || isProtected(option) || !options.some(o => o.groupKey === 'wallTileSize' && o.id === size)
+    || !options.some(o => o.groupKey === 'tile' && o.id === mood && !isProtected(o))) return null;
+  const folderSize = filename.replaceAll('\\','/').match(/(?:^|\/)tile\/finish\/([^/]+)\//)?.[1];
+  if (folderSize && folderSize !== size) return {status:'AMBIGUOUS',candidates:[folderSize,size]};
+  return {status:'MATCHED',option,combination:`${size}:${mood}:${surface}`,size,mood,surface,
+    version:Number(parsed[5] || 1),base:`${size}:${mood}:${surface}`,
+    canonicalFilename:fileStem === `${size}_${parsed[3]}_${parsed[4]}${parsed[5]}`};
+}
+
 export function matchFilename(filename, options, aliases = {}) {
   const name = normalizeFilename(path.basename(filename));
   let candidates = findCandidates(name, options, aliases), version = 1, base = name;
@@ -161,7 +181,7 @@ export async function syncImages({ root = projectRoot, options, aliases } = {}) 
       results.push({ file, status: 'IGNORED', reason: 'archive or placeholder' }); continue;
     }
     const url = urlFor(file);
-    let match = matchTileCombination(file, options);
+    let match = matchTileSurfaceCombination(file, options) ?? matchTileCombination(file, options);
     if (!match) {
       match = matchFilename(file, options, aliases);
       const explicit = options.filter(o => aliases.preferredFiles?.[o.key] === file);
@@ -212,7 +232,7 @@ export async function syncImages({ root = projectRoot, options, aliases } = {}) 
   }
   const combinations = {};
   const previousCombinations = await optionalJSON(path.join(root, 'data/bathroom-builder-tile-images.generated.json'));
-  for (const key of new Set(results.filter(r => r.combination && r.status === 'MATCHED').map(r => r.combination))) {
+  for (const key of new Set(results.filter(r => r.combination && !r.surface && r.status === 'MATCHED').map(r => r.combination))) {
     const candidates = results.filter(r => r.combination === key && r.status === 'MATCHED');
     const highest = Math.max(...candidates.map(r => r.version));
     const latest = candidates.filter(r => r.version === highest);
@@ -226,23 +246,41 @@ export async function syncImages({ root = projectRoot, options, aliases } = {}) 
     for (const row of candidates) if (row.version < highest) row.status = 'OLDER_VERSION';
     if (chosen) (combinations[size] ??= {})[mood] = chosen.url;
   }
+  const surfaceCombinations = {};
+  for (const key of new Set(results.filter(r => r.surface && r.status === 'MATCHED').map(r => r.combination))) {
+    const candidates = results.filter(r => r.combination === key && r.status === 'MATCHED');
+    const highest = Math.max(...candidates.map(r => r.version));
+    const latest = candidates.filter(r => r.version === highest);
+    // Prefer the existing category folder after selecting the newest semantic version.
+    const exact = latest.filter(r => r.canonicalFilename);
+    const named = exact.length ? exact : latest;
+    const canonical = named.filter(r => r.file.startsWith(`tile/finish/${r.size}/`));
+    const preferred = canonical.length ? canonical : named;
+    let chosen;
+    if (preferred.every(r => r.hash === preferred[0].hash)) chosen = preferred[0];
+    else for (const row of preferred) { row.status = 'AMBIGUOUS'; row.candidates = preferred.map(r => r.file); }
+    for (const row of candidates) if (row.version < highest) row.status = 'OLDER_VERSION';
+    if (chosen) ((surfaceCombinations[chosen.size] ??= {})[chosen.mood] ??= {})[chosen.surface] = chosen.url;
+  }
   await writeJSON(manifestPath, settings);
   await writeJSON(path.join(root, 'data/bathroom-builder-tile-images.generated.json'), combinations);
+  await writeJSON(path.join(root, 'data/bathroom-builder-tile-surface-images.generated.json'), surfaceCombinations);
   const report = { total: files.length, matchedFiles: results.filter(r => r.option && ['MATCHED', 'OLDER_VERSION'].includes(r.status)).length,
     newImages: changes.filter(c => c.action === 'NEW IMAGE').length, updatedImages: changes.filter(c => c.action === 'UPDATED').length,
     unmatched: results.filter(r => ['UNMATCHED', 'OPTION_NOT_FOUND'].includes(r.status)).length,
     tileCombinations: Object.values(combinations).reduce((count, moods) => count + Object.keys(moods).length, 0),
+    tileSurfaceCombinations: Object.values(surfaceCombinations).flatMap(Object.values).reduce((count, surfaces) => count + Object.keys(surfaces).length, 0),
     ambiguous: results.filter(r => r.status === 'AMBIGUOUS').length, files: results, changes };
   await writeJSON(path.join(root, 'data/bathroom-builder-image-sync-report.json'), {
     ...report,
-    files: results.map(({ file, status, url, option, combination, candidates, candidateLabels }) => ({ file, status, url, option: option?.key, combination, candidates, candidateLabels })),
+    files: results.map(({ file, status, url, option, combination, surface, candidates, candidateLabels }) => ({ file, status, url, option: option?.key, combination, surface, candidates, candidateLabels })),
   });
   // Only selected inbox originals need to be included in a Git/Vercel checkout.
   const ignorePath = path.join(root, '.gitignore');
   let ignore = ''; try { ignore = await fs.readFile(ignorePath, 'utf8'); } catch(e) { if (e.code !== 'ENOENT') throw e; }
   const marker = '# BEGIN builder image sources';
   const endMarker = '# END builder image sources';
-  const selected = [...new Set([...Object.values(settings).filter(s => s.showBuilderImage).map(s => s.builderImage), ...Object.values(combinations).flatMap(moods => Object.values(moods))].map(decodeURIComponent).filter(url => url.startsWith(prefix + 'inbox/')))];
+  const selected = [...new Set([...Object.values(settings).filter(s => s.showBuilderImage).map(s => s.builderImage), ...Object.values(combinations).flatMap(Object.values), ...Object.values(surfaceCombinations).flatMap(Object.values).flatMap(Object.values)].map(decodeURIComponent).filter(url => url.startsWith(prefix + 'inbox/')))];
   const escapeGlob = value => value.replace(/([*?\[\]\\])/g, '\\$1');
   const block = [marker, '!public/images/bathroom-builder/inbox/**/', ...selected.sort().map(url => '!' + escapeGlob('public' + url)), endMarker].join('\n');
   const nextIgnore = ignore.includes(marker) ? ignore.replace(new RegExp(marker + '[\\s\\S]*?' + endMarker), block) : ignore.trimEnd() + '\n\n' + block + '\n';
@@ -250,7 +288,7 @@ export async function syncImages({ root = projectRoot, options, aliases } = {}) 
   return report;
 }
 export function printReport(report) {
-  console.log(`IMAGE SCAN: ${report.total}; MATCHED: ${report.matchedFiles}; NEW IMAGE: ${report.newImages}; UPDATED: ${report.updatedImages}; UNMATCHED: ${report.unmatched}; AMBIGUOUS: ${report.ambiguous}; TILE COMBINATIONS: ${report.tileCombinations}`);
+  console.log(`IMAGE SCAN: ${report.total}; MATCHED: ${report.matchedFiles}; NEW IMAGE: ${report.newImages}; UPDATED: ${report.updatedImages}; UNMATCHED: ${report.unmatched}; AMBIGUOUS: ${report.ambiguous}; TILE COMBINATIONS: ${report.tileCombinations}; SURFACE COMBINATIONS: ${report.tileSurfaceCombinations}`);
   for (const action of ['UPDATED', 'NEW IMAGE', 'DISABLED', 'UNCHANGED']) {
     const rows = report.changes.filter(c => c.action === action && (action !== 'UNCHANGED' || c.next.showBuilderImage));
     console.log(`\n${action}: ${rows.length}`);

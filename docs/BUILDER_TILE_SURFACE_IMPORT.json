@@ -1,0 +1,418 @@
+{
+  "inbox": "public/images/bathroom-builder/inbox",
+  "scanned": 58,
+  "moved": [
+    {
+      "from": "inbox/300x600각 그레이 무광.png",
+      "to": "tile/finish/300x600/300x600각 그레이 무광.png",
+      "size": "300x600",
+      "mood": "gray",
+      "surface": "matte",
+      "version": 1,
+      "bytes": 1891558,
+      "hash": "8f97fd1050770cd1f68f4668ec5a3811a0c345698f36789e751cf54419582cd5"
+    },
+    {
+      "from": "inbox/300x600각 그레이 유광.png",
+      "to": "tile/finish/300x600/300x600각 그레이 유광.png",
+      "size": "300x600",
+      "mood": "gray",
+      "surface": "glossy",
+      "version": 1,
+      "bytes": 1702271,
+      "hash": "998e4f806f8811c84acf0f20c7a3dd71fa68ebebc9b7aa958a4799098b798989"
+    },
+    {
+      "from": "inbox/300x600각 다크 무광.png",
+      "to": "tile/finish/300x600/300x600각 다크 무광.png",
+      "size": "300x600",
+      "mood": "dark",
+      "surface": "matte",
+      "version": 1,
+      "bytes": 1842659,
+      "hash": "cfaf616d986570c7a8445b37a945f739ee4f7787e68b15830a2af062975b657c"
+    },
+    {
+      "from": "inbox/300x600각 다크 유광.png",
+      "to": "tile/finish/300x600/300x600각 다크 유광.png",
+      "size": "300x600",
+      "mood": "dark",
+      "surface": "glossy",
+      "version": 1,
+      "bytes": 1729840,
+      "hash": "a1eee0c178863f992a48a40bd6e39537833a456afce1e0b41e74f6f01d28c14b"
+    },
+    {
+      "from": "inbox/300x600각 아이보리 무광.png",
+      "to": "tile/finish/300x600/300x600각 아이보리 무광.png",
+      "size": "300x600",
+      "mood": "ivory",
+      "surface": "matte",
+      "version": 1,
+      "bytes": 1698797,
+      "hash": "c9c08932d05a1a282f4a6cd80d8ad085433fd6576799b914c34e360753d2d708"
+    },
+    {
+      "from": "inbox/300x600각 아이보리 유광.png",
+      "to": "tile/finish/300x600/300x600각 아이보리 유광.png",
+      "size": "300x600",
+      "mood": "ivory",
+      "surface": "glossy",
+      "version": 1,
+      "bytes": 1512549,
+      "hash": "32d35659e6213a14e1f10da8976c10181e2d5339fd978890bd3b88d59a4d2368"
+    },
+    {
+      "from": "inbox/300x600각 화이트 무광.png",
+      "to": "tile/finish/300x600/300x600각 화이트 무광.png",
+      "size": "300x600",
+      "mood": "white",
+      "surface": "matte",
+      "version": 1,
+      "bytes": 1412557,
+      "hash": "b32b8ca3ab516ec00373898ffc34783c0ec6588cdbe591d1ffacccee69f6bee3"
+    },
+    {
+      "from": "inbox/300x600각 화이트 유광.png",
+      "to": "tile/finish/300x600/300x600각 화이트 유광.png",
+      "size": "300x600",
+      "mood": "white",
+      "surface": "glossy",
+      "version": 1,
+      "bytes": 1427652,
+      "hash": "ca63fe352847652b3d7109540f6431f6edbc5c19e215c484eb600c6492551f09"
+    },
+    {
+      "from": "inbox/600각 그레이 무광.png",
+      "to": "tile/finish/600x600/600각 그레이 무광.png",
+      "size": "600x600",
+      "mood": "gray",
+      "surface": "matte",
+      "version": 1,
+      "bytes": 2260227,
+      "hash": "da148d73e4ad6e04ee061193ceaed70516bf459f7024f766f065259799c4c424"
+    },
+    {
+      "from": "inbox/600각 그레이 유광.png",
+      "to": "tile/finish/600x600/600각 그레이 유광.png",
+      "size": "600x600",
+      "mood": "gray",
+      "surface": "glossy",
+      "version": 1,
+      "bytes": 2251484,
+      "hash": "6b272c504fa46a915ff9c22fb9e00d7e2160a3efb4e15346c2739b8bc228bc70"
+    },
+    {
+      "from": "inbox/600각 다크 무광.png",
+      "to": "tile/finish/600x600/600각 다크 무광.png",
+      "size": "600x600",
+      "mood": "dark",
+      "surface": "matte",
+      "version": 1,
+      "bytes": 2201365,
+      "hash": "980ed411e7a382e7c31e9bfacfe35709925d129dafdf3c8fbade79611ed8ad67"
+    },
+    {
+      "from": "inbox/600각 다크 유광.png",
+      "to": "tile/finish/600x600/600각 다크 유광.png",
+      "size": "600x600",
+      "mood": "dark",
+      "surface": "glossy",
+      "version": 1,
+      "bytes": 1795591,
+      "hash": "46aa7fe2b086618b03eee85ce0d02e8b4fda8182ae82232f5523d0eb9b96fbd6"
+    },
+    {
+      "from": "inbox/600각 아이보리 무광.png",
+      "to": "tile/finish/600x600/600각 아이보리 무광.png",
+      "size": "600x600",
+      "mood": "ivory",
+      "surface": "matte",
+      "version": 1,
+      "bytes": 1754567,
+      "hash": "b8f7063fc49886692bf12e161658a79d29995fff97104e8b5399604507f6907b"
+    },
+    {
+      "from": "inbox/600각 아이보리 유광.png",
+      "to": "tile/finish/600x600/600각 아이보리 유광.png",
+      "size": "600x600",
+      "mood": "ivory",
+      "surface": "glossy",
+      "version": 1,
+      "bytes": 1589294,
+      "hash": "420e874e3b65a3b7021b98c04e6f88356d50e441352d82a7c736997f6847f7c9"
+    },
+    {
+      "from": "inbox/600각 화이트 무광.png",
+      "to": "tile/finish/600x600/600각 화이트 무광.png",
+      "size": "600x600",
+      "mood": "white",
+      "surface": "matte",
+      "version": 1,
+      "bytes": 1567140,
+      "hash": "b7a878d4f3cc4e9278c68db18256602b169078fedd62d4ef3ea15d940e36de57"
+    },
+    {
+      "from": "inbox/600각 화이트 유광.png",
+      "to": "tile/finish/600x600/600각 화이트 유광.png",
+      "size": "600x600",
+      "mood": "white",
+      "surface": "glossy",
+      "version": 1,
+      "bytes": 1413807,
+      "hash": "e9ee822620444562d54c675e5e1161a29786f191bbd4fb4f6c86ba948186b32b"
+    },
+    {
+      "from": "inbox/600x1200각 그레이 무광.png",
+      "to": "tile/finish/600x1200/600x1200각 그레이 무광.png",
+      "size": "600x1200",
+      "mood": "gray",
+      "surface": "matte",
+      "version": 1,
+      "bytes": 1767978,
+      "hash": "cc530e2ffe7e75ae7ede9d43ab1292d9a68b234d5fa6f61e11ac8191cb11004d"
+    },
+    {
+      "from": "inbox/600x1200각 그레이 유광.png",
+      "to": "tile/finish/600x1200/600x1200각 그레이 유광.png",
+      "size": "600x1200",
+      "mood": "gray",
+      "surface": "glossy",
+      "version": 1,
+      "bytes": 1667531,
+      "hash": "bbd29d1da8c5696416c9bba7ff281b72f28ca5fc603bcca1e7890b82456d05e0"
+    },
+    {
+      "from": "inbox/600x1200각 다크 무광.png",
+      "to": "tile/finish/600x1200/600x1200각 다크 무광.png",
+      "size": "600x1200",
+      "mood": "dark",
+      "surface": "matte",
+      "version": 1,
+      "bytes": 1846062,
+      "hash": "aa91e6f5304196e6ff53aa17adef65d25eb7e591864c61265d7c764ee9fc8d94"
+    },
+    {
+      "from": "inbox/600x1200각 다크 유광.png",
+      "to": "tile/finish/600x1200/600x1200각 다크 유광.png",
+      "size": "600x1200",
+      "mood": "dark",
+      "surface": "glossy",
+      "version": 1,
+      "bytes": 1734555,
+      "hash": "c0b713a4bedc5e29d8cdb9d03fee7f0ab8e6407987765c4aef78722880eb63ca"
+    },
+    {
+      "from": "inbox/600x1200각 아이보리 무광.png",
+      "to": "tile/finish/600x1200/600x1200각 아이보리 무광.png",
+      "size": "600x1200",
+      "mood": "ivory",
+      "surface": "matte",
+      "version": 1,
+      "bytes": 1583432,
+      "hash": "09c7073a3d5cbe25efac57bba9ff5b6ad49c74b6108d51d7f0a1d16a2f62a59f"
+    },
+    {
+      "from": "inbox/600x1200각 아이보리 유광.png",
+      "to": "tile/finish/600x1200/600x1200각 아이보리 유광.png",
+      "size": "600x1200",
+      "mood": "ivory",
+      "surface": "glossy",
+      "version": 1,
+      "bytes": 1534311,
+      "hash": "99531d4802d434b00ce03a45bcedf163c45aa9581a2aad78e8443ad7e83d570c"
+    },
+    {
+      "from": "inbox/600x1200각 화이트 무광.png",
+      "to": "tile/finish/600x1200/600x1200각 화이트 무광.png",
+      "size": "600x1200",
+      "mood": "white",
+      "surface": "matte",
+      "version": 1,
+      "bytes": 1435495,
+      "hash": "05900f3a38d8194a853d90150af7f89d893fb0e971d7733ae5aa1ae48c38f006"
+    },
+    {
+      "from": "inbox/600x1200각 화이트 유광.png",
+      "to": "tile/finish/600x1200/600x1200각 화이트 유광.png",
+      "size": "600x1200",
+      "mood": "white",
+      "surface": "glossy",
+      "version": 1,
+      "bytes": 1448795,
+      "hash": "cfa813ad37005c80ebb0bca7c24809f65e3ca73122b0f05ebe674d8f9fa60a53"
+    }
+  ],
+  "retained": [
+    {
+      "file": "inbox/그레이 타일.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/니켈 액세서리.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/다크 타일.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/도막 방수.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/도어형 샤워부스.png",
+      "status": "OLDER_VERSION",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/라인 배수구.png",
+      "status": "OLDER_VERSION",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/무광 타일.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/문턱 인조대리석 마감.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/문턱 타일 마감.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/반신욕 욕조.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/벽걸이형 변기.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/슬라이딩 거울장.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/아이보리 타일.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/액체 방수.png",
+      "status": "UNMATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/액체+도막 방수.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/언더볼 세면대.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/원피스 변기.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/유광 타일.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/일반 거울.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/일반 거울장.png",
+      "status": "OLDER_VERSION",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/일반 사각 배수구.png",
+      "status": "OLDER_VERSION",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/일반 세면대.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/일반 욕조.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/조적 욕조.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/크롬 액세서리.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/타일 삽입형 배수구.png",
+      "status": "OLDER_VERSION",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/탑볼 세면대.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/투피스 변기.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/트렌치 드레인 배수구.png",
+      "status": "OLDER_VERSION",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/화이트 타일.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/LED 거울.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/LED 거울장.png",
+      "status": "UNMATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/smc 돔천장.png",
+      "status": "MATCHED",
+      "reason": "Not a unique current size + mood + surface combination"
+    },
+    {
+      "file": "inbox/smc 평천장.png",
+      "status": "OLDER_VERSION",
+      "reason": "Not a unique current size + mood + surface combination"
+    }
+  ]
+}

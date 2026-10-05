@@ -186,7 +186,7 @@ for(const [key,id] of [['bathtub','none'],['partitionShower','none'],['cabinet',
 }
 assert.equal(consultation.consultationRows({sink:'other',sinkOther:''}).find(r=>r.key==='sink').pending,true);
 tree=mount(11);tree=choose(tree,'lighting','천장 매립 조명');assert.equal(consultation.consultationRows(state()).find(r=>r.key==='lighting').pending,false);tree=choose(tree,'lighting','천장 매립 조명');assert.equal(consultation.consultationRows(state()).find(r=>r.key==='lighting').label,'미정');
-tree=mount();for(let i=0;i<15;i++){assert.equal(all(tree,n=>n.props.className==='builderChoiceCard selected').length,0);assert.equal(all(tree,n=>n.type==='img').length,0);tree=click(tree,'다음');}assert.equal(all(tree,n=>n.type==='progress')[0].props.value,16);assert.equal(consultation.consultationRows(state()).filter(r=>r.pending).length,25);
+tree=mount();for(let i=0;i<15;i++){assert.equal(all(tree,n=>n.props.className==='builderChoiceCard selected').length,0);assert.equal(all(tree,n=>n.type==='img').length,i===3?2:0);assert.equal(all(tree,n=>n.props.className==='selectedHeroImage').length,0);tree=click(tree,'다음');}assert.equal(all(tree,n=>n.type==='progress')[0].props.value,16);assert.equal(consultation.consultationRows(state()).filter(r=>r.pending).length,25);
 all(tree,n=>n.props['aria-label']==='세면대 & 변기 수정')[0].props.onClick();tree=render();assert.equal(all(tree,n=>n.type==='progress')[0].props.value,5);assert.equal(all(tree,n=>n.props['aria-checked']===true).length,0);
 for(const [id,label] of [['shower','일반 샤워&욕조 수전'],['concealed-shower','매립 샤워&욕조 수전']]) {
  const rows=consultation.consultationRows({showerFaucet:id});assert.equal(rows.find(r=>r.key==='showerFaucet').label,label);assert.ok(consultation.consultationText(rows,'','').includes(label));
@@ -306,3 +306,22 @@ assert.equal(state().tile,'white');assert.ok(all(tree,n=>n.type==='img'&&n.props
 assert.deepEqual(Array.from(JSON.parse(storage.get(stateKey)).imageHistoryOrder),['wallTileSize:600x600','tile:white']);
 assert.ok(!text(tree).includes('왜 선택하나요?'));
 console.log('PASS: tile 12-combination resolver, missing/other fallback, size-change preview/history and independent selections');
+
+for(const size of ['300x600','600x600','600x1200'])for(const mood of ['white','ivory','gray','dark'])for(const surface of ['matte','glossy']) {
+ const url=tileResolver.tileSurfaceImages[size][mood][surface];assert.equal(tileResolver.resolveTileSurfaceImage(size,mood,surface,null),url);
+ const choice=getGroup('tileSurface').choices.find(c=>c.id===surface);
+ assert.equal(tileResolver.resolveBuilderImage('tileSurface',choice,{wallTileSize:size,tile:mood}).builderImage,url);
+}
+for(const size of ['600×600','600X600',' 600 x 600 '])assert.equal(tileResolver.normalizeTileSize(size),'600x600');
+for(const values of [{},{wallTileSize:'other',tile:'dark'},{wallTileSize:'600x600'},{tile:'dark'},{wallTileSize:'600x600',tile:'missing'}]) {
+ const choice=getGroup('tileSurface').choices[0];assert.equal(tileResolver.resolveBuilderImage('tileSurface',choice,values).builderImage,choice.builderImage);
+}
+assert.equal(tileResolver.resolveTileSurfaceImage('600x600','dark','missing','fallback.png'),'fallback.png');
+assert.equal(tileResolver.resolveTileSurfaceImage('600x600','dark','missing'),null);
+const missingSurface=tileResolver.tileSurfaceImages['600x1200'].dark.glossy;
+delete tileResolver.tileSurfaceImages['600x1200'].dark.glossy;
+assert.equal(tileResolver.resolveTileSurfaceImage('600x1200','dark','glossy','fallback.png'),'fallback.png');
+tileResolver.tileSurfaceImages['600x1200'].dark.glossy=missingSurface;
+const disabled={...getGroup('tileSurface').choices[0],builderImage:null,showBuilderImage:false};
+assert.equal(tileResolver.resolveBuilderImage('tileSurface',disabled,{wallTileSize:'600x600',tile:'dark'}),disabled);
+console.log('PASS: 24 surface combinations, shared option/history resolver, normalized dimensions and missing/custom/text-only fallbacks');

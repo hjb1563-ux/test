@@ -5,6 +5,7 @@ import { ChevronDown } from 'lucide-react';
 import type { ChoiceGroup } from '../data/bathroom-options';
 import { customTextKey, selectedIds, selectionLabel, type BathroomValues } from '../data/bathroom-selection';
 import BuilderChoiceCard from './BuilderChoiceCard';
+import { resolveBuilderImage } from '../data/bathroom-builder-image-resolver';
 
 export default function BuilderChoiceGroup({ group, number, values, onSelect, onCustomText, accordion }: {
   group: ChoiceGroup;
@@ -47,6 +48,7 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
       {group.choices.map((choice, index) => {
         const selected = ids.includes(choice.id);
         return <Fragment key={choice.id}><BuilderChoiceCard label={choice.name} selected={selected} multiple={group.multiple}
+          imageOption={group.key === 'tileSurface' ? resolveBuilderImage(group.key, choice, values) : undefined}
           tabIndex={group.multiple || selected || (!ids.length && index === 0) ? 0 : -1}
           onSelect={(event) => {
             onSelect(group.key, choice.id, group.multiple);
@@ -78,6 +80,9 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
       .design .builderChoiceCard.selected{border-color:#a87359;background:#fff5ef}
       .design .builderChoiceCard:focus-visible{outline:2px solid #a87359;outline-offset:3px}
       .design .builderChoiceLabel{min-width:0;white-space:normal;overflow-wrap:anywhere;text-align:left}
+      .design .builderSurfaceThumbnail{display:block;width:56px;height:42px;flex:0 0 56px;border-radius:4px;overflow:hidden;background:#fffdf9}
+      .design .builderSurfaceThumbnail img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
+      .design .builderSurfaceThumbnail + .builderChoiceLabel{flex:1}
       .design .builderChoiceIndicator{display:flex;align-items:center;justify-content:center;width:19px;height:19px;flex:0 0 19px;border:1px solid #c5beb3;border-radius:50%;color:#96664f}
       .design .builderChoiceIndicator--multiple{border-radius:5px}
       .design .builderChoiceCard.selected .builderChoiceIndicator{border-color:#a87359;background:#fffaf5}
