@@ -36,9 +36,10 @@ const builderSteps: BathroomStep[] = bathroomSteps.filter(step => step.key !== '
         })),
         textChoice('other', '기타', true),
       ] };
-      if (group.key === 'niche') return { ...group, title: '샴푸박스', choices: group.choices.map(choice => ({
-        ...choice, name: choice.name.replace('니치', '샴푸박스'),
-      })) };
+      if (group.key === 'niche') return { ...group, title: '샴푸박스', choices: [
+        ...group.choices.map(choice => ({ ...choice, name: choice.name.replace('니치', '샴푸박스') })),
+        textChoice('partition-niche', '파티션 샴푸박스'),
+      ] };
       if (group.key === 'waterproofing') return { ...group, choices: group.choices.filter(choice => choice.id !== 'liquid-waterproofing') };
       if (group.key === 'cabinet') return { ...group, choices: group.choices.map(choice =>
         choice.id === 'led-cabinet' ? textChoice('standard-cabinet', '일반 거울장') : choice) };

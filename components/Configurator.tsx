@@ -13,7 +13,7 @@ import { normalizeImageHistoryOrder, selectedImageItems } from '../data/bathroom
 import { defaultBathroomValues, bathroomSteps as legacySteps } from '../data/bathroom-options';
 import { builderBathroomSteps as bathroomSteps } from '../data/bathroom-builder-options';
 import { guideBySlug } from '../data/guides/catalog';
-import { STORAGE, readProject, consultationEditUrl, phases, stepReasons, consultationRows } from '../data/bathroom-consultation';
+import { STORAGE, readProject, consultationEditUrl, phases, consultationRows } from '../data/bathroom-consultation';
 import ConsultationSummary, { ConsultationCounts } from './ConsultationSummary';
 
 type Values = BathroomValues;
@@ -113,7 +113,9 @@ export default function Configurator() {
     const selected = Array.isArray(before) ? before.includes(id) : before === id;
     const nextValues = toggleSelection(values, key, id, multiple);
     const hasImage = !selected && choice?.showBuilderImage && choice.builderImage;
-    setActivePreview(hasImage ? { step: current, id: `${group!.title}:${id}` } : null);
+    const moodGroup = key === 'wallTileSize' && hasImage ? step.groups.find(group => group.key === 'tile') : undefined;
+    const mood = moodGroup?.choices.find(choice => choice.id === nextValues.tile && choice.showBuilderImage);
+    setActivePreview(hasImage ? { step: current, id: mood ? `${moodGroup!.title}:${mood.id}` : `${group!.title}:${id}` } : null);
     setImageHistoryOrder(old => {
       const remaining = normalizeImageHistoryOrder(old, nextValues);
       const imageId = `${key}:${id}`;
@@ -196,7 +198,6 @@ export default function Configurator() {
         <div className="stepMeta">STEP {String(current + 1).padStart(2, '0')} / {bathroomSteps.length} <span>{step.title}</span></div>
         {consultationReturn}
         <div className="stepHeading"><h1 id="builder-question" tabIndex={-1}>{step.question}</h1><button className="guideButton" onClick={() => setGuideOpen(true)}><BookOpen size={15} /> 가이드 보기</button></div>
-        <p className="stepIntro"><strong>왜 선택하나요?</strong><br /><span className="stepReasonFull">{stepReasons[current]}</span><span className="stepReasonShort">{stepReasons[current].split('. ')[0].replace(/\.$/, '')}.</span></p>
         {current === 0 && <p className="stepIntro builderFirstHint">모르는 항목은 선택하지 않고 넘어가도 괜찮아요. 선택하지 않은 항목은 자동으로 미정으로 정리됩니다.</p>}
         <BuilderSiteNotice placement="mobile" />
         <BuilderSelectionSections key={step.key} groups={step.groups} values={values} onSelect={update} onCustomText={(key, text) => { setActivePreview(null); setValues(old => updateCustomText(old, key, text)); }} />

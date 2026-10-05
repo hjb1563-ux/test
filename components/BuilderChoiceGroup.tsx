@@ -55,7 +55,7 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
     {customChoice?.id === choice.id && <label className="builderCustomText" htmlFor={`builder-${group.key}-other`}>
       {group.title} · 기타 내용
       <input id={`builder-${group.key}-other`} type="text" value={typeof draft === 'string' ? draft : ''}
-        placeholder="원하는 기타 사항을 입력해주세요."
+        placeholder={group.key === 'wallTileSize' ? '대형 타일, 모자이크 타일, 박판 타일, 포인트 타일···' : '원하는 기타 사항을 입력해주세요.'}
         onChange={event => onCustomText(group.key, event.target.value)} />
     </label>}</Fragment>;
       })}
@@ -84,6 +84,9 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
       @media(prefers-reduced-motion:reduce){.design .builderChoiceCard{transition:none}}
       .design .builderCustomText{display:block;margin-top:12px;font-size:12px;color:var(--muted)}
       .design .builderCustomText input{display:block;box-sizing:border-box;width:100%;margin-top:6px;padding:12px;border:1px solid var(--line);border-radius:7px;font:inherit;color:var(--ink);background:#fffdf9}
+      .design #builder-wallTileSize-other::placeholder{font-size:12px;letter-spacing:-.02em}
+      @media(min-width:768px) and (max-width:1199px){.design #builder-wallTileSize-other::placeholder{font-size:11.5px}}
+      @media(min-width:1200px){.design #builder-wallTileSize-other::placeholder{font-size:11px;letter-spacing:-.025em}}
       .design #builder-accessory-other,.design #builder-ventilation-other{min-height:48px;font-size:14px}
       .design .builderCustomText input:focus{outline:2px solid var(--accent);outline-offset:2px}
     `}</style>

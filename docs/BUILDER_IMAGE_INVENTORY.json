@@ -1,0 +1,2631 @@
+{
+  "root": "public/images/bathroom-builder",
+  "moves": [
+    {
+      "key": "jendai:new",
+      "from": "inbox/젠다이 신설2.png",
+      "to": "structure/jendai/젠다이 신설2.png"
+    },
+    {
+      "key": "partitionShower:fixed-glass",
+      "from": "inbox/샤워부스 유리 고정형2.png",
+      "to": "structure/partition-shower-booth/샤워부스 유리 고정형2.png"
+    },
+    {
+      "key": "partitionShower:door-booth",
+      "from": "inbox/샤워부스 도어형2.png",
+      "to": "structure/partition-shower-booth/샤워부스 도어형2.png"
+    },
+    {
+      "key": "wallTileSize:300x600",
+      "from": "inbox/벽 타일 300x600.png",
+      "to": "tile/size/벽 타일 300x600.png"
+    },
+    {
+      "key": "wallTileSize:600x600",
+      "from": "inbox/벽 타일 600x600.png",
+      "to": "tile/size/벽 타일 600x600.png"
+    },
+    {
+      "key": "wallTileSize:600x1200",
+      "from": "inbox/벽타일600x1200.png",
+      "to": "tile/size/벽타일600x1200.png"
+    },
+    {
+      "key": "cabinet:standard-cabinet",
+      "from": "inbox/일반 거울장2.png",
+      "to": "cabinet/bathroom-cabinet/일반 거울장2.png"
+    },
+    {
+      "key": "ceiling:smc-flat",
+      "from": "inbox/SMC 평천장2.png",
+      "to": "ceiling/SMC 평천장2.png"
+    },
+    {
+      "key": "faucet:one-hole",
+      "from": "inbox/일반 세면 수전.png",
+      "to": "faucet/basin/일반 세면 수전.png"
+    },
+    {
+      "key": "showerFaucet:shower",
+      "from": "inbox/일반 샤워 수전.png",
+      "to": "faucet/shower/일반 샤워 수전.png"
+    },
+    {
+      "key": "showerFaucet:concealed-shower",
+      "from": "inbox/매립 샤워&욕조 수전 .png",
+      "to": "faucet/shower/매립 샤워&욕조 수전 .png"
+    },
+    {
+      "key": "showerFaucet:rain",
+      "from": "inbox/해바라기 샤워 수전.png",
+      "to": "faucet/shower/해바라기 샤워 수전.png"
+    },
+    {
+      "key": "drain:square-drain",
+      "from": "inbox/일반 사각 배수구2.png",
+      "to": "drainage/일반 사각 배수구2.png"
+    },
+    {
+      "key": "drain:tile-drain",
+      "from": "inbox/타일 삽입형 배수구2.png",
+      "to": "drainage/타일 삽입형 배수구2.png"
+    },
+    {
+      "key": "drain:linear-drain",
+      "from": "inbox/라인 배수구2.png",
+      "to": "drainage/라인 배수구2.png"
+    },
+    {
+      "key": "drain:trench-drain",
+      "from": "inbox/트렌치 드레인 배수구2.png",
+      "to": "drainage/트렌치 드레인 배수구2.png"
+    },
+    {
+      "key": "lighting:light-recessed",
+      "from": "inbox/천장 매립 조명.png",
+      "to": "lighting/천장 매립 조명.png"
+    },
+    {
+      "key": "lighting:indirect",
+      "from": "inbox/천장 간접 조명.png",
+      "to": "lighting/천장 간접 조명.png"
+    },
+    {
+      "key": "lighting:cabinet-indirect",
+      "from": "inbox/욕실장 간접 조명.png",
+      "to": "lighting/욕실장 간접 조명.png"
+    },
+    {
+      "key": "grout:grout-cement",
+      "from": "inbox/시멘트(메지) 줄눈.png",
+      "to": "grout/시멘트(메지) 줄눈.png"
+    },
+    {
+      "key": "grout:grout-epoxy",
+      "from": "inbox/에폭시 줄눈.png",
+      "to": "grout/에폭시 줄눈.png"
+    },
+    {
+      "key": "grout:grout-polyurea",
+      "from": "inbox/폴리우레아 줄눈.png",
+      "to": "grout/폴리우레아 줄눈.png"
+    },
+    {
+      "key": "tile-combination:300x600",
+      "from": "inbox/300+600각 타일 분위기 그레이.png",
+      "to": "tile/mood/300x600/300+600각 타일 분위기 그레이.png"
+    },
+    {
+      "key": "tile-combination:300x600",
+      "from": "inbox/300+600각 타일 분위기 다크.png",
+      "to": "tile/mood/300x600/300+600각 타일 분위기 다크.png"
+    },
+    {
+      "key": "tile-combination:300x600",
+      "from": "inbox/300+600각 타일 분위기 아이보리.png",
+      "to": "tile/mood/300x600/300+600각 타일 분위기 아이보리.png"
+    },
+    {
+      "key": "tile-combination:300x600",
+      "from": "inbox/300+600각 타일 분위기 화이트 .png",
+      "to": "tile/mood/300x600/300+600각 타일 분위기 화이트2.png"
+    },
+    {
+      "key": "tile-combination:600x1200",
+      "from": "inbox/600+1200각 타일 분위기 그레이.png",
+      "to": "tile/mood/600x1200/600+1200각 타일 분위기 그레이.png"
+    },
+    {
+      "key": "tile-combination:600x1200",
+      "from": "inbox/600+1200각 타일 분위기 다크.png",
+      "to": "tile/mood/600x1200/600+1200각 타일 분위기 다크.png"
+    },
+    {
+      "key": "tile-combination:600x1200",
+      "from": "inbox/600+1200각 타일 분위기 아이보리.png",
+      "to": "tile/mood/600x1200/600+1200각 타일 분위기 아이보리.png"
+    },
+    {
+      "key": "tile-combination:600x1200",
+      "from": "inbox/600+1200각 타일 분위기 화이트.png",
+      "to": "tile/mood/600x1200/600+1200각 타일 분위기 화이트.png"
+    },
+    {
+      "key": "tile-combination:600x600",
+      "from": "inbox/600각 타일 분위기 그레이.png",
+      "to": "tile/mood/600x600/600각 타일 분위기 그레이.png"
+    },
+    {
+      "key": "tile-combination:600x600",
+      "from": "inbox/600각 타일 분위기 다크.png",
+      "to": "tile/mood/600x600/600각 타일 분위기 다크.png"
+    },
+    {
+      "key": "tile-combination:600x600",
+      "from": "inbox/600각 타일 분위기 아이보리.png",
+      "to": "tile/mood/600x600/600각 타일 분위기 아이보리.png"
+    },
+    {
+      "key": "tile-combination:600x600",
+      "from": "inbox/600각 타일 분위기 화이트 .png",
+      "to": "tile/mood/600x600/600각 타일 분위기 화이트 .png"
+    }
+  ],
+  "duplicates": [
+    [
+      "public/images/bathroom/showroom-v1.png",
+      "public/images/bathroom-builder/accessories/placeholder.jpg",
+      "public/images/bathroom-builder/basin/placeholder.jpg",
+      "public/images/bathroom-builder/bathtub/placeholder.jpg",
+      "public/images/bathroom-builder/cabinet/placeholder.jpg",
+      "public/images/bathroom-builder/ceiling/placeholder.jpg",
+      "public/images/bathroom-builder/demolition/placeholder.jpg",
+      "public/images/bathroom-builder/drainage/placeholder.jpg",
+      "public/images/bathroom-builder/faucet/placeholder.jpg",
+      "public/images/bathroom-builder/grout/placeholder.jpg",
+      "public/images/bathroom-builder/jendai/placeholder.jpg",
+      "public/images/bathroom-builder/lighting/placeholder.jpg",
+      "public/images/bathroom-builder/partition/placeholder.jpg",
+      "public/images/bathroom-builder/structure/placeholder.jpg",
+      "public/images/bathroom-builder/threshold/placeholder.jpg",
+      "public/images/bathroom-builder/tile/placeholder.jpg",
+      "public/images/bathroom-builder/toilet/placeholder.jpg",
+      "public/images/bathroom-builder/ventilation/placeholder.jpg",
+      "public/images/bathroom-builder/waterproofing/placeholder.jpg",
+      "public/images/design/accessories/placeholder.jpg",
+      "public/images/design/basin/placeholder.jpg",
+      "public/images/design/bathtub/placeholder.jpg",
+      "public/images/design/cabinet/placeholder.jpg",
+      "public/images/design/ceiling/placeholder.jpg",
+      "public/images/design/demolition/placeholder.jpg",
+      "public/images/design/drainage/placeholder.jpg",
+      "public/images/design/faucet/placeholder.jpg",
+      "public/images/design/grout/placeholder.jpg",
+      "public/images/design/lighting/placeholder.jpg",
+      "public/images/design/structure/placeholder.jpg",
+      "public/images/design/threshold/placeholder.jpg",
+      "public/images/design/tile/placeholder.jpg",
+      "public/images/design/toilet/placeholder.jpg",
+      "public/images/design/ventilation/placeholder.jpg",
+      "public/images/design/waterproofing/placeholder.jpg",
+      "public/images/options/accessories/placeholder.jpg",
+      "public/images/options/basin/placeholder.jpg",
+      "public/images/options/bathtub/placeholder.jpg",
+      "public/images/options/cabinet/placeholder.jpg",
+      "public/images/options/ceiling/placeholder.jpg",
+      "public/images/options/demolition/placeholder.jpg",
+      "public/images/options/drainage/placeholder.jpg",
+      "public/images/options/faucet/placeholder.jpg",
+      "public/images/options/grout/placeholder.jpg",
+      "public/images/options/lighting/placeholder.jpg",
+      "public/images/options/structure/placeholder.jpg",
+      "public/images/options/threshold/placeholder.jpg",
+      "public/images/options/tile/placeholder.jpg",
+      "public/images/options/toilet/placeholder.jpg",
+      "public/images/options/ventilation/placeholder.jpg",
+      "public/images/options/waterproofing/placeholder.jpg"
+    ],
+    [
+      "public/images/bathroom-builder/accessories/chrome.png",
+      "public/images/bathroom-builder/inbox/크롬 액세서리.png"
+    ],
+    [
+      "public/images/bathroom-builder/accessories/nickel.png",
+      "public/images/bathroom-builder/inbox/니켈 액세서리.png"
+    ],
+    [
+      "public/images/bathroom-builder/basin/standard.png",
+      "public/images/bathroom-builder/inbox/일반 세면대.png"
+    ],
+    [
+      "public/images/bathroom-builder/basin/top-bowl.png",
+      "public/images/bathroom-builder/inbox/탑볼 세면대.png"
+    ],
+    [
+      "public/images/bathroom-builder/basin/undermount.png",
+      "public/images/bathroom-builder/inbox/언더볼 세면대.png"
+    ],
+    [
+      "public/images/bathroom-builder/bathtub/half-bath.png",
+      "public/images/bathroom-builder/inbox/반신욕 욕조.png"
+    ],
+    [
+      "public/images/bathroom-builder/bathtub/masonry.png",
+      "public/images/bathroom-builder/inbox/조적 욕조.png"
+    ],
+    [
+      "public/images/bathroom-builder/bathtub/standard.png",
+      "public/images/bathroom-builder/inbox/일반 욕조.png"
+    ],
+    [
+      "public/images/bathroom-builder/cabinet/led-mirror-cabinet.png",
+      "public/images/bathroom-builder/inbox/LED 거울장.png"
+    ],
+    [
+      "public/images/bathroom-builder/cabinet/led-mirror.png",
+      "public/images/bathroom-builder/inbox/LED 거울.png"
+    ],
+    [
+      "public/images/bathroom-builder/cabinet/sliding-mirror.png",
+      "public/images/bathroom-builder/inbox/슬라이딩 거울장.png"
+    ],
+    [
+      "public/images/bathroom-builder/cabinet/standard-mirror.png",
+      "public/images/bathroom-builder/inbox/일반 거울.png"
+    ],
+    [
+      "public/images/bathroom-builder/ceiling/smc-dome.png",
+      "public/images/bathroom-builder/inbox/smc 돔천장.png"
+    ],
+    [
+      "public/images/bathroom-builder/ceiling/smc-flat.png",
+      "public/images/bathroom-builder/inbox/smc 평천장.png"
+    ],
+    [
+      "public/images/bathroom-builder/drainage/linear-drain.png",
+      "public/images/bathroom-builder/inbox/라인 배수구.png"
+    ],
+    [
+      "public/images/bathroom-builder/drainage/square-drain.png",
+      "public/images/bathroom-builder/inbox/일반 사각 배수구.png"
+    ],
+    [
+      "public/images/bathroom-builder/drainage/tile-insert-drain.png",
+      "public/images/bathroom-builder/inbox/타일 삽입형 배수구.png"
+    ],
+    [
+      "public/images/bathroom-builder/drainage/trench-drain.png",
+      "public/images/bathroom-builder/inbox/트렌치 드레인 배수구.png"
+    ],
+    [
+      "public/images/bathroom-builder/faucet/basin/concealed.jpg",
+      "public/images/bathroom-builder/structure/embedded/basin-faucet.jpg"
+    ],
+    [
+      "public/images/bathroom-builder/faucet/shower/concealed.jpg",
+      "public/images/bathroom-builder/structure/embedded/shower-faucet.jpg"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/그레이 타일.png",
+      "public/images/bathroom-builder/tile/tone/gray.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/다크 타일.png",
+      "public/images/bathroom-builder/tile/tone/dark.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/도막 방수.png",
+      "public/images/bathroom-builder/waterproofing/coating.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/무광 타일.png",
+      "public/images/bathroom-builder/tile/finish/matte.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/문턱 인조대리석 마감.png",
+      "public/images/bathroom-builder/threshold/artificial-stone.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/문턱 타일 마감.png",
+      "public/images/bathroom-builder/threshold/tile.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/벽걸이형 변기.png",
+      "public/images/bathroom-builder/toilet/wall-hung.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/샤워부스 도어형2.png",
+      "public/images/bathroom-builder/structure/shower-booth/fixed-glass.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/샤워부스 유리 고정형2.png",
+      "public/images/bathroom-builder/structure/shower-booth/door.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/아이보리 타일.png",
+      "public/images/bathroom-builder/tile/tone/ivory.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/액체 방수.png",
+      "public/images/bathroom-builder/waterproofing/liquid.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/액체+도막 방수.png",
+      "public/images/bathroom-builder/waterproofing/liquid-plus-coating.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/원피스 변기.png",
+      "public/images/bathroom-builder/toilet/one-piece.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/유광 타일.png",
+      "public/images/bathroom-builder/tile/finish/glossy.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/투피스 변기.png",
+      "public/images/bathroom-builder/toilet/two-piece.png"
+    ],
+    [
+      "public/images/bathroom-builder/inbox/화이트 타일.png",
+      "public/images/bathroom-builder/tile/tone/white.png"
+    ]
+  ],
+  "images": [
+    {
+      "path": "public/images/bathroom/option-placeholder.svg",
+      "bytes": 1125,
+      "hash": "2c24760a17d8739337e82e9c44e193783fdee22df3285f6eceeeef90de43cf24",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom/option-placeholder.svg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/bathroom/references/bathroom-design-reference.png",
+      "bytes": 1621243,
+      "hash": "2cd9692551967630f7c8acbc1fe17e72025e7cc135c3111396f5827eb1b7f787",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom/references/bathroom-design-reference.png",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/bathroom/showroom-v1.png",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [
+        "app\\design.css",
+        "app\\page.tsx"
+      ],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom/showroom-v1.png",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/bathroom-builder/accessories/chrome.png",
+      "bytes": 2567259,
+      "hash": "5eee64e3211f3bbdf8b479612623e842d1ba48d2d962b99ed7803d71e5247d78",
+      "assignments": [
+        {
+          "key": "accessoryFinish:chrome",
+          "step": 13
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/accessories/chrome.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/accessories/nickel.png",
+      "bytes": 2450652,
+      "hash": "de81d68e4a6dfca19e32b6a44609911e8b7ffefce9694f81b7adb9975b8d79ef",
+      "assignments": [
+        {
+          "key": "accessoryFinish:nickel",
+          "step": 13
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/accessories/nickel.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/accessories/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/accessories/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/basin/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/basin/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/basin/standard.png",
+      "bytes": 2196014,
+      "hash": "0c1a97861923f540963df365a2b7ce3fda232148faa80c8b2c484a0d17ae21c9",
+      "assignments": [
+        {
+          "key": "sink:vanity-basin",
+          "step": 5
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/basin/standard.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/basin/top-bowl.png",
+      "bytes": 2158034,
+      "hash": "3936433d9e400ac8437fa93095d240b3712db3656c4462a67d5a2a174df2bd6e",
+      "assignments": [
+        {
+          "key": "sink:top-bowl",
+          "step": 5
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/basin/top-bowl.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/basin/undermount.png",
+      "bytes": 2169001,
+      "hash": "9a13ab45bc7bf091b21586d262677ba3a327d40f9a505c3720881834ec798e57",
+      "assignments": [
+        {
+          "key": "sink:undermount-basin",
+          "step": 5
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/basin/undermount.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/bathtub/half-bath.png",
+      "bytes": 2488877,
+      "hash": "f44f6895801b1543841c978a4cc2197db5ad720c04376ebb59f783826dbf5b35",
+      "assignments": [
+        {
+          "key": "bathtub:bath-half-body",
+          "step": 7
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/bathtub/half-bath.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/bathtub/masonry.png",
+      "bytes": 2644799,
+      "hash": "61f1f26106c09ba984513e6ba396c660b85b770c20ef2f8dc509608ffd610047",
+      "assignments": [
+        {
+          "key": "bathtub:bath-masonry",
+          "step": 7
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/bathtub/masonry.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/bathtub/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/bathtub/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/bathtub/standard.png",
+      "bytes": 2467328,
+      "hash": "7108628dfa3d516125e66918f88cb8087f379dd1070bd53a377928e23424cb75",
+      "assignments": [
+        {
+          "key": "bathtub:bath-standard",
+          "step": 7
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/bathtub/standard.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/cabinet/led-mirror-cabinet.png",
+      "bytes": 2305540,
+      "hash": "974bd30b8fc9af1c8184989e8089dc20dc682a21640d3e54ed2d36f7065827b5",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "UNMATCHED",
+      "destination": "public/images/bathroom-builder/cabinet/led-mirror-cabinet.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/cabinet/led-mirror.png",
+      "bytes": 2356831,
+      "hash": "0f9edfedd56981119b1ad41b76abb8e18a64e266106ae73b6fcf48e444bdb6ff",
+      "assignments": [
+        {
+          "key": "mirror:led-mirror",
+          "step": 6
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/cabinet/led-mirror.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/cabinet/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/cabinet/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/cabinet/sliding-mirror.png",
+      "bytes": 2131776,
+      "hash": "02a6ffaf399e857467fc47150dac07841b9625c7c59354c52d01d910fab46d6e",
+      "assignments": [
+        {
+          "key": "cabinet:sliding-mirror",
+          "step": 6
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/cabinet/sliding-mirror.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/cabinet/standard-mirror.png",
+      "bytes": 2232404,
+      "hash": "661f87d87e741cacaa0dfc8d634645222d85605de58f6bc3952a41f04f3becaa",
+      "assignments": [
+        {
+          "key": "mirror:mirror",
+          "step": 6
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/cabinet/standard-mirror.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/ceiling/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/ceiling/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/ceiling/smc-dome.png",
+      "bytes": 1788646,
+      "hash": "95f7355c69d14575f8f99fa9ef2f25a6e9acbecc7aa1db7f2f91f0ed7523407b",
+      "assignments": [
+        {
+          "key": "ceiling:smc-dome",
+          "step": 8
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/ceiling/smc-dome.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/ceiling/smc-flat.png",
+      "bytes": 1847943,
+      "hash": "0e897ef2f7b697374c8d9d04e858ea4aca110c736a256f9dce13956ec193b223",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/ceiling/smc-flat.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/demolition/full-demolition.jpg",
+      "bytes": 636047,
+      "hash": "a58b4a7ad17fe9574b2d67b85dbb4f2edcc512c67298f148c872907e2d4e6782",
+      "assignments": [
+        {
+          "key": "demolition:full-demolition",
+          "step": 1
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/demolition/full-demolition.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/demolition/overlay.jpg",
+      "bytes": 377656,
+      "hash": "8c06cd0b8c44eb6a4c93244112dc3d20fa4b2489ad15639730d03519a22576f8",
+      "assignments": [
+        {
+          "key": "demolition:overlay",
+          "step": 1
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/demolition/overlay.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/demolition/partial-demolition-overlay.jpg",
+      "bytes": 424115,
+      "hash": "2f5629b0e753e64e05ce136ad8c7c35e85d2e418d2ea55efb8b5ec6563971ca4",
+      "assignments": [
+        {
+          "key": "demolition:partial-demolition-overlay",
+          "step": 1
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/demolition/partial-demolition-overlay.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/demolition/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/demolition/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/drainage/linear-drain.png",
+      "bytes": 2725821,
+      "hash": "a7fb5178b6f94010a056780e58b24ff9ddee4a8da79f6f0b7e836ffa5ce58176",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/drainage/linear-drain.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/drainage/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/drainage/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/drainage/square-drain.png",
+      "bytes": 2390499,
+      "hash": "00b7afa508e02c670093138966edfa6619d2b922db521bc4590d51ad3ce90338",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/drainage/square-drain.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/drainage/tile-insert-drain.png",
+      "bytes": 2457402,
+      "hash": "afc6dcf29faeda6cdc9e2630e226f6c13c7ea143b79c1e735463c5cec631eb3c",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/drainage/tile-insert-drain.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/drainage/trench-drain.png",
+      "bytes": 2757907,
+      "hash": "77f7996863c64291648138da2307f01a7a6e6b98bd95f754f3f37d5210789831",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/drainage/trench-drain.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/fallback/placeholder.svg",
+      "bytes": 573,
+      "hash": "73b9736201c7222bcfb4637540a28bae397f517e2d7cbca189b2b8e130c76118",
+      "assignments": [],
+      "references": [
+        "components\\BuilderOptionImage.tsx"
+      ],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom-builder/fallback/placeholder.svg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/faucet/basin/concealed.jpg",
+      "bytes": 329830,
+      "hash": "24f11930a7f090b0e92600d6f00c5ad780e5d749524570f8d964ac2c002e8c17",
+      "assignments": [
+        {
+          "key": "faucet:concealed",
+          "step": 9
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/faucet/basin/concealed.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/faucet/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/faucet/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/faucet/shower/concealed.jpg",
+      "bytes": 340273,
+      "hash": "97f9caca484d360290727b941be119589361ce96361aca44be946de8119e715a",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/faucet/shower/concealed.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/grout/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/grout/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/300+600각 타일 분위기 그레이.png",
+      "bytes": 1828817,
+      "hash": "0d7886801fdf5ecc48f53495c8552734cd776075713fdb9a6a231c4a7ddef371",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom-builder/tile/mood/300x600/300+600각 타일 분위기 그레이.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/300+600각 타일 분위기 다크.png",
+      "bytes": 1963262,
+      "hash": "d04de76cedffc4ba4959ba50ff8f438658bf7c69c745ea13da12ea7845e3244a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom-builder/tile/mood/300x600/300+600각 타일 분위기 다크.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/300+600각 타일 분위기 아이보리.png",
+      "bytes": 1664529,
+      "hash": "04fc22467a2228b631de3316e64c5b5002e00e2280986712297a12abea4f421e",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom-builder/tile/mood/300x600/300+600각 타일 분위기 아이보리.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/300+600각 타일 분위기 화이트 .png",
+      "bytes": 1575854,
+      "hash": "84c75b3b304f8a6080a47a764733a13cb42578bba9cff34695e1d1b53d6cdbd1",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom-builder/tile/mood/300x600/300+600각 타일 분위기 화이트2.png",
+      "decision": "replace: current version 2 tile mood upload"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/600+1200각 타일 분위기 그레이.png",
+      "bytes": 1802805,
+      "hash": "3e08d164c8345cced62d107297585c83c02455a93911836db9427d029276ca0b",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom-builder/tile/mood/600x1200/600+1200각 타일 분위기 그레이.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/600+1200각 타일 분위기 다크.png",
+      "bytes": 1988305,
+      "hash": "313f0a3688e68e5ca5252142a521a6eb3413531db3cf8854afc037d6c1128629",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom-builder/tile/mood/600x1200/600+1200각 타일 분위기 다크.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/600+1200각 타일 분위기 아이보리.png",
+      "bytes": 1587439,
+      "hash": "2dce892783675c4517c17ccb8e0312cc821d9249d11f53636d71d3cf682f0562",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom-builder/tile/mood/600x1200/600+1200각 타일 분위기 아이보리.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/600+1200각 타일 분위기 화이트.png",
+      "bytes": 1640179,
+      "hash": "b76a1eb8eb784f1f12cfb19d3ddf0d76ff033f1e0f300f53073f751f22a263d3",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom-builder/tile/mood/600x1200/600+1200각 타일 분위기 화이트.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/600각 타일 분위기 그레이.png",
+      "bytes": 1985531,
+      "hash": "c267d882c9604332a532e1d6ceb23b647b2c2994175f763509d798280893cd00",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom-builder/tile/mood/600x600/600각 타일 분위기 그레이.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/600각 타일 분위기 다크.png",
+      "bytes": 2077255,
+      "hash": "f2af6d15d93139a64026c026a28834e0f208f81fba6052c71c5a35a9afbc627b",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom-builder/tile/mood/600x600/600각 타일 분위기 다크.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/600각 타일 분위기 아이보리.png",
+      "bytes": 1836584,
+      "hash": "0451527ebeccbbc86545699f8a68f7e700c5a8aef0361716b6b3b94495393fb6",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom-builder/tile/mood/600x600/600각 타일 분위기 아이보리.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/600각 타일 분위기 화이트 .png",
+      "bytes": 1849006,
+      "hash": "4bfbd842e8b13277062a6e5fe275ad0eedd8651ac4d5e99287a682f5bbcba865",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/bathroom-builder/tile/mood/600x600/600각 타일 분위기 화이트 .png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/LED 거울.png",
+      "bytes": 2356831,
+      "hash": "0f9edfedd56981119b1ad41b76abb8e18a64e266106ae73b6fcf48e444bdb6ff",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/LED 거울.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/LED 거울장.png",
+      "bytes": 2305540,
+      "hash": "974bd30b8fc9af1c8184989e8089dc20dc682a21640d3e54ed2d36f7065827b5",
+      "assignments": [],
+      "references": [],
+      "matching": "UNMATCHED",
+      "destination": "public/images/bathroom-builder/inbox/LED 거울장.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/smc 돔천장.png",
+      "bytes": 1788646,
+      "hash": "95f7355c69d14575f8f99fa9ef2f25a6e9acbecc7aa1db7f2f91f0ed7523407b",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/smc 돔천장.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/smc 평천장.png",
+      "bytes": 1847943,
+      "hash": "0e897ef2f7b697374c8d9d04e858ea4aca110c736a256f9dce13956ec193b223",
+      "assignments": [],
+      "references": [],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/inbox/smc 평천장.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/SMC 평천장2.png",
+      "bytes": 2011072,
+      "hash": "2e6e3239f09bae65da3c7f53757f99a4fd9107fb7d0cbba35389a1892febc711",
+      "assignments": [
+        {
+          "key": "ceiling:smc-flat",
+          "step": 8
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/ceiling/SMC 평천장2.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/그레이 타일.png",
+      "bytes": 2066023,
+      "hash": "2c5ff1ab0e1a3bd2c9e7a07b65bbd44d1f451608281bb11256d86bbd6c18f59f",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/그레이 타일.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/니켈 액세서리.png",
+      "bytes": 2450652,
+      "hash": "de81d68e4a6dfca19e32b6a44609911e8b7ffefce9694f81b7adb9975b8d79ef",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/니켈 액세서리.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/다크 타일.png",
+      "bytes": 2215867,
+      "hash": "c0c7a49fed617270db17e5bcf81d0f65a891e2475015fb9b70b0b4ba5390aca7",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/다크 타일.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/도막 방수.png",
+      "bytes": 2026451,
+      "hash": "ea2bcb7ecd6468714634229af23035341bb490e28a7c584c89172a67fb3f5bf0",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/도막 방수.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/도어형 샤워부스.png",
+      "bytes": 2008994,
+      "hash": "d544ba8be2ab21e8cc65b0eecf9cb741fda4b1efbea8ed260dbf9fa6239da76a",
+      "assignments": [],
+      "references": [],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/inbox/도어형 샤워부스.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/라인 배수구.png",
+      "bytes": 2725821,
+      "hash": "a7fb5178b6f94010a056780e58b24ff9ddee4a8da79f6f0b7e836ffa5ce58176",
+      "assignments": [],
+      "references": [],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/inbox/라인 배수구.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/라인 배수구2.png",
+      "bytes": 2877505,
+      "hash": "833f886a506678ebde15904af1bfb98ff0778b6b95de8d53d6c49956c63be6fd",
+      "assignments": [
+        {
+          "key": "drain:linear-drain",
+          "step": 10
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/drainage/라인 배수구2.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/매립 샤워&욕조 수전 .png",
+      "bytes": 2023786,
+      "hash": "5009bb3b1d6c31102ed1f1122c3f78c0851aff71a698e804908b801502fba3d1",
+      "assignments": [
+        {
+          "key": "showerFaucet:concealed-shower",
+          "step": 9
+        }
+      ],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/faucet/shower/매립 샤워&욕조 수전 .png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/무광 타일.png",
+      "bytes": 2050783,
+      "hash": "fb2cd4834a8892470743b73eba5b39d1e9529c18c5f3e97b262f074d1680fe17",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/무광 타일.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/문턱 인조대리석 마감.png",
+      "bytes": 2617013,
+      "hash": "a1f34fee9587d85cf2dedaea6322eb57a9895e6120b8b52fb0c53ee721d3d0e5",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/문턱 인조대리석 마감.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/문턱 타일 마감.png",
+      "bytes": 2738064,
+      "hash": "b0e3ba69dcd986295c7afe43d07ab066f83180ada0a6474b49e417a57ba1bc61",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/문턱 타일 마감.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/반신욕 욕조.png",
+      "bytes": 2488877,
+      "hash": "f44f6895801b1543841c978a4cc2197db5ad720c04376ebb59f783826dbf5b35",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/반신욕 욕조.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/벽 타일 300x600.png",
+      "bytes": 2153264,
+      "hash": "fa70d6ba153498cc044c08d4e483b942d6ca7c4cd4b1a865c1dfe99ff345c59a",
+      "assignments": [
+        {
+          "key": "wallTileSize:300x600",
+          "step": 4
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/tile/size/벽 타일 300x600.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/벽 타일 600x600.png",
+      "bytes": 2553082,
+      "hash": "ee672971ccec14362b40b090f0eb57be32589f4f65d6f4a2e02313977d0e6f59",
+      "assignments": [
+        {
+          "key": "wallTileSize:600x600",
+          "step": 4
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/tile/size/벽 타일 600x600.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/벽걸이형 변기.png",
+      "bytes": 2328324,
+      "hash": "9ad93aaa2d83002971951d0e9ceee32eedcfac9f3e37b2d600f4940a4609e770",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/벽걸이형 변기.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/벽타일600x1200.png",
+      "bytes": 2289761,
+      "hash": "26f8d9c35eddbedbfea1514357731cc647a27567657a9b607f70b713bf1bbd46",
+      "assignments": [
+        {
+          "key": "wallTileSize:600x1200",
+          "step": 4
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/tile/size/벽타일600x1200.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/샤워부스 도어형2.png",
+      "bytes": 1759412,
+      "hash": "3fb6eb0ac3dbbc462fef1dcbad1399de341b0396edf906dd9b1a7c4fd131c984",
+      "assignments": [
+        {
+          "key": "partitionShower:door-booth",
+          "step": 2
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/structure/partition-shower-booth/샤워부스 도어형2.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/샤워부스 유리 고정형2.png",
+      "bytes": 1823363,
+      "hash": "b926668b1bcc23494a2a1b589422829a8c6ed7fed5589e8b2dcb3f51fa25022f",
+      "assignments": [
+        {
+          "key": "partitionShower:fixed-glass",
+          "step": 2
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/structure/partition-shower-booth/샤워부스 유리 고정형2.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/슬라이딩 거울장.png",
+      "bytes": 2131776,
+      "hash": "02a6ffaf399e857467fc47150dac07841b9625c7c59354c52d01d910fab46d6e",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/슬라이딩 거울장.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/시멘트(메지) 줄눈.png",
+      "bytes": 2450406,
+      "hash": "1b7820a568bd7e8541cd42d9c62fa85b2be4bd54ea8ec1990d0dfa7166537a31",
+      "assignments": [
+        {
+          "key": "grout:grout-cement",
+          "step": 14
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/grout/시멘트(메지) 줄눈.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/아이보리 타일.png",
+      "bytes": 1797789,
+      "hash": "6ddb19f2898480fa4da6e4c020ccd16f69dd2954e129c3a86c21b01a01239822",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/아이보리 타일.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/액체 방수.png",
+      "bytes": 2133648,
+      "hash": "a6128ce473f34ec9706d4225b15d2d6c2af36c6c434c04f2db2f80420d595441",
+      "assignments": [],
+      "references": [],
+      "matching": "UNMATCHED",
+      "destination": "public/images/bathroom-builder/inbox/액체 방수.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/액체+도막 방수.png",
+      "bytes": 2266296,
+      "hash": "82735132fba6a56bad5948da304221f1917db18733b130621f400fd2d4cdc749",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/액체+도막 방수.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/언더볼 세면대.png",
+      "bytes": 2169001,
+      "hash": "9a13ab45bc7bf091b21586d262677ba3a327d40f9a505c3720881834ec798e57",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/언더볼 세면대.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/에폭시 줄눈.png",
+      "bytes": 2490265,
+      "hash": "3595cf4244b9bc5f4b5bba18ef8e54847f721bd6b14fbd9c0993d475d78c442d",
+      "assignments": [
+        {
+          "key": "grout:grout-epoxy",
+          "step": 14
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/grout/에폭시 줄눈.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/욕실장 간접 조명.png",
+      "bytes": 1725213,
+      "hash": "6a22a60f9a1af79a9f6d74de7ab624c5006af370f42942df3d03bb9ca40592a1",
+      "assignments": [
+        {
+          "key": "lighting:cabinet-indirect",
+          "step": 12
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/lighting/욕실장 간접 조명.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/원피스 변기.png",
+      "bytes": 2164386,
+      "hash": "5180074449a76c6cfa279d775991eb86e491d24b35e1f14690c5d2c5cbf685fc",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/원피스 변기.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/유광 타일.png",
+      "bytes": 1760384,
+      "hash": "f92419e0dd80ebf2fe25535fecac5ce5345e202261ea0185038a71a9f344a2db",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/유광 타일.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/일반 거울.png",
+      "bytes": 2232404,
+      "hash": "661f87d87e741cacaa0dfc8d634645222d85605de58f6bc3952a41f04f3becaa",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/일반 거울.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/일반 거울장.png",
+      "bytes": 2124173,
+      "hash": "a4ee5d857758b2a8e36035b4bcd1b08fe51d16978971b52a2159e74e0116ae19",
+      "assignments": [],
+      "references": [],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/inbox/일반 거울장.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/일반 거울장2.png",
+      "bytes": 2183597,
+      "hash": "27572ff3e1c90fb53911146b25d6070703ddef426c9576ee9c1a6fc5fc6c586f",
+      "assignments": [
+        {
+          "key": "cabinet:standard-cabinet",
+          "step": 6
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/cabinet/bathroom-cabinet/일반 거울장2.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/일반 사각 배수구.png",
+      "bytes": 2390499,
+      "hash": "00b7afa508e02c670093138966edfa6619d2b922db521bc4590d51ad3ce90338",
+      "assignments": [],
+      "references": [],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/inbox/일반 사각 배수구.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/일반 사각 배수구2.png",
+      "bytes": 2705236,
+      "hash": "d62ecb891e0cc838811509b7754f8eae34f230f8682cd2edac5e14cfb4c56855",
+      "assignments": [
+        {
+          "key": "drain:square-drain",
+          "step": 10
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/drainage/일반 사각 배수구2.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/일반 샤워 수전.png",
+      "bytes": 2394697,
+      "hash": "78b6bfb0b6e58522793dfa38dcfd7923c1f8098e4ca5146b619ae049b3d736a9",
+      "assignments": [
+        {
+          "key": "showerFaucet:shower",
+          "step": 9
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/faucet/shower/일반 샤워 수전.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/일반 세면 수전.png",
+      "bytes": 1884303,
+      "hash": "ade1f4474accf78d6bbcd4b6f7d0aae00aa07c0546286db081443921b9477232",
+      "assignments": [
+        {
+          "key": "faucet:one-hole",
+          "step": 9
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/faucet/basin/일반 세면 수전.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/일반 세면대.png",
+      "bytes": 2196014,
+      "hash": "0c1a97861923f540963df365a2b7ce3fda232148faa80c8b2c484a0d17ae21c9",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/일반 세면대.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/일반 욕조.png",
+      "bytes": 2467328,
+      "hash": "7108628dfa3d516125e66918f88cb8087f379dd1070bd53a377928e23424cb75",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/일반 욕조.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/젠다이 신설2.png",
+      "bytes": 2500760,
+      "hash": "b9ccf1ef30b0626cb780d71055447e928d70b46265050d98a0f82b28d0a5590e",
+      "assignments": [
+        {
+          "key": "jendai:new",
+          "step": 2
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/structure/jendai/젠다이 신설2.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/조적 욕조.png",
+      "bytes": 2644799,
+      "hash": "61f1f26106c09ba984513e6ba396c660b85b770c20ef2f8dc509608ffd610047",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/조적 욕조.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/천장 간접 조명.png",
+      "bytes": 1990034,
+      "hash": "904d875b99bd0be89a9aba15ae893fa124ecc71d0829256c5fd6a711d0c5e655",
+      "assignments": [
+        {
+          "key": "lighting:indirect",
+          "step": 12
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/lighting/천장 간접 조명.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/천장 매립 조명.png",
+      "bytes": 2242690,
+      "hash": "73f2c7d374f61a7a10860ecf8fd7472e82e366d1bedc59431dc3138c7bff88ad",
+      "assignments": [
+        {
+          "key": "lighting:light-recessed",
+          "step": 12
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/lighting/천장 매립 조명.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/크롬 액세서리.png",
+      "bytes": 2567259,
+      "hash": "5eee64e3211f3bbdf8b479612623e842d1ba48d2d962b99ed7803d71e5247d78",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/크롬 액세서리.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/타일 삽입형 배수구.png",
+      "bytes": 2457402,
+      "hash": "afc6dcf29faeda6cdc9e2630e226f6c13c7ea143b79c1e735463c5cec631eb3c",
+      "assignments": [],
+      "references": [],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/inbox/타일 삽입형 배수구.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/타일 삽입형 배수구2.png",
+      "bytes": 2651880,
+      "hash": "300c156a647997af3ba7dfc5ff1c8321344b9c4820abde9dbda5bd2104680d1c",
+      "assignments": [
+        {
+          "key": "drain:tile-drain",
+          "step": 10
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/drainage/타일 삽입형 배수구2.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/탑볼 세면대.png",
+      "bytes": 2158034,
+      "hash": "3936433d9e400ac8437fa93095d240b3712db3656c4462a67d5a2a174df2bd6e",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/탑볼 세면대.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/투피스 변기.png",
+      "bytes": 2185359,
+      "hash": "8a70e1728ba4a0ad17860ffc0b39106c08946d438ec17921d719088e2e3b9089",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/투피스 변기.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/트렌치 드레인 배수구.png",
+      "bytes": 2757907,
+      "hash": "77f7996863c64291648138da2307f01a7a6e6b98bd95f754f3f37d5210789831",
+      "assignments": [],
+      "references": [],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/inbox/트렌치 드레인 배수구.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/트렌치 드레인 배수구2.png",
+      "bytes": 2611724,
+      "hash": "d8ba7bd0bd731a97d666e7ab2451edcf2c84be102a37b28cc94b548341efa547",
+      "assignments": [
+        {
+          "key": "drain:trench-drain",
+          "step": 10
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/drainage/트렌치 드레인 배수구2.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/폴리우레아 줄눈.png",
+      "bytes": 2443013,
+      "hash": "8e2a035ab6a95593789955602fe5d7fe0b1689b4bd6437ef1507e8887b317aca",
+      "assignments": [
+        {
+          "key": "grout:grout-polyurea",
+          "step": 14
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/grout/폴리우레아 줄눈.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/해바라기 샤워 수전.png",
+      "bytes": 2569385,
+      "hash": "3bfb869d3b28fdd32df37039e3245f1f6233137e548e7ce5f9341498aa18262e",
+      "assignments": [
+        {
+          "key": "showerFaucet:rain",
+          "step": 9
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/faucet/shower/해바라기 샤워 수전.png",
+      "decision": "move: Builder-only selected upload or validated tile combination"
+    },
+    {
+      "path": "public/images/bathroom-builder/inbox/화이트 타일.png",
+      "bytes": 1573065,
+      "hash": "9e3bf4104dfc54fa94ca0d4b4e3d79528c963ee762c6697776716032e294c0f3",
+      "assignments": [],
+      "references": [],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/inbox/화이트 타일.png",
+      "decision": "retain: unmatched, older version or unselected original"
+    },
+    {
+      "path": "public/images/bathroom-builder/jendai/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/jendai/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/lighting/indirect-ceiling.png",
+      "bytes": 2173058,
+      "hash": "3161defe314444667cd2e92a3fe475d59b03587491e5ddad40a1bfc3b2b39154",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/lighting/indirect-ceiling.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/lighting/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/lighting/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/lighting/recessed-ceiling.png",
+      "bytes": 2045220,
+      "hash": "01646546e4abf84d07a3adb5c6137421b80ddde2ebb758a540733674410d0c93",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/lighting/recessed-ceiling.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/partition/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/partition/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/embedded/basin-faucet.jpg",
+      "bytes": 329830,
+      "hash": "24f11930a7f090b0e92600d6f00c5ad780e5d749524570f8d964ac2c002e8c17",
+      "assignments": [],
+      "references": [],
+      "matching": "UNMATCHED",
+      "destination": "public/images/bathroom-builder/structure/embedded/basin-faucet.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/embedded/bathtub-faucet.jpg",
+      "bytes": 297527,
+      "hash": "f5b20529fedbc6e3df4961a030b0cdfd3fa3ef5e835f37b790e5a3e86a7ae098",
+      "assignments": [],
+      "references": [],
+      "matching": "UNMATCHED",
+      "destination": "public/images/bathroom-builder/structure/embedded/bathtub-faucet.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/embedded/shower-faucet.jpg",
+      "bytes": 340273,
+      "hash": "97f9caca484d360290727b941be119589361ce96361aca44be946de8119e715a",
+      "assignments": [],
+      "references": [],
+      "matching": "UNMATCHED",
+      "destination": "public/images/bathroom-builder/structure/embedded/shower-faucet.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/embedded/toilet-paper-holder.jpg",
+      "bytes": 261251,
+      "hash": "7b7ada43ad18fd57641396575b992d20a1cc5ab9ddb195d29825426472543820",
+      "assignments": [],
+      "references": [],
+      "matching": "UNMATCHED",
+      "destination": "public/images/bathroom-builder/structure/embedded/toilet-paper-holder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/jendai/basin-jendai.jpg",
+      "bytes": 284646,
+      "hash": "10b3efd08062769d9d8c111fe79673f4867310ccd42135475f6fab4c6a366e1b",
+      "assignments": [],
+      "references": [],
+      "matching": "UNMATCHED",
+      "destination": "public/images/bathroom-builder/structure/jendai/basin-jendai.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/jendai/new.jpg",
+      "bytes": 314584,
+      "hash": "8c2127a7bab9ff5b804b871634c40142e8c0b81fcfeaa46fb44a3147d0a5aae8",
+      "assignments": [],
+      "references": [],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/structure/jendai/new.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/jendai/shower-jendai.jpg",
+      "bytes": 264219,
+      "hash": "10df7bb937108c447a545d96c74ed7456c8edbb17e4ebb1ef461a9dd87f6da74",
+      "assignments": [],
+      "references": [],
+      "matching": "UNMATCHED",
+      "destination": "public/images/bathroom-builder/structure/jendai/shower-jendai.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/jendai/toilet-jendai.jpg",
+      "bytes": 309238,
+      "hash": "29b326ec0c17825a5de94421da3841d74c4508e668f2b95ca727cd492875413b",
+      "assignments": [],
+      "references": [],
+      "matching": "UNMATCHED",
+      "destination": "public/images/bathroom-builder/structure/jendai/toilet-jendai.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/niche/shower-niche.jpg",
+      "bytes": 315596,
+      "hash": "eb6e2e781db41f2f3103b633b1f618384df1ab27930580be93b63156b0bf0944",
+      "assignments": [
+        {
+          "key": "niche:shower-niche",
+          "step": 2
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/structure/niche/shower-niche.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/niche/sink-niche.jpg",
+      "bytes": 315752,
+      "hash": "5b470c6b75c4956d2c57245878ef496d49fed40c0d638028ace4b87538c553e9",
+      "assignments": [
+        {
+          "key": "niche:sink-niche",
+          "step": 2
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/structure/niche/sink-niche.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/partition/full-partition.jpg",
+      "bytes": 297234,
+      "hash": "cde48807b86c73289df60d275edd1164d2d2d475fb6ce1f1646a8aba0f7b3dde",
+      "assignments": [
+        {
+          "key": "partitionShower:full-partition",
+          "step": 2
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/structure/partition/full-partition.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/partition/half-partition.jpg",
+      "bytes": 298565,
+      "hash": "d11399bb4c702cbeef71473e30988fc36d2a40b9a87945f4ace57d04803b4d13",
+      "assignments": [
+        {
+          "key": "partitionShower:half-partition",
+          "step": 2
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/structure/partition/half-partition.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/structure/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/shower-booth/door.png",
+      "bytes": 1823363,
+      "hash": "b926668b1bcc23494a2a1b589422829a8c6ed7fed5589e8b2dcb3f51fa25022f",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/structure/shower-booth/door.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/structure/shower-booth/fixed-glass.png",
+      "bytes": 1759412,
+      "hash": "3fb6eb0ac3dbbc462fef1dcbad1399de341b0396edf906dd9b1a7c4fd131c984",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "OLDER_VERSION",
+      "destination": "public/images/bathroom-builder/structure/shower-booth/fixed-glass.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/threshold/artificial-stone.png",
+      "bytes": 2617013,
+      "hash": "a1f34fee9587d85cf2dedaea6322eb57a9895e6120b8b52fb0c53ee721d3d0e5",
+      "assignments": [
+        {
+          "key": "threshold:threshold-artificial-stone",
+          "step": 15
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/threshold/artificial-stone.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/threshold/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/threshold/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/threshold/tile.png",
+      "bytes": 2738064,
+      "hash": "b0e3ba69dcd986295c7afe43d07ab066f83180ada0a6474b49e417a57ba1bc61",
+      "assignments": [
+        {
+          "key": "threshold:threshold-tile",
+          "step": 15
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/threshold/tile.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/tile/finish/glossy.png",
+      "bytes": 1760384,
+      "hash": "f92419e0dd80ebf2fe25535fecac5ce5345e202261ea0185038a71a9f344a2db",
+      "assignments": [
+        {
+          "key": "tileSurface:glossy",
+          "step": 4
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/tile/finish/glossy.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/tile/finish/matte.png",
+      "bytes": 2050783,
+      "hash": "fb2cd4834a8892470743b73eba5b39d1e9529c18c5f3e97b262f074d1680fe17",
+      "assignments": [
+        {
+          "key": "tileSurface:matte",
+          "step": 4
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/tile/finish/matte.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/tile/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/tile/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/tile/tone/dark.png",
+      "bytes": 2215867,
+      "hash": "c0c7a49fed617270db17e5bcf81d0f65a891e2475015fb9b70b0b4ba5390aca7",
+      "assignments": [
+        {
+          "key": "tile:dark",
+          "step": 4
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/tile/tone/dark.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/tile/tone/gray.png",
+      "bytes": 2066023,
+      "hash": "2c5ff1ab0e1a3bd2c9e7a07b65bbd44d1f451608281bb11256d86bbd6c18f59f",
+      "assignments": [
+        {
+          "key": "tile:gray",
+          "step": 4
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/tile/tone/gray.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/tile/tone/ivory.png",
+      "bytes": 1797789,
+      "hash": "6ddb19f2898480fa4da6e4c020ccd16f69dd2954e129c3a86c21b01a01239822",
+      "assignments": [
+        {
+          "key": "tile:ivory",
+          "step": 4
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/tile/tone/ivory.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/tile/tone/white.png",
+      "bytes": 1573065,
+      "hash": "9e3bf4104dfc54fa94ca0d4b4e3d79528c963ee762c6697776716032e294c0f3",
+      "assignments": [
+        {
+          "key": "tile:white",
+          "step": 4
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/tile/tone/white.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/tile/wall/300x600.png",
+      "bytes": 2096834,
+      "hash": "4feff83365862156a7bdf2163b231fce113f9b31f4bd6e4a13ca51cd0db6ca16",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/tile/wall/300x600.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/tile/wall/600x1200.png",
+      "bytes": 1990043,
+      "hash": "5aaf850e3f26ff4749bb0a40a37eabf078d6ac2d926b6581b7b1acd25ce1f31b",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/tile/wall/600x1200.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/tile/wall/600x600.png",
+      "bytes": 1990623,
+      "hash": "790038a126323f35f03a8288015f9d954dba1b2ca219f0561cd774f870ed3ff8",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/tile/wall/600x600.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/toilet/one-piece.png",
+      "bytes": 2164386,
+      "hash": "5180074449a76c6cfa279d775991eb86e491d24b35e1f14690c5d2c5cbf685fc",
+      "assignments": [
+        {
+          "key": "toilet:one-piece",
+          "step": 5
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/toilet/one-piece.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/toilet/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/toilet/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/toilet/two-piece.png",
+      "bytes": 2185359,
+      "hash": "8a70e1728ba4a0ad17860ffc0b39106c08946d438ec17921d719088e2e3b9089",
+      "assignments": [
+        {
+          "key": "toilet:two-piece",
+          "step": 5
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/toilet/two-piece.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/toilet/wall-hung.png",
+      "bytes": 2328324,
+      "hash": "9ad93aaa2d83002971951d0e9ceee32eedcfac9f3e37b2d600f4940a4609e770",
+      "assignments": [
+        {
+          "key": "toilet:wall-hung",
+          "step": 5
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/toilet/wall-hung.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/ventilation/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/ventilation/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/waterproofing/coating.png",
+      "bytes": 2026451,
+      "hash": "ea2bcb7ecd6468714634229af23035341bb490e28a7c584c89172a67fb3f5bf0",
+      "assignments": [
+        {
+          "key": "waterproofing:coating-waterproofing",
+          "step": 3
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/waterproofing/coating.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/waterproofing/liquid-plus-coating.png",
+      "bytes": 2266296,
+      "hash": "82735132fba6a56bad5948da304221f1917db18733b130621f400fd2d4cdc749",
+      "assignments": [
+        {
+          "key": "waterproofing:combined-waterproofing",
+          "step": 3
+        }
+      ],
+      "references": [
+        "data\\bathroom-builder-images.generated.json",
+        "data\\bathroom-builder-image-settings.generated.json"
+      ],
+      "matching": "MATCHED",
+      "destination": "public/images/bathroom-builder/waterproofing/liquid-plus-coating.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/waterproofing/liquid.png",
+      "bytes": 2133648,
+      "hash": "a6128ce473f34ec9706d4225b15d2d6c2af36c6c434c04f2db2f80420d595441",
+      "assignments": [],
+      "references": [
+        "data\\bathroom-builder-images.generated.json"
+      ],
+      "matching": "UNMATCHED",
+      "destination": "public/images/bathroom-builder/waterproofing/liquid.png",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/bathroom-builder/waterproofing/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "IGNORED",
+      "destination": "public/images/bathroom-builder/waterproofing/placeholder.jpg",
+      "decision": "retain: existing canonical/legacy mapping or fallback dependency"
+    },
+    {
+      "path": "public/images/design/accessories/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/accessories/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/basin/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/basin/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/bathtub/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/bathtub/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/cabinet/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/cabinet/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/ceiling/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/ceiling/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/demolition/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/demolition/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/drainage/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/drainage/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/faucet/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/faucet/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/grout/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/grout/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/lighting/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/lighting/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/structure/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/structure/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/threshold/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/threshold/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/tile/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/tile/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/toilet/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/toilet/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/ventilation/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/ventilation/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/design/waterproofing/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/design/waterproofing/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/guide/guide-placeholder.svg",
+      "bytes": 908,
+      "hash": "74bfe6d90f1fd615550de8108fc28cacf85ebdbe98d8f2156dad686eaf466886",
+      "assignments": [],
+      "references": [
+        "data\\guides\\catalog.ts"
+      ],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/guide/guide-placeholder.svg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/home/luxury-hotel-bathroom-hero-original.png",
+      "bytes": 2373358,
+      "hash": "11fd69f21abd26ec43d61c9bdf81bdb2514a480017b368c555683aff6a8749ea",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/home/luxury-hotel-bathroom-hero-original.png",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/home/luxury-hotel-bathroom-hero.webp",
+      "bytes": 178460,
+      "hash": "ce650bdc0160e45f1693778ed4617c8513d194fe5838c6ca8531bfd88e394c4d",
+      "assignments": [],
+      "references": [
+        "app\\page.tsx"
+      ],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/home/luxury-hotel-bathroom-hero.webp",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/accessories/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/accessories/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/basin/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/basin/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/bathtub/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/bathtub/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/cabinet/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/cabinet/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/ceiling/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/ceiling/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/demolition/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/demolition/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/drainage/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/drainage/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/faucet/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/faucet/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/grout/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/grout/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/lighting/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/lighting/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/structure/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/structure/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/threshold/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/threshold/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/tile/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/tile/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/toilet/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/toilet/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/ventilation/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/ventilation/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    },
+    {
+      "path": "public/images/options/waterproofing/placeholder.jpg",
+      "bytes": 2177391,
+      "hash": "835b6f0570b1a7daca66ff87d226b88673bb4d6cc9322a3f50180f6b5e66759a",
+      "assignments": [],
+      "references": [],
+      "matching": "outside-builder-scan",
+      "destination": "public/images/options/waterproofing/placeholder.jpg",
+      "decision": "retain: shared/homepage/guide/brand asset"
+    }
+  ]
+}

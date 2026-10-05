@@ -17,16 +17,18 @@ export function normalizeFilename(filename) {
     .toLowerCase().replace(/×/g, 'x').replace(/\s+/g, '').trim();
 }
 export const isProtected = option => option.id === 'other' || option.id === 'undecided' ||
-  /모르겠|모르겠음|모르겠어요|상담.*결정/.test(option.name) || option.requiresCustomText;
+  /모르겠|모르겠음|모르겠어요|상담.*결정/.test(option.name) || option.requiresCustomText
+  || ['bathroomCondition','drainPosition'].includes(option.groupKey)
+  || (option.groupKey === 'jendai' && ['keep','remove'].includes(option.id));
 
 // Load the real Builder catalog. Ignore only the generated Builder settings so
 // the previous run cannot dictate which options are eligible for new photos.
-export async function loadOptions(root = projectRoot) {
+export async function loadOptions(root = projectRoot, { includeGenerated = false } = {}) {
   const cache = new Map();
   async function load(filename) {
     if (cache.has(filename)) return cache.get(filename);
     if (filename.endsWith('.json')) {
-      const value = filename.endsWith(manifestName) ? {} : JSON.parse(await fs.readFile(filename, 'utf8'));
+      const value = filename.endsWith(manifestName) && !includeGenerated ? {} : JSON.parse(await fs.readFile(filename, 'utf8'));
       cache.set(filename, value); return value;
     }
     const source = await fs.readFile(filename, 'utf8');
@@ -58,6 +60,52 @@ function findCandidates(name, options, aliases) {
   ]) if (candidates.length) return [...new Set(candidates)];
   return [];
 }
+
+// Recognized category folders constrain filename/alias matches; inbox and unknown
+// staging folders stay compatible with existing uploads.
+const categoryGroups = {
+  demolition: ['demolition', 'bathroomCondition'], structure: ['jendai', 'partitionShower', 'niche'],
+  waterproofing: ['waterproofing'], tile: ['wallTileSize', 'tile', 'tileSurface'],
+  basin: ['sink'], toilet: ['toilet'], cabinet: ['cabinet', 'mirror'], bathtub: ['bathtub'],
+  ceiling: ['ceiling'], faucet: ['faucet', 'showerFaucet'], drainage: ['drain', 'drainPosition'],
+  ventilation: ['ventilation'], lighting: ['lighting'], accessories: ['accessoryFinish', 'accessory'],
+  grout: ['grout'], threshold: ['threshold'],
+};
+function categoryAllows(filename, option) {
+  const parts = filename.replaceAll('\\', '/').split('/');
+  if (parts.length < 2) return true;
+  const allowed = categoryGroups[parts[0]];
+  if (allowed && !allowed.includes(option.groupKey)) return false;
+  if (parts[0] === 'tile' && parts[1] === 'size') return option.groupKey === 'wallTileSize';
+  if (parts[0] === 'tile' && ['mood','tone'].includes(parts[1])) return option.groupKey === 'tile';
+  if (parts[0] === 'tile' && parts[1] === 'finish') return option.groupKey === 'tileSurface';
+  if (parts[0] === 'faucet' && parts[1] === 'basin') return option.groupKey === 'faucet';
+  if (parts[0] === 'faucet' && parts[1] === 'shower') return option.groupKey === 'showerFaucet';
+  if (parts[0] === 'structure' && parts[1] === 'jendai') return option.groupKey === 'jendai';
+  if (parts[0] === 'structure' && ['partition','shower-booth','partition-shower-booth'].includes(parts[1])) return option.groupKey === 'partitionShower';
+  if (parts[0] === 'structure' && ['niche','shampoo-box'].includes(parts[1])) return option.groupKey === 'niche';
+  return true;
+}
+
+export function matchTileCombination(filename, options) {
+  if (!categoryAllows(filename, {groupKey:'tile'})) return null;
+  const name = normalizeFilename(path.basename(filename).replace(/(300|600)\s+(600|1200)/g, '$1x$2'));
+  const folderSize = filename.replaceAll('\\','/').match(/(?:^|\/)tile\/mood\/(300x600|600x600|600x1200)\//)?.[1];
+  const dimension = name.match(/^(300|600)[x+](600|1200)/);
+  const square = name.match(/^600각/);
+  const size = dimension ? dimension[1] + 'x' + dimension[2] : square ? '600x600' : folderSize;
+  if (!size || !options.some(o => o.groupKey === 'wallTileSize' && o.id === size)) return null;
+  const rest = dimension ? name.slice(dimension[0].length) : square ? name.slice(square[0].length) : name;
+  const mood = rest.replace(/^각/, '').replace(/^(?:타일분위기|타일|분위기)/, '').match(/^(화이트|아이보리|그레이|다크|white|ivory|gray|dark)([0-9]*)$/);
+  if (!mood) return null;
+  if (folderSize && folderSize !== size) return {status:'AMBIGUOUS', candidates:[folderSize,size]};
+  const moodIds = {화이트:'white',아이보리:'ivory',그레이:'gray',다크:'dark'};
+  const moodId = moodIds[mood[1]] ?? mood[1];
+  const option = options.find(o => o.groupKey === 'tile' && o.id === moodId);
+  if (!option || isProtected(option)) return null;
+  return {status:'MATCHED', option, combination:size + ':' + moodId, size, mood:moodId, version:Number(mood[2] || 1), base:size + ':' + moodId};
+}
+
 export function matchFilename(filename, options, aliases = {}) {
   const name = normalizeFilename(path.basename(filename));
   let candidates = findCandidates(name, options, aliases), version = 1, base = name;
@@ -68,6 +116,8 @@ export function matchFilename(filename, options, aliases = {}) {
       .sort((a, b) => b.length - a.length);
     if (known.length) { base = known[0]; candidates = findCandidates(base, options, aliases); version = Number(name.slice(base.length)); }
   }
+  const contextual = candidates.filter(key => { const option = options.find(o => o.key === key); return !option || categoryAllows(filename, option); });
+  candidates = contextual;
   if (!candidates.length) return { status: 'UNMATCHED', version, base };
   if (candidates.every(key => options.some(o => o.key === key && isProtected(o)))) return { status: 'SKIPPED_NO_IMAGE', candidates, version, base };
   if (candidates.length > 1) return { status: 'AMBIGUOUS', candidates, version, base,
@@ -111,7 +161,12 @@ export async function syncImages({ root = projectRoot, options, aliases } = {}) 
       results.push({ file, status: 'IGNORED', reason: 'archive or placeholder' }); continue;
     }
     const url = urlFor(file);
-    let match = matchFilename(file, options, aliases);
+    let match = matchTileCombination(file, options);
+    if (!match) {
+      match = matchFilename(file, options, aliases);
+      const explicit = options.filter(o => aliases.preferredFiles?.[o.key] === file);
+      if (explicit.length === 1) match = { ...match, status: isProtected(explicit[0]) ? 'SKIPPED_NO_IMAGE' : 'MATCHED', option: explicit[0], version:match.version ?? 1, base:match.base ?? normalizeFilename(path.basename(file)) };
+    }
     // Existing canonical paths have directory context (e.g. basin/standard vs bathtub/standard).
     if (match.status === 'UNMATCHED') {
       const candidates = options.filter(o => o.builderImage && stem(o.builderImage) === stem(url));
@@ -129,7 +184,7 @@ export async function syncImages({ root = projectRoot, options, aliases } = {}) 
   const settings = {}, changes = [];
   for (const option of options) {
     const old = previous[option.key] ?? { builderImage: option.builderImage, showBuilderImage: option.showBuilderImage };
-    const candidates = results.filter(r => r.status === 'MATCHED' && r.option.key === option.key);
+    const candidates = results.filter(r => r.status === 'MATCHED' && !r.combination && r.option.key === option.key);
     let chosen;
     if (!isProtected(option) && candidates.length) {
       const highest = Math.max(...candidates.map(r => r.version));
@@ -155,21 +210,39 @@ export async function syncImages({ root = projectRoot, options, aliases } = {}) 
       : old.builderImage === next.builderImage ? 'UNCHANGED' : 'UPDATED' : old.showBuilderImage ? 'DISABLED' : 'UNCHANGED';
     changes.push({ key: option.key, name: option.name, category: option.group, action, previous: old, next });
   }
+  const combinations = {};
+  const previousCombinations = await optionalJSON(path.join(root, 'data/bathroom-builder-tile-images.generated.json'));
+  for (const key of new Set(results.filter(r => r.combination && r.status === 'MATCHED').map(r => r.combination))) {
+    const candidates = results.filter(r => r.combination === key && r.status === 'MATCHED');
+    const highest = Math.max(...candidates.map(r => r.version));
+    const latest = candidates.filter(r => r.version === highest);
+    const [size,mood] = key.split(':');
+    let chosen;
+    if (latest.every(r => r.hash === latest[0].hash)) chosen = latest.find(r => r.url === previousCombinations[size]?.[mood]) ?? latest[0];
+    else {
+      for (const row of latest) { row.status = 'AMBIGUOUS'; row.candidates = latest.map(r => r.file); }
+      chosen = candidates.find(r => r.url === previousCombinations[size]?.[mood]);
+    }
+    for (const row of candidates) if (row.version < highest) row.status = 'OLDER_VERSION';
+    if (chosen) (combinations[size] ??= {})[mood] = chosen.url;
+  }
   await writeJSON(manifestPath, settings);
+  await writeJSON(path.join(root, 'data/bathroom-builder-tile-images.generated.json'), combinations);
   const report = { total: files.length, matchedFiles: results.filter(r => r.option && ['MATCHED', 'OLDER_VERSION'].includes(r.status)).length,
     newImages: changes.filter(c => c.action === 'NEW IMAGE').length, updatedImages: changes.filter(c => c.action === 'UPDATED').length,
     unmatched: results.filter(r => ['UNMATCHED', 'OPTION_NOT_FOUND'].includes(r.status)).length,
+    tileCombinations: Object.values(combinations).reduce((count, moods) => count + Object.keys(moods).length, 0),
     ambiguous: results.filter(r => r.status === 'AMBIGUOUS').length, files: results, changes };
   await writeJSON(path.join(root, 'data/bathroom-builder-image-sync-report.json'), {
     ...report,
-    files: results.map(({ file, status, url, option, candidates, candidateLabels }) => ({ file, status, url, option: option?.key, candidates, candidateLabels })),
+    files: results.map(({ file, status, url, option, combination, candidates, candidateLabels }) => ({ file, status, url, option: option?.key, combination, candidates, candidateLabels })),
   });
   // Only selected inbox originals need to be included in a Git/Vercel checkout.
   const ignorePath = path.join(root, '.gitignore');
   let ignore = ''; try { ignore = await fs.readFile(ignorePath, 'utf8'); } catch(e) { if (e.code !== 'ENOENT') throw e; }
   const marker = '# BEGIN builder image sources';
   const endMarker = '# END builder image sources';
-  const selected = [...new Set(Object.values(settings).filter(s => s.showBuilderImage).map(s => decodeURIComponent(s.builderImage)).filter(url => url.startsWith(prefix + 'inbox/')))];
+  const selected = [...new Set([...Object.values(settings).filter(s => s.showBuilderImage).map(s => s.builderImage), ...Object.values(combinations).flatMap(moods => Object.values(moods))].map(decodeURIComponent).filter(url => url.startsWith(prefix + 'inbox/')))];
   const escapeGlob = value => value.replace(/([*?\[\]\\])/g, '\\$1');
   const block = [marker, '!public/images/bathroom-builder/inbox/**/', ...selected.sort().map(url => '!' + escapeGlob('public' + url)), endMarker].join('\n');
   const nextIgnore = ignore.includes(marker) ? ignore.replace(new RegExp(marker + '[\\s\\S]*?' + endMarker), block) : ignore.trimEnd() + '\n\n' + block + '\n';
@@ -177,7 +250,7 @@ export async function syncImages({ root = projectRoot, options, aliases } = {}) 
   return report;
 }
 export function printReport(report) {
-  console.log(`IMAGE SCAN: ${report.total}; MATCHED: ${report.matchedFiles}; NEW IMAGE: ${report.newImages}; UPDATED: ${report.updatedImages}; UNMATCHED: ${report.unmatched}; AMBIGUOUS: ${report.ambiguous}`);
+  console.log(`IMAGE SCAN: ${report.total}; MATCHED: ${report.matchedFiles}; NEW IMAGE: ${report.newImages}; UPDATED: ${report.updatedImages}; UNMATCHED: ${report.unmatched}; AMBIGUOUS: ${report.ambiguous}; TILE COMBINATIONS: ${report.tileCombinations}`);
   for (const action of ['UPDATED', 'NEW IMAGE', 'DISABLED', 'UNCHANGED']) {
     const rows = report.changes.filter(c => c.action === action && (action !== 'UNCHANGED' || c.next.showBuilderImage));
     console.log(`\n${action}: ${rows.length}`);

@@ -1,0 +1,20 @@
+{
+  "300x600": {
+    "gray": "/images/bathroom-builder/tile/mood/300x600/300%2B600%EA%B0%81%20%ED%83%80%EC%9D%BC%20%EB%B6%84%EC%9C%84%EA%B8%B0%20%EA%B7%B8%EB%A0%88%EC%9D%B4.png",
+    "dark": "/images/bathroom-builder/tile/mood/300x600/300%2B600%EA%B0%81%20%ED%83%80%EC%9D%BC%20%EB%B6%84%EC%9C%84%EA%B8%B0%20%EB%8B%A4%ED%81%AC.png",
+    "ivory": "/images/bathroom-builder/tile/mood/300x600/300%2B600%EA%B0%81%20%ED%83%80%EC%9D%BC%20%EB%B6%84%EC%9C%84%EA%B8%B0%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC.png",
+    "white": "/images/bathroom-builder/tile/mood/300x600/300%2B600%EA%B0%81%20%ED%83%80%EC%9D%BC%20%EB%B6%84%EC%9C%84%EA%B8%B0%20%ED%99%94%EC%9D%B4%ED%8A%B82.png"
+  },
+  "600x1200": {
+    "gray": "/images/bathroom-builder/tile/mood/600x1200/600%2B1200%EA%B0%81%20%ED%83%80%EC%9D%BC%20%EB%B6%84%EC%9C%84%EA%B8%B0%20%EA%B7%B8%EB%A0%88%EC%9D%B4.png",
+    "dark": "/images/bathroom-builder/tile/mood/600x1200/600%2B1200%EA%B0%81%20%ED%83%80%EC%9D%BC%20%EB%B6%84%EC%9C%84%EA%B8%B0%20%EB%8B%A4%ED%81%AC.png",
+    "ivory": "/images/bathroom-builder/tile/mood/600x1200/600%2B1200%EA%B0%81%20%ED%83%80%EC%9D%BC%20%EB%B6%84%EC%9C%84%EA%B8%B0%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC.png",
+    "white": "/images/bathroom-builder/tile/mood/600x1200/600%2B1200%EA%B0%81%20%ED%83%80%EC%9D%BC%20%EB%B6%84%EC%9C%84%EA%B8%B0%20%ED%99%94%EC%9D%B4%ED%8A%B8.png"
+  },
+  "600x600": {
+    "gray": "/images/bathroom-builder/tile/mood/600x600/600%EA%B0%81%20%ED%83%80%EC%9D%BC%20%EB%B6%84%EC%9C%84%EA%B8%B0%20%EA%B7%B8%EB%A0%88%EC%9D%B4.png",
+    "dark": "/images/bathroom-builder/tile/mood/600x600/600%EA%B0%81%20%ED%83%80%EC%9D%BC%20%EB%B6%84%EC%9C%84%EA%B8%B0%20%EB%8B%A4%ED%81%AC.png",
+    "ivory": "/images/bathroom-builder/tile/mood/600x600/600%EA%B0%81%20%ED%83%80%EC%9D%BC%20%EB%B6%84%EC%9C%84%EA%B8%B0%20%EC%95%84%EC%9D%B4%EB%B3%B4%EB%A6%AC.png",
+    "white": "/images/bathroom-builder/tile/mood/600x600/600%EA%B0%81%20%ED%83%80%EC%9D%BC%20%EB%B6%84%EC%9C%84%EA%B8%B0%20%ED%99%94%EC%9D%B4%ED%8A%B8%20.png"
+  }
+}

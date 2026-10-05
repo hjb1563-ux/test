@@ -201,7 +201,7 @@ assert.equal(getGroup('bathroomCondition').choices.find(c=>c.id==='leak').name,'
 assert.equal(getGroup('bathroomCondition').choices.find(c=>c.id==='remove-bath').name,'욕조를 철거하고 싶다');
 assert.equal(getGroup('faucet').choices.find(c=>c.id==='one-hole').name,'일반 세면 수전');
 assert.equal(getGroup('niche').title,'샴푸박스');
-assert.deepEqual(plain(getGroup('niche').choices.map(c=>c.name)),['없음','샤워 샴푸박스','세면대 샴푸박스']);
+assert.deepEqual(plain(getGroup('niche').choices.map(c=>c.name)),['없음','샤워 샴푸박스','세면대 샴푸박스','파티션 샴푸박스']);
 for(const [key,id] of [['waterproofing','liquid-waterproofing'],['cabinet','led-cabinet'],['grout','grout-elastic'],...['fan','strong-fan','dehumidify','dry','heater'].map(id=>['ventilation',id])]) {
  const migrated=selection.normalizeBathroomValues({[key]:[id]});
  assert.equal(migrated[key],undefined);
@@ -294,3 +294,15 @@ for(const [id,label] of [['chrome','크롬(유광)'],['nickel','니켈(무광)']
  assert.equal(selection.normalizeBathroomValues({accessoryFinish:id}).accessoryFinish,id);
 }
 console.log('PASS: shower multi migration, empty/invalid arrays, section counts and renamed finish IDs');
+
+const tileResolver = load(path.join(root,'data/bathroom-builder-image-resolver.ts'));
+for(const size of ['300x600','600x600','600x1200'])for(const mood of ['white','ivory','gray','dark'])assert.ok(tileResolver.resolveTileMoodImage(size,mood,null));
+for(const size of [null,undefined,'other','invalid'])assert.equal(tileResolver.resolveTileMoodImage(size,'white','default.png'),'default.png');
+assert.equal(tileResolver.resolveTileMoodImage('300x600','missing',null),null);
+tree=mount(3);tree=choose(tree,'wallTileSize','300×600');tree=choose(tree,'tile','화이트');
+assert.ok(all(tree,n=>n.type==='img'&&n.props.src===tileResolver.tileCombinationImages['300x600'].white).length);
+tree=choose(tree,'wallTileSize','600×600');assert.equal(text(all(tree,n=>n.props.className==='selectedHeroLabel')[0]),'화이트');
+assert.equal(state().tile,'white');assert.ok(all(tree,n=>n.type==='img'&&n.props.src===tileResolver.tileCombinationImages['600x600'].white).length);
+assert.deepEqual(Array.from(JSON.parse(storage.get(stateKey)).imageHistoryOrder),['wallTileSize:600x600','tile:white']);
+assert.ok(!text(tree).includes('왜 선택하나요?'));
+console.log('PASS: tile 12-combination resolver, missing/other fallback, size-change preview/history and independent selections');

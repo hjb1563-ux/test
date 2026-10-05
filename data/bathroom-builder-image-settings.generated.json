@@ -40,7 +40,7 @@
     "showBuilderImage": false
   },
   "jendai:new": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%A0%A0%EB%8B%A4%EC%9D%B4%20%EC%8B%A0%EC%84%A42.png",
+    "builderImage": "/images/bathroom-builder/structure/jendai/%EC%A0%A0%EB%8B%A4%EC%9D%B4%20%EC%8B%A0%EC%84%A42.png",
     "showBuilderImage": true
   },
   "partitionShower:none": {
@@ -56,11 +56,11 @@
     "showBuilderImage": true
   },
   "partitionShower:fixed-glass": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EC%9C%A0%EB%A6%AC%20%EA%B3%A0%EC%A0%95%ED%98%952.png",
+    "builderImage": "/images/bathroom-builder/structure/partition-shower-booth/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EC%9C%A0%EB%A6%AC%20%EA%B3%A0%EC%A0%95%ED%98%952.png",
     "showBuilderImage": true
   },
   "partitionShower:door-booth": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EB%8F%84%EC%96%B4%ED%98%952.png",
+    "builderImage": "/images/bathroom-builder/structure/partition-shower-booth/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EB%8F%84%EC%96%B4%ED%98%952.png",
     "showBuilderImage": true
   },
   "niche:none": {
@@ -73,6 +73,10 @@
   },
   "niche:sink-niche": {
     "builderImage": "/images/bathroom-builder/structure/niche/sink-niche.jpg",
+    "showBuilderImage": true
+  },
+  "niche:partition-niche": {
+    "builderImage": "/images/bathroom-builder/structure/niche/%ED%8C%8C%ED%8B%B0%EC%85%98%20%EC%83%B4%ED%91%B8%EB%B0%95%EC%8A%A4.png",
     "showBuilderImage": true
   },
   "waterproofing:coating-waterproofing": {
@@ -88,15 +92,15 @@
     "showBuilderImage": false
   },
   "wallTileSize:300x600": {
-    "builderImage": "/images/bathroom-builder/inbox/%EB%B2%BD%20%ED%83%80%EC%9D%BC%20300x600.png",
+    "builderImage": "/images/bathroom-builder/tile/size/%EB%B2%BD%20%ED%83%80%EC%9D%BC%20300x600.png",
     "showBuilderImage": true
   },
   "wallTileSize:600x600": {
-    "builderImage": "/images/bathroom-builder/inbox/%EB%B2%BD%20%ED%83%80%EC%9D%BC%20600x600.png",
+    "builderImage": "/images/bathroom-builder/tile/size/%EB%B2%BD%20%ED%83%80%EC%9D%BC%20600x600.png",
     "showBuilderImage": true
   },
   "wallTileSize:600x1200": {
-    "builderImage": "/images/bathroom-builder/inbox/%EB%B2%BD%ED%83%80%EC%9D%BC600x1200.png",
+    "builderImage": "/images/bathroom-builder/tile/size/%EB%B2%BD%ED%83%80%EC%9D%BC600x1200.png",
     "showBuilderImage": true
   },
   "wallTileSize:other": {
@@ -164,7 +168,7 @@
     "showBuilderImage": true
   },
   "cabinet:standard-cabinet": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%9D%BC%EB%B0%98%20%EA%B1%B0%EC%9A%B8%EC%9E%A52.png",
+    "builderImage": "/images/bathroom-builder/cabinet/bathroom-cabinet/%EC%9D%BC%EB%B0%98%20%EA%B1%B0%EC%9A%B8%EC%9E%A52.png",
     "showBuilderImage": true
   },
   "cabinet:none": {
@@ -212,7 +216,7 @@
     "showBuilderImage": false
   },
   "ceiling:smc-flat": {
-    "builderImage": "/images/bathroom-builder/inbox/SMC%20%ED%8F%89%EC%B2%9C%EC%9E%A52.png",
+    "builderImage": "/images/bathroom-builder/ceiling/SMC%20%ED%8F%89%EC%B2%9C%EC%9E%A52.png",
     "showBuilderImage": true
   },
   "ceiling:smc-dome": {
@@ -224,7 +228,7 @@
     "showBuilderImage": false
   },
   "faucet:one-hole": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%9D%BC%EB%B0%98%20%EC%84%B8%EB%A9%B4%20%EC%88%98%EC%A0%84.png",
+    "builderImage": "/images/bathroom-builder/faucet/basin/%EC%9D%BC%EB%B0%98%20%EC%84%B8%EB%A9%B4%20%EC%88%98%EC%A0%84.png",
     "showBuilderImage": true
   },
   "faucet:concealed": {
@@ -236,15 +240,15 @@
     "showBuilderImage": false
   },
   "showerFaucet:shower": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%9D%BC%EB%B0%98%20%EC%83%A4%EC%9B%8C%20%EC%88%98%EC%A0%84.png",
+    "builderImage": "/images/bathroom-builder/faucet/shower/%EC%9D%BC%EB%B0%98%20%EC%83%A4%EC%9B%8C%20%EC%88%98%EC%A0%84.png",
     "showBuilderImage": true
   },
   "showerFaucet:concealed-shower": {
-    "builderImage": "/images/bathroom-builder/inbox/%EB%A7%A4%EB%A6%BD%20%EC%83%A4%EC%9B%8C%26%EC%9A%95%EC%A1%B0%20%EC%88%98%EC%A0%84%20.png",
+    "builderImage": "/images/bathroom-builder/faucet/shower/%EB%A7%A4%EB%A6%BD%20%EC%83%A4%EC%9B%8C%26%EC%9A%95%EC%A1%B0%20%EC%88%98%EC%A0%84%20.png",
     "showBuilderImage": true
   },
   "showerFaucet:rain": {
-    "builderImage": "/images/bathroom-builder/inbox/%ED%95%B4%EB%B0%94%EB%9D%BC%EA%B8%B0%20%EC%83%A4%EC%9B%8C%20%EC%88%98%EC%A0%84.png",
+    "builderImage": "/images/bathroom-builder/faucet/shower/%ED%95%B4%EB%B0%94%EB%9D%BC%EA%B8%B0%20%EC%83%A4%EC%9B%8C%20%EC%88%98%EC%A0%84.png",
     "showBuilderImage": true
   },
   "showerFaucet:other": {
@@ -252,19 +256,19 @@
     "showBuilderImage": false
   },
   "drain:square-drain": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%9D%BC%EB%B0%98%20%EC%82%AC%EA%B0%81%20%EB%B0%B0%EC%88%98%EA%B5%AC2.png",
+    "builderImage": "/images/bathroom-builder/drainage/%EC%9D%BC%EB%B0%98%20%EC%82%AC%EA%B0%81%20%EB%B0%B0%EC%88%98%EA%B5%AC2.png",
     "showBuilderImage": true
   },
   "drain:tile-drain": {
-    "builderImage": "/images/bathroom-builder/inbox/%ED%83%80%EC%9D%BC%20%EC%82%BD%EC%9E%85%ED%98%95%20%EB%B0%B0%EC%88%98%EA%B5%AC2.png",
+    "builderImage": "/images/bathroom-builder/drainage/%ED%83%80%EC%9D%BC%20%EC%82%BD%EC%9E%85%ED%98%95%20%EB%B0%B0%EC%88%98%EA%B5%AC2.png",
     "showBuilderImage": true
   },
   "drain:linear-drain": {
-    "builderImage": "/images/bathroom-builder/inbox/%EB%9D%BC%EC%9D%B8%20%EB%B0%B0%EC%88%98%EA%B5%AC2.png",
+    "builderImage": "/images/bathroom-builder/drainage/%EB%9D%BC%EC%9D%B8%20%EB%B0%B0%EC%88%98%EA%B5%AC2.png",
     "showBuilderImage": true
   },
   "drain:trench-drain": {
-    "builderImage": "/images/bathroom-builder/inbox/%ED%8A%B8%EB%A0%8C%EC%B9%98%20%EB%93%9C%EB%A0%88%EC%9D%B8%20%EB%B0%B0%EC%88%98%EA%B5%AC2.png",
+    "builderImage": "/images/bathroom-builder/drainage/%ED%8A%B8%EB%A0%8C%EC%B9%98%20%EB%93%9C%EB%A0%88%EC%9D%B8%20%EB%B0%B0%EC%88%98%EA%B5%AC2.png",
     "showBuilderImage": true
   },
   "drain:other": {
@@ -284,15 +288,15 @@
     "showBuilderImage": false
   },
   "lighting:light-recessed": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%B2%9C%EC%9E%A5%20%EB%A7%A4%EB%A6%BD%20%EC%A1%B0%EB%AA%85.png",
+    "builderImage": "/images/bathroom-builder/lighting/%EC%B2%9C%EC%9E%A5%20%EB%A7%A4%EB%A6%BD%20%EC%A1%B0%EB%AA%85.png",
     "showBuilderImage": true
   },
   "lighting:indirect": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%B2%9C%EC%9E%A5%20%EA%B0%84%EC%A0%91%20%EC%A1%B0%EB%AA%85.png",
+    "builderImage": "/images/bathroom-builder/lighting/%EC%B2%9C%EC%9E%A5%20%EA%B0%84%EC%A0%91%20%EC%A1%B0%EB%AA%85.png",
     "showBuilderImage": true
   },
   "lighting:cabinet-indirect": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%9A%95%EC%8B%A4%EC%9E%A5%20%EA%B0%84%EC%A0%91%20%EC%A1%B0%EB%AA%85.png",
+    "builderImage": "/images/bathroom-builder/lighting/%EC%9A%95%EC%8B%A4%EC%9E%A5%20%EA%B0%84%EC%A0%91%20%EC%A1%B0%EB%AA%85.png",
     "showBuilderImage": true
   },
   "lighting:other": {
@@ -312,15 +316,15 @@
     "showBuilderImage": false
   },
   "grout:grout-cement": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%8B%9C%EB%A9%98%ED%8A%B8(%EB%A9%94%EC%A7%80)%20%EC%A4%84%EB%88%88.png",
+    "builderImage": "/images/bathroom-builder/grout/%EC%8B%9C%EB%A9%98%ED%8A%B8(%EB%A9%94%EC%A7%80)%20%EC%A4%84%EB%88%88.png",
     "showBuilderImage": true
   },
   "grout:grout-epoxy": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%97%90%ED%8F%AD%EC%8B%9C%20%EC%A4%84%EB%88%88.png",
+    "builderImage": "/images/bathroom-builder/grout/%EC%97%90%ED%8F%AD%EC%8B%9C%20%EC%A4%84%EB%88%88.png",
     "showBuilderImage": true
   },
   "grout:grout-polyurea": {
-    "builderImage": "/images/bathroom-builder/inbox/%ED%8F%B4%EB%A6%AC%EC%9A%B0%EB%A0%88%EC%95%84%20%EC%A4%84%EB%88%88.png",
+    "builderImage": "/images/bathroom-builder/grout/%ED%8F%B4%EB%A6%AC%EC%9A%B0%EB%A0%88%EC%95%84%20%EC%A4%84%EB%88%88.png",
     "showBuilderImage": true
   },
   "threshold:threshold-tile": {

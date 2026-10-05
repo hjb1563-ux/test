@@ -2,7 +2,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
-import { normalizeFilename, loadOptions, matchFilename, syncImages } from '../scripts/sync-builder-images.mjs';
+import { normalizeFilename, loadOptions, matchFilename, matchTileCombination, syncImages } from '../scripts/sync-builder-images.mjs';
 const options = await loadOptions();
 const aliases = JSON.parse(await fs.readFile('data/bathroom-builder-image-aliases.json', 'utf8'));
 for (const [name, target] of Object.entries(aliases.exact)) {
@@ -19,6 +19,13 @@ assert.equal(matchFilename('600x1200.png', options, aliases).version, 1);
 assert.equal(matchFilename('바닥 타일 600x600.png', options, aliases).status, 'OPTION_NOT_FOUND');
 assert.equal(matchFilename('강한 환기2.png', options, aliases).status, 'UNMATCHED');
 assert.equal(matchFilename('욕조 없음.png', options, aliases).status, 'MATCHED');
+for(const name of ['300x600 화이트.png','300X600 화이트.png','300×600 화이트.png','300 600 화이트.png','300+600각 타일 분위기 화이트 .png'])assert.equal(matchTileCombination(name,options).combination,'300x600:white');
+assert.equal(matchTileCombination('600각 타일 분위기 아이보리.png',options).combination,'600x600:ivory');
+assert.equal(matchTileCombination('600x1200 다크3.png',options).version,3);
+assert.equal(matchTileCombination('tile/mood/600x600/화이트.png',options).combination,'600x600:white');
+assert.equal(matchTileCombination('accessories/300x600 화이트.png',options),null);
+assert.equal(matchFilename('accessories/화이트.png',options,aliases).status,'UNMATCHED');
+assert.equal(matchTileCombination('tile/mood/600x600/300x600 화이트.png',options).status,'AMBIGUOUS');
 const fixture = await fs.mkdtemp(path.join(os.tmpdir(), 'bath-image-sync-'));
 const imageDir = path.join(fixture, 'public/images/bathroom-builder');
 const generated = path.join(fixture, 'data/bathroom-builder-image-settings.generated.json');
@@ -62,6 +69,13 @@ try {
   await add('벽 타일 600x6002.png'); await run();
   assert.ok(decodeURIComponent((await getSettings())['wallTileSize:600x600'].builderImage).endsWith('벽 타일 600x6002.png'));
   assert.deepEqual(await fs.readFile(path.join(imageDir, '천장 간접 조명.png')), png);
+  await add('300x600 화이트.png');await add('300x600 화이트2.png');await add('300x600 화이트3.png');
+  await run();let combos=JSON.parse(await fs.readFile(path.join(fixture,'data/bathroom-builder-tile-images.generated.json'),'utf8'));
+  assert.ok(decodeURIComponent(combos['300x600'].white).endsWith('화이트3.png'));
+  await add('300x600 화이트3 (1).png',different);report=await run();
+  assert.ok(report.files.find(f=>f.file==='300x600 화이트3 (1).png').status==='AMBIGUOUS');
+  combos=JSON.parse(await fs.readFile(path.join(fixture,'data/bathroom-builder-tile-images.generated.json'),'utf8'));assert.ok(decodeURIComponent(combos['300x600'].white).endsWith('화이트3.png'));
+  assert.equal(report.tileCombinations,1);
   console.log('PASS: recursive scan, versions, dimensions, new per-option images, none images, protected choices, ambiguity, deleted paths, idempotence, format validation and original preservation');
 } finally {
   assert.ok(path.resolve(fixture).startsWith(path.resolve(os.tmpdir()) + path.sep + 'bath-image-sync-'));
