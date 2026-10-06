@@ -6,17 +6,17 @@ body .design .progressHeading small { font-size:12px; }
 body .design .designHeader button { min-height:44px; }
 body .design .designGrid { display:grid;grid-template-columns:300px minmax(0,1fr) 260px;max-width:1400px;width:100%;gap:20px;padding:24px;align-items:start; }
 body .design .designGrid>.options { grid-column:1;min-width:0;padding:20px;min-height:0;border:1px solid var(--line);border-radius:10px; }
-body .design .stepHeading { display:flex;flex-wrap:wrap;gap:8px;margin:14px 0; }
-body .design .options h1 { margin:0;font-size:26px;line-height:1.4;overflow-wrap:anywhere; }
+body .design .stepHeading { display:block;margin:10px 0 18px; }
+body .design .options #builder-question { margin:0;width:100%;max-width:none;font-size:23px;line-height:1.4;letter-spacing:-.01em;word-break:keep-all;overflow-wrap:break-word;text-wrap:balance; }
 body .design #builder-question:focus { outline:none; }
 body .design .stepIntro { font-size:13px;line-height:1.65;margin:0 0 16px; }
+body .design .builderFirstHint { width:100%;margin:20px 0 18px;font-size:11px;line-height:17.45px;letter-spacing:-.02em;word-break:keep-all;overflow-wrap:break-word; }
+body .design .builderFirstHintLine { display:block;white-space:nowrap; }
 body .design .guideButton { border:0;background:transparent;padding:0;margin:0;min-height:44px;font-size:13px;color:var(--accent); }
 body .design .stepMeta { font-size:12px; }
-body .design .builderSiteNotice { margin:0 0 16px;color:var(--muted);font-size:12px;line-height:1.6; }
-body .design .builderSiteNotice summary { cursor:pointer;min-height:44px;display:flex;align-items:center;gap:6px;list-style:none; }
-body .design .builderSiteNotice summary::-webkit-details-marker { display:none; }
-body .design .builderSiteNotice summary span { flex-shrink:0;text-decoration:underline;text-underline-offset:3px; }
-body .design .builderSiteNotice p { margin:0;padding:8px 0; }
+body .design .builderSiteNotice { display:flex;align-items:baseline;gap:6px;margin:0 0 24px;color:var(--muted);font-size:12px;line-height:1.6; }
+body .design .builderSiteNoticeIcon { flex-shrink:0; }
+body .design .builderSiteNotice p { margin:0;min-width:0;word-break:keep-all;overflow-wrap:break-word; }
 body .design .builderSectionToggle,body .design .builderDisclosureToggle { display:none; }
 body .design .options .builderSectionHeader h2 { font-size:16px; }
 body .design .options .builderSectionTitleRow small,body .design .options .builderSectionNumber { font-size:12px; }
@@ -62,6 +62,7 @@ body .design .finalCheck .reviewFollowups--resolved ul { grid-template-columns:r
 body .design .finalCheck .reviewCategory button { min-height:44px; }
 
 @media (min-width:768px) and (max-width:1199px) {
+  body .design .options #builder-question { font-size:22px; }
   body .design .designGrid { grid-template-columns:minmax(0,45fr) minmax(0,55fr);gap:18px;padding:20px; }
   body .design .builderPreviewPanel { grid-column:2;grid-row:1; }
   body .design .builderSummaryPanel { grid-column:1/-1;position:static; }
@@ -94,14 +95,15 @@ body .design .finalCheck .reviewCategory button { min-height:44px; }
   body .design .designGrid>.options { width:100%;padding:0;border:0;background:transparent; }
   body .design .stepMeta { display:none; }
   body .design .stepMeta>span { display:none; }
-  body .design .stepHeading { margin:10px 0 12px;gap:2px; }
-  body .design .options h1 { width:100%;font-size:25px;line-height:1.4; }
+  body .design .stepHeading { margin:10px 0 18px; }
+  body .design .options #builder-question { font-size:22px; }
   body .design .stepIntro { font-size:13px;line-height:1.6;margin-bottom:10px; }
   body .design .stepIntro strong { font-size:12px;font-weight:500; }
   body .design .stepReasonFull { display:none; }
   body .design .stepReasonShort { display:inline; }
-  body .design .builderFirstHint { font-size:12px; }
-  body .design .builderSiteNotice { margin:0 0 10px; }
+  body .design .builderFirstHint { margin:20px 0 14px;font-size:12px;line-height:15.2px;letter-spacing:normal; }
+  body .design .builderFirstHintLine { white-space:normal;text-wrap:pretty; }
+  body .design .builderSiteNotice { margin:0 0 24px; }
   body .design .builderSections { min-width:0; }
   body .design .options .choiceGroup+.choiceGroup { margin-top:10px; }
   body .design .choiceGroup[data-accordion=true]>.builderSectionHeader { display:none; }

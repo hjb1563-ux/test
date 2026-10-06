@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { AlertTriangle, ArrowLeft, ArrowRight, BookOpen, RotateCcw, X } from 'lucide-react';
+import { FEATURE_FLAGS } from '../config/features';
+import { AlertTriangle, ArrowLeft, ArrowRight, RotateCcw, X } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import BuilderSelectionSections from './BuilderSelectionSections';
 import BuilderDisclosure from './BuilderDisclosure';
@@ -197,8 +198,11 @@ export default function Configurator() {
       <section className="options">
         <div className="stepMeta">STEP {String(current + 1).padStart(2, '0')} / {bathroomSteps.length} <span>{step.title}</span></div>
         {consultationReturn}
-        <div className="stepHeading"><h1 id="builder-question" tabIndex={-1}>{step.question}</h1><button className="guideButton" onClick={() => setGuideOpen(true)}><BookOpen size={15} /> 가이드 보기</button></div>
-        {current === 0 && <p className="stepIntro builderFirstHint">모르는 항목은 선택하지 않고 넘어가도 괜찮아요. 선택하지 않은 항목은 자동으로 미정으로 정리됩니다.</p>}
+        <div className="stepHeading"><h1 id="builder-question" tabIndex={-1}>{step.question}</h1></div>
+        {current === 0 && <p className="stepIntro builderFirstHint">
+          <span className="builderFirstHintLine">모르는 항목은 선택하지 않고 넘어가도 괜찮아요.</span>{' '}
+          <span className="builderFirstHintLine">선택하지 않은 항목은 자동으로 미정으로 정리됩니다.</span>
+        </p>}
         <BuilderSiteNotice placement="mobile" />
         <BuilderSelectionSections key={step.key} groups={step.groups} values={values} onSelect={update} onCustomText={(key, text) => { setActivePreview(null); setValues(old => updateCustomText(old, key, text)); }} />
         {warning && <div className="selectionWarning"><AlertTriangle size={16} /><div>{warning}<small>확인이 필요한 조합입니다. 실제 시공 가능 여부는 현장에서 확인하세요.</small></div></div>}
@@ -212,6 +216,6 @@ export default function Configurator() {
       </BuilderDisclosure>
     </div>
     <nav className="mobileBuilderNav" aria-label="단계 이동"><button className="secondary" disabled={current === 0} onClick={() => goToStep(current - 1)}>이전</button><span>{current + 1} / {bathroomSteps.length}</span><button className="button" onClick={() => goToStep(current + 1)}>다음</button></nav>
-    {guideOpen && <div className="guideDrawer" role="dialog" aria-modal="true"><div><button className="drawerClose" onClick={() => setGuideOpen(false)} aria-label="가이드 닫기"><X size={18} /></button><span>GUIDE</span><h2>{guide?.title}</h2><p>{guide?.oneLine}</p>{guide?.options.slice(0, 3).map((option) => <article key={option.id}><b>{option.title}</b><p>{option.shortDescription}</p></article>)}<Link className="button" href={`/guide/${step.guide}`}>전체 가이드 보기</Link></div></div>}
+    {guideOpen && <div className="guideDrawer" role="dialog" aria-modal="true"><div><button className="drawerClose" onClick={() => setGuideOpen(false)} aria-label="가이드 닫기"><X size={18} /></button><span>GUIDE</span><h2>{guide?.title}</h2><p>{guide?.oneLine}</p>{guide?.options.slice(0, 3).map((option) => <article key={option.id}><b>{option.title}</b><p>{option.shortDescription}</p></article>)}{FEATURE_FLAGS.remodelingGuide && (<Link className="button" href={`/guide/${step.guide}`}>전체 가이드 보기</Link>)}</div></div>}
   </main>;
 }
