@@ -2,6 +2,7 @@
 body .design { background:#f4f2ed; }
 body .design .resetShort,body .design .builderPhase,body .design .stepReasonShort { display:none; }
 body .design .builderProgress { max-width:1400px;padding:20px 24px 0; }
+body .design .builderProgress .builderProgressHelp { margin-top:8px; }
 body .design .progressHeading small { font-size:12px; }
 body .design .designHeader button { min-height:44px; }
 body .design .designGrid { display:grid;grid-template-columns:300px minmax(0,1fr) 260px;max-width:1400px;width:100%;gap:20px;padding:24px;align-items:start; }
