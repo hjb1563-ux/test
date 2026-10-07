@@ -14,7 +14,10 @@ import { normalizeImageHistoryOrder, selectedImageItems } from '../data/bathroom
 import { defaultBathroomValues, bathroomSteps as legacySteps } from '../data/bathroom-options';
 import { builderBathroomSteps as bathroomSteps } from '../data/bathroom-builder-options';
 import { guideBySlug } from '../data/guides/catalog';
-import { STORAGE, readProject, consultationEditUrl, phases, consultationRows } from '../data/bathroom-consultation';
+import { STORAGE, readProject, consultationEditUrl, phases, consultationRows, updateProjectContent } from '../data/bathroom-consultation';
+import ProjectInfoForm from './ProjectInfoForm';
+import ProjectIdentity from './ProjectIdentity';
+import { hasProjectInfo, normalizeProjectInfo, type ProjectInfo } from '../data/bathroom-consultation';
 import ConsultationSummary, { ConsultationCounts } from './ConsultationSummary';
 
 type Values = BathroomValues;
@@ -42,8 +45,11 @@ function querySelections(params: URLSearchParams): Values {
 export default function Configurator() {
   const params = useSearchParams();
   const guideValues = useMemo(() => querySelections(params), [params]);
+  const [projectInfo, setProjectInfo] = useState<ProjectInfo>(() => normalizeProjectInfo(null));
+  const [projectFormOpen, setProjectFormOpen] = useState(true);
   const [current, setCurrent] = useState(0);
   const [consultationEditMode, setConsultationEditMode] = useState(false);
+  const [lastEditedCategory, setLastEditedCategory] = useState<string | null>(null);
   const [values, setValues] = useState<Values>(defaultBathroomValues);
   const [specialNotes, setSpecialNotes] = useState('');
   const [guideOpen, setGuideOpen] = useState(false);
@@ -89,6 +95,8 @@ export default function Configurator() {
       setImageHistoryOrder(normalizeImageHistoryOrder(saved.imageHistoryOrder, restoredValues));
       setActivePreview(null);
       setSpecialNotes(saved.specialNotes);
+      setProjectInfo(saved.projectInfo);
+      setProjectFormOpen(!hasProjectInfo(saved.projectInfo));
       const requested = Number(params.get('step'));
       const guideStep = bathroomSteps.findIndex(item => item.groups.some(group => {
         const value = guideValues[group.key];
@@ -103,8 +111,8 @@ export default function Configurator() {
 
   useEffect(() => {
     if (!hydrated) return;
-    try { const saved = readProject(); localStorage.setItem(STORAGE, JSON.stringify({ ...saved, values, specialNotes, current, imageHistoryOrder })); setSaveStatus('자동 저장됨'); } catch { setSaveStatus('자동 저장할 수 없어요. 상담 내용을 복사해 보관해주세요.'); }
-  }, [values, specialNotes, current, imageHistoryOrder, hydrated]);
+    try { const saved = readProject(); localStorage.setItem(STORAGE, JSON.stringify(updateProjectContent(saved, { values, specialNotes, current, imageHistoryOrder, projectInfo }))); setSaveStatus('자동 저장됨'); } catch { setSaveStatus('자동 저장할 수 없어요. 상담 내용을 복사해 보관해주세요.'); }
+  }, [values, specialNotes, current, imageHistoryOrder, projectInfo, hydrated]);
 
 
   function update(key: string, id: string, multiple?: boolean) {
@@ -113,6 +121,7 @@ export default function Configurator() {
     const before = values[key];
     const selected = Array.isArray(before) ? before.includes(id) : before === id;
     const nextValues = toggleSelection(values, key, id, multiple);
+    if (consultationEditMode) setLastEditedCategory(step.key);
     const hasImage = !selected && choice?.showBuilderImage && choice.builderImage;
     const moodGroup = key === 'wallTileSize' && hasImage ? step.groups.find(group => group.key === 'tile') : undefined;
     const mood = moodGroup?.choices.find(choice => choice.id === nextValues.tile && choice.showBuilderImage);
@@ -136,7 +145,7 @@ export default function Configurator() {
 
   const consultationReturn = consultationEditMode && <div className="builderConsultationEdit">
     <span>상담서 수정 중</span>
-    <Link className="secondary" href={{ pathname: '/result', query: { plan: encodeURIComponent(JSON.stringify(values)), specialNotes } }}>상담서로 돌아가기</Link>
+    <Link className="secondary" href={{ pathname: '/result', query: { plan: encodeURIComponent(JSON.stringify(values)), specialNotes, ...(lastEditedCategory || current < bathroomSteps.length - 1 ? { editedCategory: lastEditedCategory ?? step.key } : {}) } }}>상담서로 돌아가기</Link>
   </div>;
 
   const warning = values.sink === 'top-bowl' && values.faucet === 'one-hole'
@@ -146,6 +155,8 @@ export default function Configurator() {
   function reset() {
     if (!window.confirm('현재 선택 내용이 삭제됩니다. 처음부터 다시 시작할까요?')) return;
     try { localStorage.removeItem(STORAGE); } catch { setSaveStatus('저장소를 초기화할 수 없어요.'); return; }
+    setProjectInfo(normalizeProjectInfo(null)); setProjectFormOpen(true);
+    setLastEditedCategory(null);
     setValues({}); setSpecialNotes(''); setCurrent(0); setResumeStep(null); setActivePreview(null); setImageHistoryOrder([]); setConsultationEditMode(false);
     if (consultationEditMode) window.history.replaceState(null, '', '/design');
   }
@@ -159,8 +170,15 @@ export default function Configurator() {
     {resumeStep !== null && <button className="resumeLink" onClick={() => { goToStep(resumeStep); setResumeStep(null); }}>이어서 만들기 · 저장된 STEP {resumeStep + 1}</button>}
   </section>;
 
+  if (!hydrated) return <main className="design"><p role="status">저장된 욕실 구성을 불러오는 중입니다.</p></main>;
+  if (projectFormOpen) return <main className="design">
+    <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>내 욕실 만들기</span></header>
+    <ProjectInfoForm key={JSON.stringify(projectInfo)} initial={projectInfo} editing={hasProjectInfo(projectInfo)} onSave={info => { setProjectInfo(info); setProjectFormOpen(false); }} onCancel={hasProjectInfo(projectInfo) ? () => setProjectFormOpen(false) : undefined} />
+  </main>;
+
   if (step.key === 'checklist') return <main className="design">
     <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>나의 욕실 정리</span><button onClick={reset} aria-label="처음부터 다시 만들기"><RotateCcw size={15} /><span className="resetFull">처음부터 다시 만들기</span><span className="resetShort">초기화</span></button></header>
+    <ProjectIdentity info={projectInfo} onEdit={() => setProjectFormOpen(true)} />
     {progress}
     <div className="designGrid finalGrid">
       <section className="options finalCheck">
@@ -175,7 +193,7 @@ export default function Configurator() {
           <h2><label htmlFor="builder-special-notes">특이사항</label></h2>
           <p id="builder-special-notes-help">업체에 미리 전달하고 싶은 내용이 있다면 적어주세요.</p>
           <textarea id="builder-special-notes" aria-describedby="builder-special-notes-help" maxLength={500} value={specialNotes}
-            placeholder="업체에 전달하고 싶은 요청이나 특이사항을 적어주세요."
+            placeholder="예: 기존 누수 이력이 있어요. 매립 선반을 추가하고 싶어요."
             onChange={event => setSpecialNotes(event.target.value.slice(0, 500))} />
           <small>{specialNotes.length} / 500</small>
           <style>{`
@@ -193,6 +211,7 @@ export default function Configurator() {
 
   return <main className="design">
     <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>내 욕실 만들기</span><button onClick={reset} aria-label="처음부터 다시 만들기"><RotateCcw size={15} /><span className="resetFull">처음부터 다시 만들기</span><span className="resetShort">초기화</span></button></header>
+    <ProjectIdentity info={projectInfo} onEdit={() => setProjectFormOpen(true)} />
     {progress}
     <div className="designGrid">
       <section className="options">
@@ -204,7 +223,7 @@ export default function Configurator() {
           <span className="builderFirstHintLine">선택하지 않은 항목은 자동으로 미정으로 정리됩니다.</span>
         </p>}
         <BuilderSiteNotice placement="mobile" />
-        <BuilderSelectionSections key={step.key} groups={step.groups} values={values} onSelect={update} onCustomText={(key, text) => { setActivePreview(null); setValues(old => updateCustomText(old, key, text)); }} />
+        <BuilderSelectionSections key={step.key} groups={step.groups} values={values} onSelect={update} onCustomText={(key, text) => { if (consultationEditMode && values[`${key}Other`] !== text) setLastEditedCategory(step.key); setActivePreview(null); setValues(old => updateCustomText(old, key, text)); }} />
         {warning && <div className="selectionWarning"><AlertTriangle size={16} /><div>{warning}<small>확인이 필요한 조합입니다. 실제 시공 가능 여부는 현장에서 확인하세요.</small></div></div>}
         <div className="navButtons"><button className="secondary" disabled={current === 0} onClick={() => goToStep(current - 1)}><ArrowLeft size={17} /> 이전</button><button className="secondary" onClick={() => goToStep(current + 1)}>건너뛰기</button><button className="button" onClick={() => goToStep(current + 1)}>다음 <ArrowRight size={17} /></button></div>
       </section>

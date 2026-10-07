@@ -63,12 +63,21 @@ export function consultationRows(values: BathroomValues) {
 }
 export type ConsultationRow = ReturnType<typeof consultationRows>[number];
 
-export type LocalProject = { version: 3; values: BathroomValues; specialNotes: string; current: number; memo: string; checks: Record<string, string>; imageHistoryOrder: string[] };
+export type ProjectInfo = { customerName: string; projectName: string };
+export function normalizeProjectInfo(input: unknown): ProjectInfo {
+  const raw = input && typeof input === 'object' ? input as Record<string, unknown> : {};
+  return { customerName: typeof raw.customerName === 'string' ? raw.customerName.trim().slice(0, 40) : '', projectName: typeof raw.projectName === 'string' ? raw.projectName.trim().slice(0, 80) : '' };
+}
+export const hasProjectInfo = (info: ProjectInfo) => !!(info.customerName.trim() || info.projectName.trim());
+export const projectLabel = (info: ProjectInfo) => info.projectName || (info.customerName ? `${info.customerName}님의 욕실` : '');
+export type LocalProject = { version: 3; projectInfo: ProjectInfo; lastModifiedAt: string | null; values: BathroomValues; specialNotes: string; current: number; memo: string; checks: Record<string, string>; imageHistoryOrder: string[] };
 export function normalizeProject(input: unknown): LocalProject {
   const raw = input && typeof input === 'object' && !Array.isArray(input) ? input as Record<string, unknown> : {};
   const current = typeof raw.current === 'number' && Number.isInteger(raw.current) ? raw.current : 0;
   return {
     version: 3,
+    projectInfo: normalizeProjectInfo(raw.projectInfo),
+    lastModifiedAt: typeof raw.lastModifiedAt === 'string' && Number.isFinite(Date.parse(raw.lastModifiedAt)) ? raw.lastModifiedAt : null,
     values: normalizeBathroomValues(raw.values, steps),
     imageHistoryOrder: normalizeImageHistoryOrder(raw.imageHistoryOrder, normalizeBathroomValues(raw.values, steps)),
     specialNotes: typeof raw.specialNotes === 'string' ? raw.specialNotes.slice(0, 500) : '',
@@ -80,14 +89,73 @@ export function normalizeProject(input: unknown): LocalProject {
 export function readProject(): LocalProject {
   return normalizeProject(JSON.parse(localStorage.getItem(STORAGE) ?? '{}'));
 }
+
+// Navigation and image feedback are not consultation content changes.
+export function updateProjectContent(before: LocalProject, patch: Partial<LocalProject>, now = () => new Date().toISOString()): LocalProject {
+  const next = { ...before, ...patch };
+  const content = (project: LocalProject) => [
+    Object.entries(normalizeBathroomValues(project.values, steps)).sort(([a], [b]) => a.localeCompare(b)),
+    normalizeProjectInfo(project.projectInfo), project.specialNotes, project.memo,
+  ];
+  return { ...next, lastModifiedAt: JSON.stringify(content(before)) === JSON.stringify(content(next)) ? before.lastModifiedAt : now() };
+}
+
+export function formatLastModified(value: string | null): string {
+  if (!value || !Number.isFinite(Date.parse(value))) return '';
+  const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(value));
+  const part = (name: Intl.DateTimeFormatPartTypes) => parts.find(item => item.type === name)?.value;
+  return `${part('year')}.${part('month')}.${part('day')} ${part('hour')}:${part('minute')}`;
+}
+
+const summaryGroups = [
+  { id: 'condition', title: '현재 욕실 상태', keys: ['bathroomCondition'] },
+  { id: 'construction', title: '공사 방식 / 구조', keys: ['demolition', 'jendai', 'partitionShower', 'niche', 'waterproofing'] },
+  { id: 'tile', title: '타일', keys: ['wallTileSize', 'tile', 'tileSurface'] },
+  { id: 'fixtures', title: '주요 위생도기', keys: ['sink', 'toilet', 'cabinet', 'mirror'] },
+  { id: 'water', title: '수전 / 샤워 / 욕조', keys: ['faucet', 'showerFaucet', 'bathtub'] },
+  { id: 'details', title: '마감 / 디테일', keys: ['ceiling', 'drain', 'drainPosition', 'ventilation', 'lighting', 'accessoryFinish', 'accessory', 'grout', 'threshold'] },
+];
+
+export function generateConsultationSummary(values: BathroomValues) {
+  const normalized = normalizeBathroomValues(values, steps);
+  const groups = steps.flatMap(step => step.groups);
+  return summaryGroups.flatMap(summary => {
+    const items = summary.keys.flatMap(key => {
+      const group = groups.find(item => item.key === key);
+      if (!group) return [];
+      const draft = normalized[customTextKey(key)];
+      const custom = typeof draft === 'string' ? draft.trim() : '';
+      if (['accessory', 'ventilation'].includes(key)) return custom ? [custom] : [];
+      return selectedIds(normalized[key]).flatMap(id => {
+        const choice = group.choices.find(item => item.id === id);
+        if (!choice) return [];
+        if (choice.requiresCustomText) return custom ? [custom] : [];
+        // Short config labels need their category to remain understandable in a summary.
+        if (key === 'sink' && choice.id === 'undermount-basin') return ['언더볼 세면대'];
+        if (key === 'toilet') return [`${choice.name} 변기`];
+        if (choice.name === '없음') return [`${group.title} 없음`];
+        return [choice.name];
+      });
+    });
+    const meaningful = items.filter(item => item.trim() && item !== '미정');
+    return meaningful.length ? [{ id: summary.id, title: summary.title, items: meaningful, text: meaningful.join(' · ') }] : [];
+  });
+}
+
+export function consultationSummaryText(project: LocalProject): string {
+  const info = project.projectInfo;
+  const identity = [info.projectName ? `프로젝트명: ${info.projectName}` : '', info.customerName ? `고객명: ${info.customerName}` : ''].filter(Boolean).join(' · ');
+  const summary = generateConsultationSummary(project.values);
+  return [identity, ...summary.map(group => `${group.title}: ${group.text}`), ...(project.memo.trim() ? [`\n[업체에 전달할 메모]\n${project.memo.trim()}`] : [])].filter(Boolean).join('\n');
+}
 // Store the selection fingerprint: changing a choice invalidates its old field check.
 export const checkFingerprint = (row: ConsultationRow) => JSON.stringify([row.label, row.site]);
-export function consultationText(rows: ConsultationRow[], specialNotes: string, memo: string) {
+export function consultationText(rows: ConsultationRow[], specialNotes: string, memo: string, projectInfo: ProjectInfo = normalizeProjectInfo(null), lastModifiedAt: string | null = null) {
   const pending = rows.filter(row => row.pending);
-  return ['[욕실 리모델링 상담 내용]', `선택 완료 ${rows.length - pending.length}`, '집계 기준: 선택 카테고리 수',
+  return ['[욕실 리모델링 상담서]', ...(projectInfo.projectName ? [`프로젝트명: ${projectInfo.projectName}`] : []), ...(projectInfo.customerName ? [`고객명: ${projectInfo.customerName}`] : []), ...(formatLastModified(lastModifiedAt) ? [`마지막 수정: ${formatLastModified(lastModifiedAt)}`] : []), `선택 완료 ${rows.length - pending.length}`, '집계 기준: 선택 카테고리 수',
     ...steps.slice(0, -1).map((step, index) => `\n${String(index + 1).padStart(2, '0')} ${step.title}\n${rows.filter(row => row.stepIndex === index).map(row => `${row.title}: ${row.label}`).join('\n')}`),
     '\n업체 실측 후 최종 확인이 필요합니다. 선택 내용은 상담을 위한 희망 사항입니다.',
-    `\n업체에 전달할 메모\n${memo.trim() || '미입력'}`,
     ...(specialNotes.trim() ? [`\n[특이사항]\n${specialNotes.trim()}`] : []),
+    ...(memo.trim() ? [`\n[업체에 전달할 메모]\n${memo.trim()}`] : []),
   ].join('\n');
 }

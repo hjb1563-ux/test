@@ -7,6 +7,17 @@ import { customTextKey, selectedIds, selectionLabel, type BathroomValues } from 
 import BuilderChoiceCard from './BuilderChoiceCard';
 import { resolveBuilderImage } from '../data/bathroom-builder-image-resolver';
 
+const customPlaceholders: Record<string, string> = {
+  bathroomCondition: '예: 천장에 곰팡이가 있어요',
+  wallTileSize: '대형 타일, 모자이크 타일, 박판 타일, 포인트 타일···',
+  sink: '예: 벽부형 세면대', toilet: '예: 비데 일체형 변기',
+  cabinet: '예: 슬라이딩 거울장', bathtub: '예: 프리스탠딩 욕조',
+  ceiling: '예: 알루미늄 천장', faucet: '예: 높은형 세면 수전',
+  showerFaucet: '예: 온도조절 샤워 수전',
+  mirror: '예: 타원형 거울', drain: '예: 벽면형 배수구',
+  lighting: '예: 거울 양옆 벽등', accessoryFinish: '예: 무광 블랙',
+};
+
 export default function BuilderChoiceGroup({ group, number, values, onSelect, onCustomText, accordion }: {
   group: ChoiceGroup;
   number?: number;
@@ -36,7 +47,7 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
     {group.key === 'ventilation' && <label className="builderCustomText" htmlFor="builder-ventilation-other">
       환풍기
       <input id="builder-ventilation-other" type="text" value={typeof draft === 'string' ? draft : ''}
-        placeholder="환풍기 제품명 입력" onChange={event => onCustomText(group.key, event.target.value)} />
+        placeholder="예: 힘펠 휴젠뜨" onChange={event => onCustomText(group.key, event.target.value)} />
     </label>}
     {group.key === 'accessory' && <label className="builderCustomText" htmlFor="builder-accessory-other">
       직접 입력
@@ -57,7 +68,7 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
     {customChoice?.id === choice.id && <label className="builderCustomText" htmlFor={`builder-${group.key}-other`}>
       {group.title} · 기타 내용
       <input id={`builder-${group.key}-other`} type="text" value={typeof draft === 'string' ? draft : ''}
-        placeholder={group.key === 'wallTileSize' ? '대형 타일, 모자이크 타일, 박판 타일, 포인트 타일···' : '원하는 기타 사항을 입력해주세요.'}
+        placeholder={customPlaceholders[group.key]}
         onChange={event => onCustomText(group.key, event.target.value)} />
     </label>}</Fragment>;
       })}
@@ -89,6 +100,7 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
       @media(prefers-reduced-motion:reduce){.design .builderChoiceCard{transition:none}}
       .design .builderCustomText{display:block;margin-top:12px;font-size:12px;color:var(--muted)}
       .design .builderCustomText input{display:block;box-sizing:border-box;width:100%;margin-top:6px;padding:12px;border:1px solid var(--line);border-radius:7px;font:inherit;color:var(--ink);background:#fffdf9}
+      .design .builderCustomText input::placeholder{color:var(--muted);opacity:1;font-weight:400}
       .design #builder-wallTileSize-other::placeholder{font-size:12px;letter-spacing:-.02em}
       @media(min-width:768px) and (max-width:1199px){.design #builder-wallTileSize-other::placeholder{font-size:11.5px}}
       @media(min-width:1200px){.design #builder-wallTileSize-other::placeholder{font-size:11px;letter-spacing:-.025em}}

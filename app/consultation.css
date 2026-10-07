@@ -209,6 +209,50 @@ body .consultationSheet .consultationCounts b{font-size:28px;font-weight:600;mar
 
 /* Missing Builder selections use neutral text on the consultation sheet. */
 .consultationSheet .sheetRow--pending strong{color:var(--review-muted);font-weight:400}
-.consultationSheet .sheetCompleted{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px;margin:12px 0;font-size:13px}
-.consultationSheet .sheetCompleted b{font-size:20px;font-weight:600;color:var(--ink)}
-.consultationSheet .sheetCompleted small{font-size:11px;color:var(--muted)}
+
+.consultationSheet.unifiedSheet .sheetRow strong.sheetUndecidedValue{display:inline-block;color:var(--review-accent);font-weight:600;background:color-mix(in srgb,var(--review-accent) 9%,var(--review-paper));border:1px solid color-mix(in srgb,var(--review-accent) 28%,var(--review-paper));border-radius:4px;padding:2px 6px}
+@media print{
+  .consultationSheet.unifiedSheet .sheetRow strong.sheetUndecidedValue{color:var(--review-muted);font-weight:600;background:none;border:1px solid var(--review-border);border-radius:4px;padding:2px 6px}
+}
+
+/* Consultation-only overview and return feedback. */
+.consultationSheet .sheetProjectIdentity{margin:22px 0 0;padding-bottom:8px;min-width:0}
+.consultationSheet .sheetProjectTitle{margin:0;font-size:19px;font-weight:600;color:var(--ink);line-height:1.4;letter-spacing:-.01em;word-break:keep-all;overflow-wrap:anywhere}
+.consultationSheet .sheetProjectInfo{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 20px;margin:6px 0 0;font-size:13px;color:var(--ink);line-height:1.6}
+.consultationSheet .sheetProjectIdentity>.sheetProjectInfo:first-child{margin-top:0}
+.consultationSheet .sheetProjectInfo>span{min-width:0;overflow-wrap:anywhere}
+.consultationSheet .sheetCustomerName{font-size:inherit;font-weight:400}
+.consultationSheet .sheetInfoLabel{color:var(--muted);font-weight:400}
+.consultationSheet .sheetLastModified{font-size:13px;color:var(--muted);line-height:1.6}
+.consultationSheet .sheetCoreSummary{min-width:0;margin:16px 0 4px;padding:14px 0;border-block:1px solid var(--review-border)}
+.consultationSheet .sheetCoreSummary h2{margin:0 0 10px;font-size:16px;font-weight:500}
+.consultationSheet .sheetCoreSummary dl{margin:0}
+.consultationSheet .sheetCoreSummary dl>div{display:grid;grid-template-columns:112px minmax(0,1fr);gap:12px;margin:6px 0;line-height:1.6}
+.consultationSheet .sheetCoreSummary dt{font-size:12px;color:var(--muted);font-weight:400}
+.consultationSheet .sheetCoreSummary dd{min-width:0;margin:0;font-size:14px;color:var(--ink);overflow-wrap:anywhere}
+.consultationSheet .sheetCoreSummary>p{font-size:13px;color:var(--muted);margin:0}
+.consultationSheet .sheetStep{transition:background-color 400ms,border-color 400ms}
+.consultationSheet .sheetStep.sheetStep--highlighted{background:var(--review-stone);border-color:var(--accent)}
+.consultationSheet .resultActions{max-width:100%}
+.consultationSheet .resultActions button{white-space:normal}
+@media(min-width:1280px){.consultationSheet>.resultActions{max-width:520px;flex-wrap:wrap;justify-content:flex-end}}
+@media(max-width:767px){
+  .consultationSheet .sheetProjectTitle{font-size:18px}
+  .consultationSheet .sheetCoreSummary dl>div{grid-template-columns:88px minmax(0,1fr);gap:8px}
+  .consultationSheet .sheetCoreSummary dt{font-size:11px}
+  .consultationSheet .resultActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .consultationSheet .resultActions button{min-width:0;min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){.consultationSheet .sheetStep{transition:none}}
+@media print{
+  .consultationSheet .sheetProjectIdentity{margin:12pt 0 0;padding-bottom:6pt;break-inside:avoid}
+  .consultationSheet .sheetProjectTitle{font-size:13pt;font-weight:600}
+  .consultationSheet .sheetProjectInfo{font-size:9.5pt;margin:5pt 0 0}
+  .consultationSheet .sheetLastModified{font-size:9.5pt}
+  .consultationSheet .sheetCoreSummary{padding:6pt 0;margin:8pt 0;break-inside:avoid}
+  .consultationSheet .sheetCoreSummary h2{font-size:11pt;margin:0 0 5pt}
+  .consultationSheet .sheetCoreSummary dl>div{grid-template-columns:29mm minmax(0,1fr);gap:3mm;margin:3pt 0}
+  .consultationSheet .sheetCoreSummary dt{font-size:9pt}
+  .consultationSheet .sheetCoreSummary dd{font-size:10pt}
+  .consultationSheet .sheetStep.sheetStep--highlighted{background:white;border-color:var(--review-border);transition:none}
+}
