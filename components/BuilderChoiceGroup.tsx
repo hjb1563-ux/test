@@ -1,7 +1,6 @@
 'use client';
 
 import { Fragment } from 'react';
-import { ChevronDown } from 'lucide-react';
 import type { ChoiceGroup } from '../data/bathroom-options';
 import { customTextKey, selectedIds, selectionLabel, type BathroomValues } from '../data/bathroom-selection';
 import BuilderChoiceCard from './BuilderChoiceCard';
@@ -18,30 +17,29 @@ const customPlaceholders: Record<string, string> = {
   lighting: '예: 거울 양옆 벽등', accessoryFinish: '예: 무광 블랙',
 };
 
-export default function BuilderChoiceGroup({ group, number, values, onSelect, onCustomText, accordion }: {
+export default function BuilderChoiceGroup({ group, number, sectionCount, sectionIndex, compactActive, values, onSelect, onCustomText }: {
   group: ChoiceGroup;
   number?: number;
+  sectionCount: number;
+  sectionIndex: number;
+  compactActive: boolean;
   values: BathroomValues;
   onSelect: (key: string, id: string, multiple?: boolean) => void;
   onCustomText: (key: string, text: string) => void;
-  accordion?: { open: boolean; toggle: () => void; advance: () => void };
 }) {
   const ids = selectedIds(values[group.key]);
 
   const customChoice = group.choices.find(choice => choice.requiresCustomText && ids.includes(choice.id));
   const draft = values[customTextKey(group.key)];
-  return <section className="choiceGroup" data-accordion={!!accordion} data-open={accordion?.open ?? true}>
-    {accordion && <button type="button" id={`builder-${group.key}-toggle`} className="builderSectionToggle"
-      aria-expanded={accordion.open} aria-controls={`builder-${group.key}-content`} onClick={accordion.toggle}>
-      <span className="builderSectionTitleRow"><span>{number !== undefined && <em>{String(number).padStart(2, '0')}</em>}{group.title}</span>{group.multiple && <small>복수 선택</small>}<ChevronDown size={18} aria-hidden="true" /></span>
-      <span className="builderSectionSelection">{selectionLabel(values, group)}</span>
-    </button>}
+  return <section className="choiceGroup" data-compact-grid={["wallTileSize", "tile", "tileSurface", "sink", "toilet"].includes(group.key)} data-compact-active={compactActive} aria-labelledby={`builder-${group.key}-title`}>
     <header className="builderSectionHeader">
       {number !== undefined && <span className="builderSectionNumber" aria-hidden="true">{String(number).padStart(2, '0')}</span>}
       <div className="builderSectionTitleRow">
         <h2 id={`builder-${group.key}-title`}>{group.title}</h2>
         {group.multiple && <small>복수 선택</small>}
+        <small className="builderSectionPosition" aria-label={`현재 단계의 ${sectionCount}개 항목 중 ${sectionIndex + 1}번째`}>{sectionIndex + 1} / {sectionCount}</small>
       </div>
+      <span className="builderCurrentSectionSelection">{selectionLabel(values, group)}</span>
     </header>
     <div className="builderSectionContent" id={`builder-${group.key}-content`}>
     {group.key === 'ventilation' && <label className="builderCustomText" htmlFor="builder-ventilation-other">
@@ -61,9 +59,8 @@ export default function BuilderChoiceGroup({ group, number, values, onSelect, on
         return <Fragment key={choice.id}><BuilderChoiceCard label={choice.name} selected={selected} multiple={group.multiple}
           imageOption={group.key === 'tileSurface' ? resolveBuilderImage(group.key, choice, values) : undefined}
           tabIndex={group.multiple || selected || (!ids.length && index === 0) ? 0 : -1}
-          onSelect={(event) => {
+          onSelect={() => {
             onSelect(group.key, choice.id, group.multiple);
-            if (accordion && !group.multiple && !selected && !choice.requiresCustomText && event?.detail && window.matchMedia('(max-width: 767px)').matches) accordion.advance();
           }} />
     {customChoice?.id === choice.id && <label className="builderCustomText" htmlFor={`builder-${group.key}-other`}>
       {group.title} · 기타 내용

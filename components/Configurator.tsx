@@ -48,6 +48,7 @@ export default function Configurator() {
   const [projectInfo, setProjectInfo] = useState<ProjectInfo>(() => normalizeProjectInfo(null));
   const [projectFormOpen, setProjectFormOpen] = useState(true);
   const [current, setCurrent] = useState(0);
+  const [sectionPosition, setSectionPosition] = useState({ step: 0, index: 0 });
   const [consultationEditMode, setConsultationEditMode] = useState(false);
   const [lastEditedCategory, setLastEditedCategory] = useState<string | null>(null);
   const [values, setValues] = useState<Values>(defaultBathroomValues);
@@ -61,6 +62,7 @@ export default function Configurator() {
   const rows = consultationRows(values);
   const phase = phases.find(item => current >= item.start && current <= item.end)!;
   const step = bathroomSteps[current];
+  const activeSectionIndex = sectionPosition.step === current ? Math.min(sectionPosition.index, Math.max(0, step.groups.length - 1)) : 0;
   const guide = guideBySlug[step.guide];
   const selectedItems = step.groups.flatMap((group) => { const value = values[group.key]; const ids = Array.isArray(value) ? value : value ? [value] : []; return ids.map((id) => ({ title: group.title, choice: group.choices.find((choice) => choice.id === id)! })).filter((item) => item.choice); });
   const historyItems = useMemo(() => {
@@ -137,10 +139,28 @@ export default function Configurator() {
   function goToStep(index: number, fromConsultation = consultationEditMode) {
     const next = Math.max(0, Math.min(bathroomSteps.length - 1, index));
     setCurrent(next);
+    setSectionPosition({ step: next, index: 0 });
+    setActivePreview(null);
     if (fromConsultation) {
       setConsultationEditMode(true);
       window.history.replaceState(null, '', consultationEditUrl(next));
     }
+  }
+
+  function goToSection(index: number) {
+    setSectionPosition({ step: current, index: Math.max(0, Math.min(step.groups.length - 1, index)) });
+    setActivePreview(null);
+    document.querySelector('.builderSelectionScroll')?.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  function compactPrevious() {
+    if (activeSectionIndex > 0) goToSection(activeSectionIndex - 1);
+    else goToStep(current - 1);
+  }
+
+  function compactNext() {
+    if (activeSectionIndex < step.groups.length - 1) goToSection(activeSectionIndex + 1);
+    else goToStep(current + 1);
   }
 
   const consultationReturn = consultationEditMode && <div className="builderConsultationEdit">
@@ -157,6 +177,7 @@ export default function Configurator() {
     try { localStorage.removeItem(STORAGE); } catch { setSaveStatus('저장소를 초기화할 수 없어요.'); return; }
     setProjectInfo(normalizeProjectInfo(null)); setProjectFormOpen(true);
     setLastEditedCategory(null);
+    setSectionPosition({ step: 0, index: 0 });
     setValues({}); setSpecialNotes(''); setCurrent(0); setResumeStep(null); setActivePreview(null); setImageHistoryOrder([]); setConsultationEditMode(false);
     if (consultationEditMode) window.history.replaceState(null, '', '/design');
   }
@@ -209,7 +230,7 @@ export default function Configurator() {
     <nav className="mobileBuilderNav" aria-label="최종 검토 이동"><button className="secondary" onClick={() => goToStep(bathroomSteps.length - 2)}>이전</button><span>{bathroomSteps.length} / {bathroomSteps.length}</span><Link className="button" href={{ pathname: '/result', query: { plan: encodeURIComponent(JSON.stringify(values)), specialNotes } }}>상담서 보기</Link></nav>
   </main>;
 
-  return <main className="design">
+  return <main className="design builderCompactFlow">
     <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>내 욕실 만들기</span><button onClick={reset} aria-label="처음부터 다시 만들기"><RotateCcw size={15} /><span className="resetFull">처음부터 다시 만들기</span><span className="resetShort">초기화</span></button></header>
     <ProjectIdentity info={projectInfo} onEdit={() => setProjectFormOpen(true)} />
     {progress}
@@ -218,23 +239,33 @@ export default function Configurator() {
         <div className="stepMeta">STEP {String(current + 1).padStart(2, '0')} / {bathroomSteps.length} <span>{step.title}</span></div>
         {consultationReturn}
         <div className="stepHeading"><h1 id="builder-question" tabIndex={-1}>{step.question}</h1></div>
+        <div className="builderSelectionScroll" key={step.key} tabIndex={0} role="region" aria-label="현재 단계 선택 옵션">
+        <div className="builderSelectionHelp">
         {current === 0 && <p className="stepIntro builderFirstHint">
           <span className="builderFirstHintLine">모르는 항목은 선택하지 않고 넘어가도 괜찮아요.</span>{' '}
           <span className="builderFirstHintLine">선택하지 않은 항목은 자동으로 미정으로 정리됩니다.</span>
         </p>}
         <BuilderSiteNotice placement="mobile" />
-        <BuilderSelectionSections key={step.key} groups={step.groups} values={values} onSelect={update} onCustomText={(key, text) => { if (consultationEditMode && values[`${key}Other`] !== text) setLastEditedCategory(step.key); setActivePreview(null); setValues(old => updateCustomText(old, key, text)); }} />
+        </div>
+        <BuilderSelectionSections key={step.key} groups={step.groups} activeSectionIndex={activeSectionIndex} values={values} onSelect={update} onCustomText={(key, text) => { if (consultationEditMode && values[`${key}Other`] !== text) setLastEditedCategory(step.key); setActivePreview(null); setValues(old => updateCustomText(old, key, text)); }} />
+
         {warning && <div className="selectionWarning"><AlertTriangle size={16} /><div>{warning}<small>확인이 필요한 조합입니다. 실제 시공 가능 여부는 현장에서 확인하세요.</small></div></div>}
+        </div>
         <div className="navButtons"><button className="secondary" disabled={current === 0} onClick={() => goToStep(current - 1)}><ArrowLeft size={17} /> 이전</button><button className="secondary" onClick={() => goToStep(current + 1)}>건너뛰기</button><button className="button" onClick={() => goToStep(current + 1)}>다음 <ArrowRight size={17} /></button></div>
       </section>
       <BuilderDisclosure key={`preview-${step.key}`} id="builder-preview" title="선택한 욕실 미리보기" count={imageCount} className={`builderPreviewPanel${imageCount ? '' : ' builderPreviewPanel--empty'}`}>
         <SelectedOptionGallery items={historyItems} activePreview={activePreview?.step === current ? activePreview.id : null} onPreview={id => setActivePreview({ step: current, id })} empty="옵션을 선택하면 시공 예시 이미지가 여기에 표시됩니다." />
       </BuilderDisclosure>
       <BuilderDisclosure key={`summary-${step.key}`} id="builder-summary" title="현재 선택" count={selectionCount} className="builderSummaryPanel">
-        <section className="summary"><h2>현재 욕실 선택 요약</h2><p className="builderSummaryCounts">선택 {rows.length - pendingCount} · 미정 {pendingCount}<small>전체 카테고리 기준</small></p><h3>{step.title}</h3>{step.groups.map(group => <div className="summaryRow" key={group.key}><div><span>{group.title}</span><b style={selectionLabel(values, group) === '미정' ? { color: 'var(--muted)', fontWeight: 400 } : undefined}>{selectionLabel(values, group)}</b></div></div>)}</section>
+        <section className="summary" data-empty={selectionCount === 0}>{selectionCount === 0 && <p className="builderSummaryEmpty">아직 선택한 항목이 없습니다.</p>}<h2>현재 욕실 선택 요약</h2><p className="builderSummaryCounts">선택 {rows.length - pendingCount} · 미정 {pendingCount}<small>전체 카테고리 기준</small></p><h3>{step.title}</h3>{step.groups.map(group => <div className="summaryRow" key={group.key}><div><span>{group.title}</span><b style={selectionLabel(values, group) === '미정' ? { color: 'var(--muted)', fontWeight: 400 } : undefined}>{selectionLabel(values, group)}</b></div></div>)}</section>
       </BuilderDisclosure>
     </div>
-    <nav className="mobileBuilderNav" aria-label="단계 이동"><button className="secondary" disabled={current === 0} onClick={() => goToStep(current - 1)}>이전</button><span>{current + 1} / {bathroomSteps.length}</span><button className="button" onClick={() => goToStep(current + 1)}>다음</button></nav>
+    <nav className="mobileBuilderNav" aria-label="단계 및 항목 이동">
+      <button className="secondary" disabled={current === 0 && activeSectionIndex === 0} onClick={compactPrevious}>{activeSectionIndex > 0 ? '이전 항목' : '이전'}</button>
+      <span>{current + 1} / {bathroomSteps.length}</span>
+      <button className="secondary builderCompactSkip" aria-label="현재 STEP 전체 건너뛰기" onClick={() => goToStep(current + 1)}>건너뛰기</button>
+      <button className="button" onClick={compactNext}>{activeSectionIndex < step.groups.length - 1 ? '다음 항목 →' : 'STEP ' + String(current + 2).padStart(2, '0') + '으로 →'}</button>
+    </nav>
     {guideOpen && <div className="guideDrawer" role="dialog" aria-modal="true"><div><button className="drawerClose" onClick={() => setGuideOpen(false)} aria-label="가이드 닫기"><X size={18} /></button><span>GUIDE</span><h2>{guide?.title}</h2><p>{guide?.oneLine}</p>{guide?.options.slice(0, 3).map((option) => <article key={option.id}><b>{option.title}</b><p>{option.shortDescription}</p></article>)}{FEATURE_FLAGS.remodelingGuide && (<Link className="button" href={`/guide/${step.guide}`}>전체 가이드 보기</Link>)}</div></div>}
   </main>;
 }
