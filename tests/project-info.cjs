@@ -93,8 +93,8 @@ const saved=()=>JSON.parse(storage.get(consultation.STORAGE));
 function fresh(project,query='') {slots=[];params.forEach((v,k)=>params.delete(k));new URLSearchParams(query).forEach((v,k)=>params.set(k,v));storage.clear();if(project)storage.set(consultation.STORAGE,JSON.stringify(project));return render();}
 const form=t=>all(t,n=>n.type==='form')[0];
 function enter(t,id,value){all(t,n=>n.type==='input'&&n.props.id===id)[0].props.onChange({target:{value}});return render();}
-function submit(t){form(t).props.onSubmit({preventDefault(){}});return render();}
-let tree=fresh();assert.equal(all(tree,n=>n.type==='progress').length,0);assert.ok(text(tree).includes('프로젝트 정보'));tree=submit(tree);assert.ok(text(tree).includes('이름 또는 프로젝트명 중 하나를 입력해주세요.'));
+function submit(t){all(t,n=>n.type==='button'&&/욕실 만들기 시작|프로젝트 정보 저장/.test(text(n)))[0].props.onClick();return render();}
+let tree=fresh();form(tree).props.onSubmit({preventDefault(){}});tree=render();assert.ok(form(tree),'implicit submit must not start the Builder');assert.equal(all(tree,n=>n.type==='progress').length,0);assert.ok(text(tree).includes('프로젝트 정보'));tree=submit(tree);assert.ok(text(tree).includes('고객명 또는 프로젝트명 중 하나를 입력해주세요.'));
 for(const [name,project] of [['홍길동',''],['','서초동 욕실 리모델링'],['홍길동','홍길동 고객님 욕실 리모델링']]) {tree=fresh();tree=enter(tree,'project-customer-name','  '+name+'  ');tree=enter(tree,'project-name','  '+project+'  ');tree=submit(tree);assert.equal(all(tree,n=>n.type==='progress')[0].props.value,1);assert.deepEqual(saved().projectInfo,{customerName:name,projectName:project});}
 const legacy={version:3,current:7,values:{sink:'top-bowl',showerFaucet:['rain']},specialNotes:'메모',memo:'상담 메모',checks:{},imageHistoryOrder:['showerFaucet:rain']};
 tree=fresh(legacy);assert.ok(form(tree));assert.equal(all(tree,n=>n.type==='progress').length,0);tree=enter(tree,'project-name','고객 프로젝트');tree=submit(tree);assert.equal(all(tree,n=>n.type==='progress')[0].props.value,8);const before=JSON.stringify(saved().values);const history=JSON.stringify(saved().imageHistoryOrder);

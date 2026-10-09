@@ -383,3 +383,10 @@ body .design .builderSummaryPanel .builderSummaryEmpty { display:none; }
 @media (max-width:1199px) and (prefers-reduced-motion:reduce) {
   body .design.builderCompactFlow .builderSummaryPanel>.builderDisclosureToggle { transition:none; }
 }
+
+/* Project identity entry is outside the STEP navigation flow. */
+body .design .projectInfoForm .navButtons { display:flex!important; }
+body .design .projectInfoForm #project-info-validation { color:var(--accent);font-size:13px;line-height:1.5; }
+@media(max-width:767px) {
+  body .design .projectInfoForm .navButtons>.button { width:100%;min-height:48px; }
+}
