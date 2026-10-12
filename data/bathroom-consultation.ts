@@ -63,10 +63,33 @@ export function consultationRows(values: BathroomValues) {
 }
 export type ConsultationRow = ReturnType<typeof consultationRows>[number];
 
-export type ProjectInfo = { customerName: string; projectName: string };
+export type ProjectInfo = { customerName: string; projectName: string; propertyType: '아파트' | '빌라' | '상가' | null; occupancyStatus: '살고 있다' | '이사갈 곳이다' | null; areaPyeong: string; constructionDate: string | null; budget: number | null };
+export const numericDigits = (value: string, max: number) => value.replace(/[^0-9]/g, '').slice(0, max);
+export function calendarDate(year: string, month: string, day: string): string | null {
+  if (!/^\d{4}$/.test(year) || !/^\d{1,2}$/.test(month) || !/^\d{1,2}$/.test(day)) return null;
+  const y = Number(year), m = Number(month), d = Number(day);
+  const leap = y % 4 === 0 && (y % 100 !== 0 || y % 400 === 0);
+  const days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  return y > 0 && m >= 1 && m <= 12 && d >= 1 && d <= days[m - 1] ? year + '-' + month.padStart(2, '0') + '-' + day.padStart(2, '0') : null;
+}
+export const formatAreaPyeong = (value: string) => value ? value + '평' : '';
+export const formatBudgetNumber = (value: number | null) => value === null ? '' : new Intl.NumberFormat('ko-KR').format(value);
+export const formatBudget = (value: number | null) => value === null ? '' : formatBudgetNumber(value) + '원 이내';
+export const formatConstructionDate = (value: string | null) => value ? value.replace(/-/g, '.') : '';
+export function projectMetadata(info: ProjectInfo) {
+  const site = [info.propertyType, info.propertyType !== '상가' ? info.occupancyStatus : null, formatAreaPyeong(info.areaPyeong)].filter(Boolean).join(' · ');
+  return [site, info.constructionDate ? '시공 예정 · ' + formatConstructionDate(info.constructionDate) : '', info.budget !== null ? '예산 · ' + formatBudget(info.budget) : ''].filter(Boolean);
+}
 export function normalizeProjectInfo(input: unknown): ProjectInfo {
   const raw = input && typeof input === 'object' ? input as Record<string, unknown> : {};
-  return { customerName: typeof raw.customerName === 'string' ? raw.customerName.trim().slice(0, 40) : '', projectName: typeof raw.projectName === 'string' ? raw.projectName.trim().slice(0, 80) : '' };
+  const propertyType = raw.propertyType === '아파트' || raw.propertyType === '빌라' || raw.propertyType === '상가' ? raw.propertyType : null;
+  const date = typeof raw.constructionDate === 'string' ? raw.constructionDate.split('-') : [];
+  return { propertyType,
+    occupancyStatus: propertyType !== '상가' && (raw.occupancyStatus === '살고 있다' || raw.occupancyStatus === '이사갈 곳이다') ? raw.occupancyStatus : null,
+    areaPyeong: typeof raw.areaPyeong === 'string' ? numericDigits(raw.areaPyeong, 4) : '',
+    constructionDate: date.length === 3 ? calendarDate(date[0], date[1], date[2]) : null,
+    budget: typeof raw.budget === 'number' && Number.isSafeInteger(raw.budget) && raw.budget >= 0 && raw.budget <= 9999999999999 ? raw.budget : null,
+    customerName: typeof raw.customerName === 'string' ? raw.customerName.trim().slice(0, 40) : '', projectName: typeof raw.projectName === 'string' ? raw.projectName.trim().slice(0, 80) : '' };
 }
 export const hasProjectInfo = (info: ProjectInfo) => !!(info.customerName.trim() || info.projectName.trim());
 export const projectLabel = (info: ProjectInfo) => info.projectName || (info.customerName ? `${info.customerName}님의 욕실` : '');
@@ -146,13 +169,13 @@ export function consultationSummaryText(project: LocalProject): string {
   const info = project.projectInfo;
   const identity = [info.projectName ? `프로젝트명: ${info.projectName}` : '', info.customerName ? `고객명: ${info.customerName}` : ''].filter(Boolean).join(' · ');
   const summary = generateConsultationSummary(project.values);
-  return [identity, ...summary.map(group => `${group.title}: ${group.text}`), ...(project.memo.trim() ? [`\n[업체에 전달할 메모]\n${project.memo.trim()}`] : [])].filter(Boolean).join('\n');
+  return [identity, ...projectMetadata(info), ...summary.map(group => `${group.title}: ${group.text}`), ...(project.memo.trim() ? [`\n[업체에 전달할 메모]\n${project.memo.trim()}`] : [])].filter(Boolean).join('\n');
 }
 // Store the selection fingerprint: changing a choice invalidates its old field check.
 export const checkFingerprint = (row: ConsultationRow) => JSON.stringify([row.label, row.site]);
 export function consultationText(rows: ConsultationRow[], specialNotes: string, memo: string, projectInfo: ProjectInfo = normalizeProjectInfo(null), lastModifiedAt: string | null = null) {
   const pending = rows.filter(row => row.pending);
-  return ['[욕실 리모델링 상담서]', ...(projectInfo.projectName ? [`프로젝트명: ${projectInfo.projectName}`] : []), ...(projectInfo.customerName ? [`고객명: ${projectInfo.customerName}`] : []), ...(formatLastModified(lastModifiedAt) ? [`마지막 수정: ${formatLastModified(lastModifiedAt)}`] : []), `선택 완료 ${rows.length - pending.length}`, '집계 기준: 선택 카테고리 수',
+  return ['[욕실 리모델링 상담서]', ...(projectInfo.projectName ? [`프로젝트명: ${projectInfo.projectName}`] : []), ...(projectInfo.customerName ? [`고객명: ${projectInfo.customerName}`] : []), ...projectMetadata(projectInfo), ...(formatLastModified(lastModifiedAt) ? [`마지막 수정: ${formatLastModified(lastModifiedAt)}`] : []), `선택 완료 ${rows.length - pending.length}`, '집계 기준: 선택 카테고리 수',
     ...steps.slice(0, -1).map((step, index) => `\n${String(index + 1).padStart(2, '0')} ${step.title}\n${rows.filter(row => row.stepIndex === index).map(row => `${row.title}: ${row.label}`).join('\n')}`),
     '\n업체 실측 후 최종 확인이 필요합니다. 선택 내용은 상담을 위한 희망 사항입니다.',
     ...(specialNotes.trim() ? [`\n[특이사항]\n${specialNotes.trim()}`] : []),

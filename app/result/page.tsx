@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import SiteHeader from '../../components/SiteHeader';
 import { builderBathroomSteps as steps } from '../../data/bathroom-builder-options';
 import { normalizeBathroomValues } from '../../data/bathroom-selection';
-import { STORAGE, consultationEditUrl, readProject, normalizeProject, consultationRows, consultationText, consultationSummaryText, generateConsultationSummary, formatLastModified, updateProjectContent, type LocalProject } from '../../data/bathroom-consultation';
+import { projectMetadata, STORAGE, consultationEditUrl, readProject, normalizeProject, consultationRows, consultationText, consultationSummaryText, generateConsultationSummary, formatLastModified, updateProjectContent, type LocalProject } from '../../data/bathroom-consultation';
 
 function Content() {
   const params = useSearchParams();
@@ -58,6 +58,9 @@ function Content() {
   const rows = consultationRows(project.values);
   const summary = generateConsultationSummary(project.values);
   const modified = formatLastModified(project.lastModifiedAt);
+  const metadata = projectMetadata(project.projectInfo);
+  const siteMetadata = metadata.filter(line => !line.startsWith('시공 예정 ·') && !line.startsWith('예산 ·'));
+  const scheduleMetadata = metadata.filter(line => line.startsWith('시공 예정 ·') || line.startsWith('예산 ·'));
   const displayProjectTitle = project.projectInfo.projectName || (project.projectInfo.customerName ? `${project.projectInfo.customerName} 고객님 욕실 리모델링` : '');
 
   function updateMetadata(patch: Partial<Pick<LocalProject, 'memo' | 'checks'>>) {
@@ -92,10 +95,10 @@ function Content() {
         <p>내가 선택한 욕실 구성과 업체에 전달할 내용을 한곳에 정리했어요.</p>
         {(displayProjectTitle || modified) && <div className="sheetProjectIdentity">
           {displayProjectTitle && <p className="sheetProjectTitle">{displayProjectTitle}</p>}
-          {(project.projectInfo.customerName || modified) && <p className="sheetProjectInfo">
-            {project.projectInfo.customerName && <span><span className="sheetInfoLabel">고객명 ·</span> <span className="sheetCustomerName">{project.projectInfo.customerName}</span></span>}
-            {modified && <span className="sheetLastModified">마지막 수정 · <time dateTime={project.lastModifiedAt!}>{modified}</time></span>}
-          </p>}
+          {project.projectInfo.customerName && <p className="sheetProjectInfo"><span><span className="sheetInfoLabel">고객명 ·</span> <span className="sheetCustomerName">{project.projectInfo.customerName}</span></span></p>}
+          {siteMetadata.map(line => <p className="sheetProjectInfo" key={line}>{line}</p>)}
+          {!!scheduleMetadata.length && <p className="sheetProjectInfo">{scheduleMetadata.map(line => <span key={line}>{line}</span>)}</p>}
+          {modified && <p className="sheetProjectInfo"><span className="sheetLastModified">마지막 수정 · <time dateTime={project.lastModifiedAt!}>{modified}</time></span></p>}
         </div>}
       </header>
       <div className="resultActions printHide" role="group" aria-label="상담서 작업"><button className="secondary" onClick={() => copy(true)}>요약만 복사</button><button className="button" onClick={() => copy()}>선택 내용 복사</button><button className="secondary" onClick={() => window.print()}>인쇄 / PDF 저장</button><button className="secondary" onClick={() => edit()}>선택 수정</button></div>
