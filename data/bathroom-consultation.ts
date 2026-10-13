@@ -1,3 +1,4 @@
+import { getVisibleSteps, builderModeLabel, type BuilderMode } from './bathroom-builder-mode';
 import { normalizeImageHistoryOrder } from './bathroom-image-history';
 import { builderBathroomSteps as steps } from './bathroom-builder-options';
 import { customTextKey, normalizeBathroomValues, selectedIds, selectionLabel, type BathroomValues } from './bathroom-selection';
@@ -8,7 +9,6 @@ export const phases = [
   { title: '기존 욕실과 기본 공사', start: 0, end: 2 },
   { title: '마감과 주요 욕실 기구', start: 3, end: 7 },
   { title: '설비와 디테일', start: 8, end: 14 },
-  { title: '최종 검토', start: 15, end: 15 },
 ];
 export const stepReasons = [
   '기존 타일과 누수 상태에 따라 공사 범위가 달라집니다. 원하는 방향을 고르고 실제 방식은 현장에서 확인하세요.',
@@ -47,8 +47,9 @@ export function siteCheck(key: string, values: BathroomValues): string | undefin
   if (key === 'toilet' && ids.includes('wall-hung')) return '벽걸이 변기 지지 구조와 배관';
 }
 
-export function consultationRows(values: BathroomValues) {
-  return steps.flatMap((step, stepIndex) => step.groups.map(group => {
+export function consultationRows(values: BathroomValues, mode: BuilderMode = 'professional') {
+  return getVisibleSteps(mode).flatMap((step, displayIndex) => step.groups.map(group => {
+    const stepIndex = step.stepIndex;
     const choices = group.choices.filter(choice => selectedIds(values[group.key]).includes(choice.id));
     const reasons = choices.flatMap(choice => {
       const custom = values[customTextKey(group.key)];
@@ -58,12 +59,12 @@ export function consultationRows(values: BathroomValues) {
     const custom = values[customTextKey(group.key)];
     const hasText = ['accessory', 'ventilation'].includes(group.key) && typeof custom === 'string' && !!custom.trim();
     if (!choices.length && !hasText) reasons.push('미정');
-    return { key: group.key, title: group.title, stepTitle: step.title, stepIndex, label: selectionLabel(values, group), choices, pending: reasons.length > 0, reason: Array.from(new Set(reasons)).join(' · '), site: siteCheck(group.key, values) };
+    return { key: group.key, title: group.title, stepTitle: step.title, stepIndex, displayIndex, label: selectionLabel(values, group), choices, pending: reasons.length > 0, reason: Array.from(new Set(reasons)).join(' · '), site: siteCheck(group.key, values) };
   }));
 }
 export type ConsultationRow = ReturnType<typeof consultationRows>[number];
 
-export type ProjectInfo = { customerName: string; projectName: string; propertyType: '아파트' | '빌라' | '상가' | null; occupancyStatus: '살고 있다' | '이사갈 곳이다' | null; areaPyeong: string; constructionDate: string | null; budget: number | null };
+export type ProjectInfo = { builderMode: BuilderMode; customerName: string; projectName: string; propertyType: '아파트' | '빌라' | '상가' | null; occupancyStatus: '살고 있다' | '이사갈 곳이다' | null; areaPyeong: string; constructionDate: string | null; budget: number | null };
 export const numericDigits = (value: string, max: number) => value.replace(/[^0-9]/g, '').slice(0, max);
 export function calendarDate(year: string, month: string, day: string): string | null {
   if (!/^\d{4}$/.test(year) || !/^\d{1,2}$/.test(month) || !/^\d{1,2}$/.test(day)) return null;
@@ -84,7 +85,7 @@ export function normalizeProjectInfo(input: unknown): ProjectInfo {
   const raw = input && typeof input === 'object' ? input as Record<string, unknown> : {};
   const propertyType = raw.propertyType === '아파트' || raw.propertyType === '빌라' || raw.propertyType === '상가' ? raw.propertyType : null;
   const date = typeof raw.constructionDate === 'string' ? raw.constructionDate.split('-') : [];
-  return { propertyType,
+  return { propertyType, builderMode: raw.builderMode === 'professional' ? 'professional' : 'consumer',
     occupancyStatus: propertyType !== '상가' && (raw.occupancyStatus === '살고 있다' || raw.occupancyStatus === '이사갈 곳이다') ? raw.occupancyStatus : null,
     areaPyeong: typeof raw.areaPyeong === 'string' ? numericDigits(raw.areaPyeong, 4) : '',
     constructionDate: date.length === 3 ? calendarDate(date[0], date[1], date[2]) : null,
@@ -97,12 +98,17 @@ export type LocalProject = { version: 3; projectInfo: ProjectInfo; lastModifiedA
 export function normalizeProject(input: unknown): LocalProject {
   const raw = input && typeof input === 'object' && !Array.isArray(input) ? input as Record<string, unknown> : {};
   const current = typeof raw.current === 'number' && Number.isInteger(raw.current) ? raw.current : 0;
+  const values = normalizeBathroomValues(raw.values, steps);
+  const info = raw.projectInfo && typeof raw.projectInfo === 'object' && !Array.isArray(raw.projectInfo) ? raw.projectInfo as Record<string, unknown> : {};
+  const hasSelections = Object.values(values).some(value => Array.isArray(value) ? value.length > 0 : !!value.trim());
+  const builderMode = info.builderMode === 'consumer' || info.builderMode === 'professional'
+    ? info.builderMode : hasSelections ? 'professional' : 'consumer';
   return {
     version: 3,
-    projectInfo: normalizeProjectInfo(raw.projectInfo),
+    projectInfo: normalizeProjectInfo({ ...info, builderMode }),
     lastModifiedAt: typeof raw.lastModifiedAt === 'string' && Number.isFinite(Date.parse(raw.lastModifiedAt)) ? raw.lastModifiedAt : null,
-    values: normalizeBathroomValues(raw.values, steps),
-    imageHistoryOrder: normalizeImageHistoryOrder(raw.imageHistoryOrder, normalizeBathroomValues(raw.values, steps)),
+    values,
+    imageHistoryOrder: normalizeImageHistoryOrder(raw.imageHistoryOrder, values),
     specialNotes: typeof raw.specialNotes === 'string' ? raw.specialNotes.slice(0, 500) : '',
     current: Math.max(0, Math.min(steps.length - 1, raw.version === 3 || current < 5 ? current : current - 1)),
     memo: typeof raw.memo === 'string' ? raw.memo : '',
@@ -139,9 +145,9 @@ const summaryGroups = [
   { id: 'details', title: '마감 / 디테일', keys: ['ceiling', 'drain', 'drainPosition', 'ventilation', 'lighting', 'accessoryFinish', 'accessory', 'grout', 'threshold'] },
 ];
 
-export function generateConsultationSummary(values: BathroomValues) {
+export function generateConsultationSummary(values: BathroomValues, mode: BuilderMode = 'professional') {
   const normalized = normalizeBathroomValues(values, steps);
-  const groups = steps.flatMap(step => step.groups);
+  const groups = getVisibleSteps(mode).flatMap(step => step.groups);
   return summaryGroups.flatMap(summary => {
     const items = summary.keys.flatMap(key => {
       const group = groups.find(item => item.key === key);
@@ -161,22 +167,24 @@ export function generateConsultationSummary(values: BathroomValues) {
       });
     });
     const meaningful = items.filter(item => item.trim() && item !== '미정');
-    return meaningful.length ? [{ id: summary.id, title: summary.title, items: meaningful, text: meaningful.join(' · ') }] : [];
+    return meaningful.length ? [{ id: summary.id, title: mode === 'consumer' && summary.id === 'construction' ? '구조와 샤워 공간' : summary.title, items: meaningful, text: meaningful.join(' · ') }] : [];
   });
 }
 
 export function consultationSummaryText(project: LocalProject): string {
   const info = project.projectInfo;
   const identity = [info.projectName ? `프로젝트명: ${info.projectName}` : '', info.customerName ? `고객명: ${info.customerName}` : ''].filter(Boolean).join(' · ');
-  const summary = generateConsultationSummary(project.values);
+  const summary = generateConsultationSummary(project.values, info.builderMode);
   return [identity, ...projectMetadata(info), ...summary.map(group => `${group.title}: ${group.text}`), ...(project.memo.trim() ? [`\n[업체에 전달할 메모]\n${project.memo.trim()}`] : [])].filter(Boolean).join('\n');
 }
 // Store the selection fingerprint: changing a choice invalidates its old field check.
 export const checkFingerprint = (row: ConsultationRow) => JSON.stringify([row.label, row.site]);
-export function consultationText(rows: ConsultationRow[], specialNotes: string, memo: string, projectInfo: ProjectInfo = normalizeProjectInfo(null), lastModifiedAt: string | null = null) {
+export function consultationText(rows: ConsultationRow[], specialNotes: string, memo: string, projectInfo: ProjectInfo = normalizeProjectInfo({ builderMode: 'professional' }), lastModifiedAt: string | null = null) {
+  const visibleKeys = new Set(getVisibleSteps(projectInfo.builderMode).flatMap(step => step.groups.map(group => group.key)));
+  rows = rows.filter(row => visibleKeys.has(row.key));
   const pending = rows.filter(row => row.pending);
-  return ['[욕실 리모델링 상담서]', ...(projectInfo.projectName ? [`프로젝트명: ${projectInfo.projectName}`] : []), ...(projectInfo.customerName ? [`고객명: ${projectInfo.customerName}`] : []), ...projectMetadata(projectInfo), ...(formatLastModified(lastModifiedAt) ? [`마지막 수정: ${formatLastModified(lastModifiedAt)}`] : []), `선택 완료 ${rows.length - pending.length}`, '집계 기준: 선택 카테고리 수',
-    ...steps.slice(0, -1).map((step, index) => `\n${String(index + 1).padStart(2, '0')} ${step.title}\n${rows.filter(row => row.stepIndex === index).map(row => `${row.title}: ${row.label}`).join('\n')}`),
+  return ['[욕실 리모델링 상담서]', ...(projectInfo.projectName ? [`프로젝트명: ${projectInfo.projectName}`] : []), ...(projectInfo.customerName ? [`고객명: ${projectInfo.customerName}`] : []), `작성 모드 · ${builderModeLabel(projectInfo.builderMode)}`, ...projectMetadata(projectInfo), ...(formatLastModified(lastModifiedAt) ? [`마지막 수정: ${formatLastModified(lastModifiedAt)}`] : []), `선택 완료 ${rows.length - pending.length}`, '집계 기준: 선택 카테고리 수',
+    ...getVisibleSteps(projectInfo.builderMode).filter(step => step.key !== 'checklist').map((step, index) => `\n${String(index + 1).padStart(2, '0')} ${step.title}\n${rows.filter(row => row.stepIndex === step.stepIndex).map(row => `${row.title}: ${row.label}`).join('\n')}`),
     '\n업체 실측 후 최종 확인이 필요합니다. 선택 내용은 상담을 위한 희망 사항입니다.',
     ...(specialNotes.trim() ? [`\n[특이사항]\n${specialNotes.trim()}`] : []),
     ...(memo.trim() ? [`\n[업체에 전달할 메모]\n${memo.trim()}`] : []),

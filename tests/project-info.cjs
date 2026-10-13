@@ -14,6 +14,7 @@ let storageFailure = false, confirmReset = false, printCalls = 0, clipboardText 
 const browserWindow = { history: { replaceState: (_state, _title, url) => { navigatedTo = url; } }, scrollTo: () => {}, confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
 const browserNavigator = { clipboard: { writeText: async value => { if (clipboardFailure) throw new Error('Clipboard blocked'); clipboardText = value; } } };
 const hooks = {
+  useRef(initial) { const [ref] = hooks.useState(() => ({current: initial})); return ref; },
   useState(initial) {
     const index = cursor++;
     const scope = slots;
@@ -105,7 +106,7 @@ confirmReset=true;all(tree,n=>n.type==='button'&&n.props['aria-label']==='처음
 for(const step of builderSteps)for(const group of step.groups){if(group.choices.some(c=>c.requiresCustomText)){const code=fs.readFileSync(path.join(root,'components/BuilderChoiceGroup.tsx'),'utf8');assert.ok(code.includes(group.key+':'),group.key+' placeholder');}}
 assert.equal(builderSteps.length,16);console.log('PASS project info: empty/name/project/both/trim, legacy resume, refresh, edit preserves selections/history/memo/counts, copy, reset, custom placeholders, 16 steps');
 
-let count=2;for(let i=0;i<builderSteps.length;i++){tree=fresh({version:3,current:i,values:{},projectInfo:{customerName:'검증 고객',projectName:''}});assert.equal(all(tree,n=>n.type==='progress')[0].props.value,i+1);for(const g of builderSteps[i].groups){for(const c of g.choices.filter(c=>c.requiresCustomText)){const b=all(tree,n=>n.type==='button'&&n.props.role===(g.multiple?'checkbox':'radio')&&text(n)===c.name);const button=b.find(n=>all(tree,n=>n.props.id==='builder-'+g.key+'-content')[0]&&all(all(tree,n=>n.props.id==='builder-'+g.key+'-content')[0],x=>x===n).length);assert.ok(button);button.props.onClick();tree=render();const field=all(tree,n=>n.type==='input'&&n.props.id==='builder-'+g.key+'-other')[0];assert.ok(field.props.placeholder);assert.equal(field.props.value,'');count++;}if(['accessory','ventilation'].includes(g.key))count++;}}
+let count=2;for(let i=0;i<builderSteps.length-1;i++){tree=fresh({version:3,current:i,values:{},projectInfo:{customerName:'검증 고객',projectName:'',builderMode:'professional'}});assert.equal(all(tree,n=>n.type==='progress')[0].props.value,i+1);for(const g of builderSteps[i].groups){for(const c of g.choices.filter(c=>c.requiresCustomText)){const b=all(tree,n=>n.type==='button'&&n.props.role===(g.multiple?'checkbox':'radio')&&text(n)===c.name);const button=b.find(n=>all(tree,n=>n.props.id==='builder-'+g.key+'-content')[0]&&all(all(tree,n=>n.props.id==='builder-'+g.key+'-content')[0],x=>x===n).length);assert.ok(button);button.props.onClick();tree=render();const field=all(tree,n=>n.type==='input'&&n.props.id==='builder-'+g.key+'-other')[0];assert.ok(field.props.placeholder);assert.equal(field.props.value,'');count++;}if(['accessory','ventilation'].includes(g.key))count++;}}
 assert.equal(count,17);console.log('PASS all 16 steps and 17 editable text inputs (including 2 project fields); custom fields preserve empty values and have contextual placeholders');
 
 const Result=load(path.join(root,'app/result/page')).default;

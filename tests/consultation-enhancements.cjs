@@ -15,6 +15,7 @@ const timers = new Map(); let timerIndex = 0;
 const browserWindow = { setTimeout(fn, ms) { const id = ++timerIndex; timers.set(id, {fn, ms}); return id; }, clearTimeout(id) { timers.delete(id); }, history: { replaceState: (_state, _title, url) => { navigatedTo = url; } }, scrollTo: () => {}, confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
 const browserNavigator = { clipboard: { writeText: async value => { if (clipboardFailure) throw new Error('Clipboard blocked'); clipboardText = value; } } };
 const hooks = {
+  useRef(initial) { const [ref] = hooks.useState(() => ({current: initial})); return ref; },
   useState(initial) {
     const index = cursor++;
     const scope = slots;
@@ -117,7 +118,7 @@ function resultRender() {
   return tree;
 }
 const byClass = (tree, cls) => all(tree, node => node.props.className?.split(' ').includes(cls));
-const button = (tree, label) => all(tree, node => node.type === 'button' && text(node) === label)[0];
+const button = (tree, label) => all(tree, node => node.type === 'button' && text(node).trim() === label)[0];
 const summary = consultation.generateConsultationSummary(original.values);
 assert.equal(summary.length, 5);
 const summaryText = summary.map(group => group.text).join('\n');
@@ -157,7 +158,7 @@ console.log('PASS summary: 5 groups, empty/pending/other/multiple/text inputs; t
 for (const info of [{customerName:'홍길동',projectName:''}, {customerName:'',projectName:'안방 욕실'}, original.projectInfo, {customerName:'',projectName:''}]) {
   fresh({...original, projectInfo:info}); const tree = resultRender();
   const projectLine = byClass(tree,'sheetProjectInfo');
-  assert.equal(projectLine.length,1);
+  assert.equal(projectLine.length, info.customerName ? 3 : 2);
   const title=byClass(tree,'sheetProjectTitle');
   assert.equal(title.length, info.customerName || info.projectName ? 1 : 0);
   if(title.length)assert.equal(text(title[0]),info.projectName || info.customerName+' 고객님 욕실 리모델링');
@@ -210,10 +211,10 @@ assert.equal(all(tree,n=>n.type==='a'&&text(n)==='상담서로 돌아가기')[0]
 const optionTime=saved().lastModifiedAt;fresh(saved(),'step=9');tree=render();assert.equal(saved().lastModifiedAt,optionTime);
 fresh(original);tree=render();
 all(tree,n=>n.type==='button'&&n.props['aria-label']==='프로젝트 정보 수정')[0].props.onClick();tree=render();assert.equal(saved().lastModifiedAt,timestamp);
-all(tree,n=>n.type==='form')[0].props.onSubmit({preventDefault(){}});tree=render();assert.equal(saved().lastModifiedAt,timestamp);
+button(tree,'프로젝트 정보 저장').props.onClick();tree=render();assert.equal(saved().lastModifiedAt,timestamp);
 all(tree,n=>n.type==='button'&&n.props['aria-label']==='프로젝트 정보 수정')[0].props.onClick();tree=render();
 all(tree,n=>n.type==='input'&&n.props.id==='project-name')[0].props.onChange({target:{value:'수정된 프로젝트'}});tree=render();
-all(tree,n=>n.type==='form')[0].props.onSubmit({preventDefault(){}});tree=render();assert.notEqual(saved().lastModifiedAt,timestamp);
+button(tree,'프로젝트 정보 저장').props.onClick();tree=render();assert.notEqual(saved().lastModifiedAt,timestamp);
 assert.equal(saved().current,original.current);assert.equal(JSON.stringify(saved().values),JSON.stringify(original.values));
 fresh(original); tree=resultRender();
 const memo=all(tree,n=>n.type==='textarea'&&n.props.id==='consultation-memo')[0];
@@ -225,7 +226,7 @@ assert.equal(text(byClass(tree,'memoPrint')[0]),'새 메모\n줄바꿈 보존');
 assert.ok(!byClass(tree,'sheetProjectInfo')[0].props.className.includes('printHide'));
 assert.ok(!byClass(tree,'sheetLastModified')[0].props.className.includes('printHide'));
 assert.ok(!byClass(tree,'sheetCoreSummary')[0].props.className.includes('printHide'));
-assert.ok(byClass(tree,'resultActions')[0].props.className.includes('printHide'));
+assert.ok(byClass(tree,'consultationActionsWrap')[0].props.className.includes('printHide'));
 console.log('PASS render: identity variants, 15 detail cards, all 15 return highlights + timeout, navigation does not touch timestamp, memo persistence/print structure');
 
 (async()=>{

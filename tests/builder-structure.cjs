@@ -14,6 +14,7 @@ let storageFailure = false, confirmReset = false, printCalls = 0, clipboardText 
 const browserWindow = { history: { replaceState: (_state, _title, url) => { navigatedTo = url; } }, scrollTo: () => {}, confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
 const browserNavigator = { clipboard: { writeText: async value => { if (clipboardFailure) throw new Error('Clipboard blocked'); clipboardText = value; } } };
 const hooks = {
+  useRef(initial) { const [ref] = hooks.useState(() => ({current: initial})); return ref; },
   useState(initial) {
     const index = cursor++;
     const scope = slots;
@@ -109,7 +110,7 @@ const state = () => JSON.parse(storage.get(stateKey)).values;
 const plain = value => JSON.parse(JSON.stringify(value));
 const groupSection = (tree, key) => all(tree,n => n.props.className === 'choiceGroup' && all(n,c=>c.props.id === `builder-${key}-content`).length)[0];
 function mount(current=0,values={},version=3) {
-  storage.set(stateKey, JSON.stringify({current, values, version})); slots=[]; params.delete('step'); return render();
+  storage.set(stateKey, JSON.stringify({current, values, version, projectInfo:{projectName:'회귀 검증',builderMode:'professional'}})); slots=[]; params.delete('step'); return render();
 }
 function choose(tree,key,label) {
   const option=all(groupSection(tree,key),n=>n.type==='button' && ['radio','checkbox'].includes(n.props.role) && text(n)===label)[0];
@@ -154,12 +155,12 @@ const complete={};for(const g of groups){const c=g.choices.find(c=>!['other','un
 complete.ventilation=['other'];complete.ventilationOther='힘펠 휴젠뜨';
 const rows=consultation.consultationRows(complete);assert.equal(rows.filter(r=>r.pending).length,0);assert.equal(rows.filter(r=>r.key==='partitionShower').length,1);
 const copied=consultation.consultationText(rows,'','');assert.ok(copied.includes('05 세면대 & 변기'));assert.ok(copied.includes('15 욕실 문틀'));assert.ok(copied.includes(draft));assert.ok(!/욕실 창문|매립 설비|세면대 젠다이|변기 젠다이|샤워공간 젠다이/.test(copied));assert.ok(!copied.includes('16 최종 검토'));
-tree=mount(15,complete);assert.equal(all(tree,n=>n.props.className==='reviewCategory').length,15);assert.ok(text(tree).includes(draft));assert.ok(text(tree).includes('STEP 16 / 16'));
+tree=mount(15,complete);assert.equal(all(tree,n=>n.props.className==='reviewCategory').length,0);assert.equal(state().accessoryOther,draft);assert.ok(text(tree).includes('STEP 15 / 15'));assert.ok(all(tree,n=>n.type==='a'&&text(n).includes('상담서 보기')).length);
 const Result=load(path.join(root,'app/result/page')).default;slots=[];let resultTree;do {dirty=false;cursor=0;effects=[];resultTree=expand(Result());effects.forEach(f=>f());}while(dirty);
 assert.equal(all(resultTree,n=>n.props.className==='sheetStep').length,15);assert.ok(text(resultTree).includes(draft));assert.ok(!/욕실 창문|매립 설비/.test(text(resultTree)));
 all(resultTree,n=>n.type==='button'&&text(n)==='인쇄 / PDF 저장')[0].props.onClick();assert.equal(printCalls,1);
-all(resultTree,n=>n.type==='button'&&text(n)==='선택 수정')[0].props.onClick();assert.equal(navigatedTo,'/design?step=16&returnTo=consultation');
-for(let i=0;i<16;i++){tree=mount(i);const progress=all(tree,n=>n.type==='progress')[0];assert.equal(progress.props.max,16);assert.equal(progress.props.value,i+1);assert.ok(consultation.phases.some(p=>i>=p.start&&i<=p.end));}
+all(resultTree,n=>n.type==='button'&&text(n)==='선택 수정')[0].props.onClick();assert.equal(navigatedTo,'/design?step=1&returnTo=consultation');
+for(let i=0;i<15;i++){tree=mount(i);const progress=all(tree,n=>n.type==='progress')[0];assert.equal(progress.props.max,15);assert.equal(progress.props.value,i+1);assert.ok(consultation.phases.some(p=>i>=p.start&&i<=p.end));}
 params.set('showerBooth','door-booth');tree=mount();assert.equal(state().partitionShower,'door-booth');params.delete('showerBooth');
 console.log('PASS: 16 steps, removed fields, radios, independent basin/toilet, legacy migrations, custom text/refresh/exclusivity, counts, summary, report/copy/print, progress and guide links');
 
@@ -175,7 +176,7 @@ for(const value of ['undecided','notSure','unknown','unknown-condition','아직 
  const normalized=selection.normalizeBathroomValues(legacyValues);
  assert.equal(Object.values(normalized).flat().length,0);
  assert.ok(consultation.consultationRows(normalized).every(r=>r.label==='미정'&&r.pending));
- tree=mount(15,legacyValues);assert.ok(!/아직 모르겠/.test(text(tree)));assert.equal(all(tree,n=>n.props.className==='reviewPending').length,25);
+ tree=mount(15,legacyValues);assert.ok(!/아직 모르겠/.test(text(tree)));assert.equal(all(tree,n=>n.props.className==='reviewPending').length,0);
  assert.ok(!/undecided|notSure|unknown|모르겠/.test(JSON.stringify(state())));
 }
 for(const [before,after] of [['일반 샤워 수전','shower'],['일반 샤워수전','shower'],['매립 샤워 수전','concealed-shower'],['매립 샤워','concealed-shower']])assert.deepEqual(Array.from(selection.normalizeBathroomValues({showerFaucet:before}).showerFaucet),[after]);
@@ -186,8 +187,8 @@ for(const [key,id] of [['bathtub','none'],['partitionShower','none'],['cabinet',
 }
 assert.equal(consultation.consultationRows({sink:'other',sinkOther:''}).find(r=>r.key==='sink').pending,true);
 tree=mount(11);tree=choose(tree,'lighting','천장 매립 조명');assert.equal(consultation.consultationRows(state()).find(r=>r.key==='lighting').pending,false);tree=choose(tree,'lighting','천장 매립 조명');assert.equal(consultation.consultationRows(state()).find(r=>r.key==='lighting').label,'미정');
-tree=mount();for(let i=0;i<15;i++){assert.equal(all(tree,n=>n.props.className==='builderChoiceCard selected').length,0);assert.equal(all(tree,n=>n.type==='img').length,i===3?2:0);assert.equal(all(tree,n=>n.props.className==='selectedHeroImage').length,0);tree=click(tree,'다음');}assert.equal(all(tree,n=>n.type==='progress')[0].props.value,16);assert.equal(consultation.consultationRows(state()).filter(r=>r.pending).length,25);
-all(tree,n=>n.props['aria-label']==='세면대 & 변기 수정')[0].props.onClick();tree=render();assert.equal(all(tree,n=>n.type==='progress')[0].props.value,5);assert.equal(all(tree,n=>n.props['aria-checked']===true).length,0);
+tree=mount();for(let i=0;i<14;i++){assert.equal(all(tree,n=>n.props.className==='builderChoiceCard selected').length,0);assert.equal(all(tree,n=>n.type==='img').length,i===3?2:0);assert.equal(all(tree,n=>n.props.className==='selectedHeroImage').length,0);tree=click(tree,'다음');}assert.equal(all(tree,n=>n.type==='progress')[0].props.value,15);assert.equal(consultation.consultationRows(state()).filter(r=>r.pending).length,25);
+params.set('step','5');slots=[];tree=render();params.delete('step');assert.equal(all(tree,n=>n.type==='progress')[0].props.value,5);assert.equal(all(tree,n=>n.props['aria-checked']===true).length,0);
 for(const [id,label] of [['shower','일반 샤워&욕조 수전'],['concealed-shower','매립 샤워&욕조 수전']]) {
  const rows=consultation.consultationRows({showerFaucet:id});assert.equal(rows.find(r=>r.key==='showerFaucet').label,label);assert.ok(consultation.consultationText(rows,'','').includes(label));
 }
@@ -231,12 +232,12 @@ for(const [key,current,draft] of [['bathroomCondition',0,'천장에서 누수 �
  assert.ok(consultation.consultationText(consultation.consultationRows(state()),'','').includes(draft));
 }
 const changed={bathroomCondition:['damaged-tile','other'],bathroomConditionOther:'누수 흔적',niche:'shower-niche',cabinet:'standard-cabinet',ventilation:['other'],ventilationOther:'힘펠 휴젠뜨',grout:'grout-polyurea'};
-tree=mount(15,changed);assert.ok(text(tree).includes('미결정'));
+tree=mount(15,changed);assert.ok(!text(tree).includes('최종 검토'));assert.equal(state().ventilationOther,changed.ventilationOther);
 assert.ok(!/니치|LED 거울장|탄성 줄눈|환기 & 건조/.test(text(tree)));
 slots=[];do{dirty=false;cursor=0;effects=[];resultTree=expand(Result());effects.forEach(f=>f());}while(dirty);
 assert.ok(!/미결정|아직 결정하지 않은 항목/.test(text(resultTree)));
 assert.ok(!text(resultTree).includes('현장 확인'));assert.ok(!text(resultTree).includes('현장에서 확인해주세요'));
-assert.equal(all(resultTree,n=>n.props.className==='sheetCompleted').length,1);
+assert.equal(all(resultTree,n=>n.props.className==='sheetCompleted').length,0);
 assert.ok(consultation.consultationRows(changed).some(r=>r.site));
 const newCopy=consultation.consultationText(consultation.consultationRows(changed),'','');
 assert.ok(!/미결정|아직 결정하지 않은 항목|니치/.test(newCopy));

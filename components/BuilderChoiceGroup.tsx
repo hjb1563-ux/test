@@ -1,5 +1,6 @@
 'use client';
 
+import { getConsumerGroupHelp, type BuilderMode } from '../data/bathroom-builder-mode';
 import { Fragment } from 'react';
 import type { ChoiceGroup } from '../data/bathroom-options';
 import { customTextKey, selectedIds, selectionLabel, type BathroomValues } from '../data/bathroom-selection';
@@ -17,8 +18,8 @@ const customPlaceholders: Record<string, string> = {
   lighting: '예: 거울 양옆 벽등', accessoryFinish: '예: 무광 블랙',
 };
 
-export default function BuilderChoiceGroup({ group, number, sectionCount, sectionIndex, compactActive, values, onSelect, onCustomText }: {
-  group: ChoiceGroup;
+export default function BuilderChoiceGroup({ mode = 'professional', group, number, sectionCount, sectionIndex, compactActive, values, onSelect, onCustomText }: {
+  mode?: BuilderMode; group: ChoiceGroup;
   number?: number;
   sectionCount: number;
   sectionIndex: number;
@@ -27,6 +28,7 @@ export default function BuilderChoiceGroup({ group, number, sectionCount, sectio
   onSelect: (key: string, id: string, multiple?: boolean) => void;
   onCustomText: (key: string, text: string) => void;
 }) {
+  const help = mode === 'consumer' ? getConsumerGroupHelp(group.key) : undefined;
   const ids = selectedIds(values[group.key]);
 
   const customChoice = group.choices.find(choice => choice.requiresCustomText && ids.includes(choice.id));
@@ -56,7 +58,7 @@ export default function BuilderChoiceGroup({ group, number, sectionCount, sectio
     {group.choices.length > 0 && <div className="builderChoiceGrid" role={group.multiple ? 'group' : 'radiogroup'} aria-label={group.title}>
       {group.choices.map((choice, index) => {
         const selected = ids.includes(choice.id);
-        return <Fragment key={choice.id}><BuilderChoiceCard label={choice.name} selected={selected} multiple={group.multiple}
+        return <Fragment key={choice.id}><BuilderChoiceCard description={help?.choiceDescriptions?.[choice.id]} label={choice.name} selected={selected} multiple={group.multiple}
           imageOption={group.key === 'tileSurface' ? resolveBuilderImage(group.key, choice, values) : undefined}
           tabIndex={group.multiple || selected || (!ids.length && index === 0) ? 0 : -1}
           onSelect={() => {
@@ -70,6 +72,7 @@ export default function BuilderChoiceGroup({ group, number, sectionCount, sectio
     </label>}</Fragment>;
       })}
     </div>}
+    {help?.selectionHelp && ids.some(id => help.selectionHelp!.ids.includes(id)) && <p className="builderRestriction">{help.selectionHelp.text}</p>}
     </div>
     <style>{`
       .design .builderChoiceCard:disabled{opacity:.55;cursor:not-allowed;background:#f0ede7;border-color:#ded7cc}

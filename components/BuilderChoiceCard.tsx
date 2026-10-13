@@ -5,8 +5,9 @@ import type { MouseEvent } from 'react';
 import BuilderOptionImage from './BuilderOptionImage';
 import type { Choice } from '../data/bathroom-options';
 
-export default function BuilderChoiceCard({ label, selected, multiple = false, disabled = false, describedBy, tabIndex, onSelect, imageOption }: {
+export default function BuilderChoiceCard({ label, description, selected, multiple = false, disabled = false, describedBy, tabIndex, onSelect, imageOption }: {
   label: string;
+  description?: string;
   selected: boolean;
   multiple?: boolean;
   disabled?: boolean;
@@ -29,7 +30,7 @@ export default function BuilderChoiceCard({ label, selected, multiple = false, d
       if (cards[next]?.getAttribute('aria-checked') !== 'true') cards[next]?.click();
     }}>
     {imageOption?.showBuilderImage && <span className="builderSurfaceThumbnail" aria-hidden="true"><BuilderOptionImage option={imageOption} /></span>}
-    <span className="builderChoiceLabel">{label}</span>
+    <span className="builderChoiceLabel">{label}{description && <small className="builderChoiceDescription">{description}</small>}</span>
     <span aria-hidden="true" className={`builderChoiceIndicator${multiple ? ' builderChoiceIndicator--multiple' : ''}`}>
       {selected && <Check size={13} strokeWidth={2.5} />}
     </span>

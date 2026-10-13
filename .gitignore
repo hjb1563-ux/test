@@ -8,6 +8,7 @@ out/
 dist/
 .vercel/
 coverage/
+tests/artifacts/
 *.tsbuildinfo
 
 # Environment files (only an empty example may be committed)

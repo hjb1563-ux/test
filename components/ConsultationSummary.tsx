@@ -1,5 +1,5 @@
 import type { ConsultationRow } from '../data/bathroom-consultation';
-import { builderBathroomSteps } from '../data/bathroom-builder-options';
+import { getVisibleSteps, type BuilderMode } from '../data/bathroom-builder-mode';
 import BuilderDisclosure from './BuilderDisclosure';
 
 export function reviewValue(row: ConsultationRow): string {
@@ -15,14 +15,14 @@ export function ConsultationCounts({ rows, showPending = true }: { rows: Consult
   return <div className="consultationCounts" aria-label="카테고리별 선택 현황"><span>선택 완료 <b>{rows.length - pending}</b></span>{showPending && <span>미결정 <b>{pending}</b></span>}<span>현장 확인 <b>{rows.filter(row => row.site).length}</b></span></div>;
 }
 
-export default function ConsultationSummary({ rows, onEdit }: { rows: ConsultationRow[]; onEdit?: (step: number) => void }) {
+export default function ConsultationSummary({ rows, onEdit, mode = 'professional' }: { mode?: BuilderMode; rows: ConsultationRow[]; onEdit?: (step: number) => void }) {
   const pending = rows.filter(row => row.pending);
   const site = rows.filter(row => row.site);
   return <div className="reviewSections">
-    <div className="reviewCategoryGrid">{builderBathroomSteps.slice(0, -1).map((step, index) => <section className="reviewCategory" key={step.key}>
-      <header><h2><span>{String(index + 1).padStart(2, '0')}</span>{step.title}</h2>{onEdit && <button type="button" aria-label={`${step.title} 수정`} onClick={() => onEdit(index)}>수정 →</button>}</header>
-      <BuilderDisclosure id={`review-${step.key}`} title={rows.filter(row => row.stepIndex === index).map(reviewValue).join(' · ')} className="reviewCategoryDetail">
-        <dl>{rows.filter(row => row.stepIndex === index).map(row => <div key={row.key} className={row.pending ? 'reviewPending' : undefined}><dt>{row.title}</dt><dd>{reviewValue(row)}</dd></div>)}</dl>
+    <div className="reviewCategoryGrid">{getVisibleSteps(mode).filter(step => step.key !== 'checklist').map((step, index) => <section className="reviewCategory" key={step.key}>
+      <header><h2><span>{String(index + 1).padStart(2, '0')}</span>{step.title}</h2>{onEdit && <button type="button" aria-label={`${step.title} 수정`} onClick={() => onEdit(step.stepIndex)}>수정 →</button>}</header>
+      <BuilderDisclosure id={`review-${step.key}`} title={rows.filter(row => row.stepIndex === step.stepIndex).map(reviewValue).join(' · ')} className="reviewCategoryDetail">
+        <dl>{rows.filter(row => row.stepIndex === step.stepIndex).map(row => <div key={row.key} className={row.pending ? 'reviewPending' : undefined}><dt>{row.title}</dt><dd>{reviewValue(row)}</dd></div>)}</dl>
       </BuilderDisclosure>
     </section>)}</div>
     <div className={`reviewFollowups${pending.length ? '' : ' reviewFollowups--resolved'}`}>
