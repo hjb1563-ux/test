@@ -8,7 +8,7 @@ import { useSearchParams } from 'next/navigation';
 import SiteHeader from '../../components/SiteHeader';
 import { builderBathroomSteps as steps } from '../../data/bathroom-builder-options';
 import { normalizeBathroomValues } from '../../data/bathroom-selection';
-import { projectMetadata, STORAGE, consultationEditUrl, readProject, normalizeProject, consultationRows, consultationText, consultationSummaryText, generateConsultationSummary, formatLastModified, updateProjectContent, type LocalProject } from '../../data/bathroom-consultation';
+import { projectMetadata, STORAGE, consultationEditUrl, readProject, normalizeProject, consultationRows, consultationSummaryText, generateConsultationSummary, formatLastModified, updateProjectContent, type LocalProject } from '../../data/bathroom-consultation';
 
 function Content() {
   const params = useSearchParams();
@@ -87,9 +87,9 @@ function Content() {
     }
   }
 
-  async function copy(summaryOnly = false) {
-    const text = summaryOnly ? consultationSummaryText(project) : consultationText(rows, project.specialNotes, project.memo, project.projectInfo, project.lastModifiedAt);
-    try { await navigator.clipboard.writeText(text); setCopyFallback(''); setStatus(summaryOnly ? '요약을 복사했어요. 업체에 붙여넣어 전달하세요.' : '선택 내용을 복사했어요. 업체에 붙여넣어 전달하세요.'); }
+  async function copy() {
+    const text = consultationSummaryText(project);
+    try { await navigator.clipboard.writeText(text); setCopyFallback(''); setStatus('요약을 복사했어요. 업체에 붙여넣어 전달하세요.'); }
     catch { setCopyFallback(text); setStatus('클립보드에 접근할 수 없어요. 아래 내용을 선택해 직접 복사해주세요.'); }
   }
 
@@ -108,14 +108,14 @@ function Content() {
     try {
       localStorage.setItem(STORAGE, JSON.stringify({ ...project, current: step - 1 }));
       window.location.assign(consultationEditUrl(step - 1));
-    } catch { setStatus('수정할 내용을 저장하지 못했어요. 먼저 선택 내용을 복사해 보관해주세요.'); }
+    } catch { setStatus('수정할 내용을 저장하지 못했어요. 요약을 복사하거나 인쇄해 보관해주세요.'); }
   }
 
   if (!ready) return <main className="result">상담서를 불러오는 중입니다.</main>;
   return <main className="consultationPage">
     <div className="printHide"><SiteHeader /></div>
     <div className="consultationActionsWrap printHide" data-capture-ignore="true">
-      <div className="resultActions" role="group" aria-label="상담서 작업"><button className="secondary" onClick={() => copy(true)}>요약만 복사</button><button className="button" onClick={() => copy()}>선택 내용 복사</button><button className="secondary" disabled={imageCopyBusy} aria-busy={imageCopyBusy} onClick={copyImage}>{imageCopyBusy ? '복사 중...' : '상담서 이미지 복사'}</button><button className="secondary" onClick={() => window.print()}>인쇄 / PDF 저장</button><button className="secondary" onClick={() => edit()}>선택 수정</button></div>
+      <div className="resultActions" role="group" aria-label="상담서 작업"><button className="secondary" onClick={copy}>요약만 복사</button><button className="secondary" disabled={imageCopyBusy} aria-busy={imageCopyBusy} onClick={copyImage}>{imageCopyBusy ? '복사 중...' : '상담서 이미지 복사'}</button><button className="secondary" onClick={() => window.print()}>인쇄 / PDF 저장</button><button className="secondary" onClick={() => edit()}>선택 수정</button></div>
       <p className="consultationNote" role="status">{status}</p>
       {copyFallback && <label className="copyFallback">복사할 상담 내용<textarea readOnly value={copyFallback} onFocus={event => event.currentTarget.select()} /></label>}
     </div>

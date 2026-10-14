@@ -11,7 +11,7 @@ let slots = [], cursor = 0, effects = [], dirty = false;
 const storage = new Map();
 const params = new URLSearchParams();
 let storageFailure = false, confirmReset = false, printCalls = 0, clipboardText = '', clipboardFailure = false, navigatedTo = '';
-const browserWindow = { history: { replaceState: (_state, _title, url) => { navigatedTo = url; } }, scrollTo: () => {}, confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
+const browserWindow = { matchMedia: () => ({ matches: false }), history: { replaceState: (_state, _title, url) => { navigatedTo = url; } }, scrollTo: () => {}, confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
 const browserNavigator = { clipboard: { writeText: async value => { if (clipboardFailure) throw new Error('Clipboard blocked'); clipboardText = value; } } };
 const hooks = {
   useRef(initial) { const [ref] = hooks.useState(() => ({current: initial})); return ref; },
@@ -39,7 +39,7 @@ function evaluate(source, filename) {
   const module = { exports: {} };
   const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true, target: ts.ScriptTarget.ES2022 } }).outputText;
   const localRequire = name => {
-    if (name === 'react') return { ...React, ...hooks };
+    if (name === 'react') return { ...React, ...hooks, useLayoutEffect: hooks.useEffect };
     if (name === 'next/navigation') return { useSearchParams: () => params };
     if (name === 'next/link') return { default: props => React.createElement('a', props), __esModule: true };
     if (name === 'next/image') return { default: props => React.createElement('img', props), __esModule: true };

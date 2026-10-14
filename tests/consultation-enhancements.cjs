@@ -12,7 +12,7 @@ const storage = new Map();
 const params = new URLSearchParams();
 let storageFailure = false, confirmReset = false, printCalls = 0, clipboardText = '', clipboardFailure = false, navigatedTo = '';
 const timers = new Map(); let timerIndex = 0;
-const browserWindow = { setTimeout(fn, ms) { const id = ++timerIndex; timers.set(id, {fn, ms}); return id; }, clearTimeout(id) { timers.delete(id); }, history: { replaceState: (_state, _title, url) => { navigatedTo = url; } }, scrollTo: () => {}, confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
+const browserWindow = { matchMedia: () => ({ matches: false }), setTimeout(fn, ms) { const id = ++timerIndex; timers.set(id, {fn, ms}); return id; }, clearTimeout(id) { timers.delete(id); }, history: { replaceState: (_state, _title, url) => { navigatedTo = url; } }, scrollTo: () => {}, confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
 const browserNavigator = { clipboard: { writeText: async value => { if (clipboardFailure) throw new Error('Clipboard blocked'); clipboardText = value; } } };
 const hooks = {
   useRef(initial) { const [ref] = hooks.useState(() => ({current: initial})); return ref; },
@@ -40,7 +40,7 @@ function evaluate(source, filename) {
   const module = { exports: {} };
   const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true, target: ts.ScriptTarget.ES2022 } }).outputText;
   const localRequire = name => {
-    if (name === 'react') return { ...React, ...hooks };
+    if (name === 'react') return { ...React, ...hooks, useLayoutEffect: hooks.useEffect };
     if (name === 'next/navigation') return { useSearchParams: () => params };
     if (name === 'next/link') return { default: props => React.createElement('a', props), __esModule: true };
     if (name === 'next/image') return { default: props => React.createElement('img', props), __esModule: true };
@@ -231,8 +231,7 @@ console.log('PASS render: identity variants, 15 detail cards, all 15 return high
 
 (async()=>{
   const before=JSON.stringify(saved());
-  await button(tree,'선택 내용 복사').props.onClick();
-  assert.ok(clipboardText.includes('프로젝트명: 홍길동 고객님 욕실 리모델링'));assert.ok(clipboardText.includes('마지막 수정:'));assert.ok(clipboardText.includes('15 욕실 문틀 하부 / 문턱'));assert.ok(clipboardText.endsWith('새 메모\n줄바꿈 보존'));
+  assert.equal(all(tree,n=>n.type==='button'&&text(n)==='선택 내용 복사').length,0);
   await button(tree,'요약만 복사').props.onClick();
   for(const group of summary)assert.ok(clipboardText.includes(group.text));
   assert.ok(clipboardText.includes('고객명: 홍길동'));assert.ok(clipboardText.includes('새 메모\n줄바꿈 보존'));assert.ok(!clipboardText.includes('15 욕실 문틀 하부 / 문턱'));

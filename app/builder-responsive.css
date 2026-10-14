@@ -390,3 +390,91 @@ body .design .projectInfoForm #project-info-validation { color:var(--accent);fon
 @media(max-width:767px) {
   body .design .projectInfoForm .navButtons>.button { width:100%;min-height:48px; }
 }
+/* Simplified mobile Builder. Tablet and desktop retain the compact policies above. */
+body .design .builderMobileHint { display:none; }
+@media (max-width:767px) {
+  body .design.builderCompactFlow { display:block;height:auto;min-height:100dvh;overflow:visible;padding-bottom:calc(24px + env(safe-area-inset-bottom)); }
+  body .design.builderCompactFlow .designHeader { height:52px; }
+  body .design.builderCompactFlow>.projectIdentity { padding:0 16px 8px; }
+  body .design.builderCompactFlow .projectIdentity strong { display:block;font-size:15px;line-height:1.5; }
+  body .design.builderCompactFlow .projectIdentity small,
+  body .design.builderCompactFlow .progressHeading .builderSaveQuiet,
+  body .design.builderCompactFlow .builderPhase,
+  body .design.builderCompactFlow .builderProgress>.resumeLink { display:none; }
+  body .design.builderCompactFlow .builderProgress { padding:8px 16px 0; }
+  body .design.builderCompactFlow .progressHeading { font-size:13px; }
+  body .design.builderCompactFlow .builderProgress progress { margin:8px 0 0; }
+  body .design.builderCompactFlow .designGrid,
+  body .design.builderCompactFlow .designGrid:has(.builderConsultationEdit),
+  body .design.builderCompactFlow .designGrid:has(.builderSummaryPanel[data-open=true]),
+  body .design.builderCompactFlow .designGrid:has(.builderConsultationEdit):has(.builderSummaryPanel[data-open=true]) {
+    display:flex;flex-direction:column;height:auto;gap:0;padding:20px 16px 0;
+  }
+  body .design.builderCompactFlow .stepHeading { order:1;margin:0 0 20px; }
+  body .design.builderCompactFlow .options #builder-question { font-size:24px;font-weight:600;line-height:1.35;word-break:keep-all;scroll-margin-top:20px; }
+  body .design.builderCompactFlow .builderConsultationEdit { order:0;margin:0 0 12px; }
+  body .design.builderCompactFlow .builderPreviewPanel { display:contents;position:static; }
+  body .design.builderCompactFlow .builderPreviewPanel>.builderDisclosureBody,
+  body .design.builderCompactFlow .selectedGallery { display:contents; }
+  body .design.builderCompactFlow .builderPreviewPanel--empty { display:contents; }
+  body .design.builderCompactFlow .builderPreviewPanel:not(.builderPreviewPanel--mobile-image) .selectedGallery>.galleryHead,
+  body .design.builderCompactFlow .builderPreviewPanel:not(.builderPreviewPanel--mobile-image) .selectedHeroImage,
+  body .design.builderCompactFlow .builderPreviewPanel:not(.builderPreviewPanel--mobile-image) .selectedHeroLabel,
+  body .design.builderCompactFlow .selectedHeroEmpty { display:none; }
+  body .design.builderCompactFlow .builderPreviewPanel:not(.builderPreviewPanel--mobile-image) { order:5;margin:12px 0 0; }
+  body .design.builderCompactFlow .selectedGallery { padding:0;background:transparent; }
+  body .design.builderCompactFlow .selectedGallery>.galleryHead { display:none; }
+  body .design.builderCompactFlow .selectedHeroImage { order:2;width:100%;height:clamp(180px,28dvh,260px);aspect-ratio:auto;background:var(--surface);border-radius:10px; }
+  body .design.builderCompactFlow .selectedHeroImage img { height:100%;width:100%;object-fit:contain;object-position:center; }
+  body .design.builderCompactFlow .selectedHeroLabel { order:2;margin:8px 0 16px;font-size:14px; }
+  body .design.builderCompactFlow .selectionHistory { order:5;position:static;width:100%;margin:8px 0 0; }
+  body .design.builderCompactFlow .selectionHistory>.builderDisclosureToggle { min-height:44px;padding:4px 0;font-size:13px; }
+  body .design.builderCompactFlow .selectionHistory>.builderDisclosureBody { position:static;width:100%;max-height:none;overflow:visible;box-shadow:none;padding:10px; }
+  body .design.builderCompactFlow .selectionHistoryStrip { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible; }
+  body .design.builderCompactFlow .builderSelectionScroll { order:3;display:flex;overflow:visible;max-height:none;height:auto;min-height:0;overscroll-behavior:auto;padding:0;scrollbar-width:auto; }
+  body .design.builderCompactFlow .builderSelectionHelp { margin:12px 0 0; }
+  body .design.builderCompactFlow .builderFirstHint,
+  body .design.builderCompactFlow .builderSiteNotice { display:none; }
+  body .design.builderCompactFlow .builderMobileHint { display:block;margin:0;color:var(--muted);font-size:13px;line-height:1.5; }
+  body .design.builderCompactFlow .builderSelectionHelp:has(~ .selectionWarning) .builderMobileHint,
+  body .design.builderCompactFlow .builderSelectionScroll:has(.choiceGroup[data-compact-active=true] .builderRestriction) .builderMobileHint { display:none; }
+  body .design.builderCompactFlow .options .builderSectionHeader { padding:0;margin:0 0 12px;background:transparent;border:0;border-radius:0; }
+  body .design.builderCompactFlow .options .builderSectionHeader h2 { font-size:16px;font-weight:600; }
+  body .design.builderCompactFlow .options .builderSectionNumber,
+  body .design.builderCompactFlow .builderCurrentSectionSelection,
+  body .design.builderCompactFlow .builderSelectionScroll[data-section-count="1"] .builderSectionPosition { display:none; }
+  body .design.builderCompactFlow .options .builderSectionTitleRow small { font-size:12px; }
+  body .design.builderCompactFlow .choiceGroup[data-compact-grid=true] .builderChoiceGrid { grid-template-columns:minmax(0,1fr); }
+  body .design.builderCompactFlow .options .builderChoiceCard { min-height:52px;padding:12px 14px;border:1px solid var(--border);border-radius:9px;background:var(--surface);font-size:15px; }
+  body .design.builderCompactFlow .options .builderChoiceCard.selected { border-color:var(--accent);background:#fff5ef; }
+  body .design.builderCompactFlow .builderCustomText input { font-size:16px;min-height:48px; }
+  body .design.builderCompactFlow .builderSummaryPanel { order:4;position:static;max-height:none;margin:16px 0 0; }
+  body .design.builderCompactFlow .builderSummaryPanel--zero { display:none; }
+  body .design.builderCompactFlow .builderSummaryPanel>.builderDisclosureBody { overflow:visible;max-height:none; }
+  body .design.builderCompactFlow .summary { overflow:visible;max-height:none; }
+  body .design.builderCompactFlow .mobileBuilderNav { position:static;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;min-height:0;padding:20px 16px 0;background:transparent;border:0; }
+  body .design.builderCompactFlow .mobileBuilderNav>span { display:none; }
+  body .design.builderCompactFlow .mobileBuilderNav>.secondary:first-child { border:0;background:transparent;padding:8px 0;min-height:48px;font-size:15px; }
+  body .design.builderCompactFlow .mobileBuilderNav[data-at-start=true]>.secondary:first-child { display:none; }
+  body .design.builderCompactFlow .mobileBuilderNav>.button { margin-left:auto;min-height:48px;padding:12px 18px;font-size:15px; }
+  body .design.builderCompactFlow .mobileBuilderNav>.builderCompactSkip { order:3;flex-basis:100%;min-height:44px;border:0;background:transparent;padding:8px 0;color:var(--muted);font-size:13px;justify-content:flex-end; }
+  body .design.builderCompactFlow .mobileBuilderNav[data-section-count="1"]>.builderCompactSkip { display:none; }
+}
+/* Mobile Preview integrates the existing image history; wider layouts stay unchanged. */
+body .design.builderCompactFlow .builderSwipeGallery { display:none; }
+@media (max-width:767px) {
+  body .design.builderCompactFlow .builderSummaryPanel,
+  body .design.builderCompactFlow .selectedGallery--mobile-integrated>:not(.builderSwipeGallery) { display:none; }
+  body .design.builderCompactFlow .builderSwipeGallery { display:block;order:2;width:100%;min-width:0;margin:0 0 20px; }
+  body .design.builderCompactFlow .builderSwipeGallery h2 { margin:0 0 10px;font-size:14px;font-weight:500;line-height:1.5;color:var(--muted); }
+  body .design.builderCompactFlow .builderSwipeFrame { position:relative;min-width:0; }
+  body .design.builderCompactFlow .builderSwipeTrack { display:flex;width:100%;min-width:0;height:clamp(180px,28dvh,260px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none;border:1px solid var(--border);border-radius:10px;background:var(--surface); }
+  body .design.builderCompactFlow .builderSwipeTrack::-webkit-scrollbar { display:none; }
+  body .design.builderCompactFlow .builderSwipeTrack:focus-visible { outline:2px solid var(--accent);outline-offset:3px; }
+  body .design.builderCompactFlow .builderSwipeSlide { flex:0 0 100%;min-width:0;height:100%;scroll-snap-align:center;scroll-snap-stop:always; }
+  body .design.builderCompactFlow .builderSwipeSlide img { display:block;width:100%;height:100%;object-fit:contain;object-position:center; }
+  body .design.builderCompactFlow .builderSwipeCounter { position:absolute;top:8px;right:8px;pointer-events:none;padding:4px 7px;border-radius:6px;background:color-mix(in srgb,var(--surface) 90%,transparent);color:var(--muted);font-size:12px;font-weight:500;line-height:1.4;font-variant-numeric:tabular-nums; }
+  body .design.builderCompactFlow .builderSwipeLabel { margin:8px 0 0;color:var(--foreground);font-size:14px;font-weight:500;line-height:1.5; }
+  body .design.builderCompactFlow .builderSwipeEmpty { display:flex;align-items:center;justify-content:center;width:100%;height:clamp(180px,28dvh,260px);margin:0;padding:24px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--muted);font-size:14px;line-height:1.6;word-break:keep-all;text-align:center; }
+  body .design.builderCompactFlow .mobileBuilderNav { padding-top:24px; }
+}

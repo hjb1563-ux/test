@@ -25,12 +25,12 @@ export default function ProjectInfoForm({ initial, editing, onSave, onCancel }: 
       <section className="projectInfoSection" aria-labelledby="project-basic-heading">
       <header className="projectSectionHeader">
         <h2 id="project-basic-heading"><span>01</span>기본 정보</h2>
-        <p>프로젝트를 구분하기 위한 정보를 입력해주세요.</p>
+        <p id="project-basic-help" className="break-keep">고객명 또는 프로젝트명 중 편한 항목 하나만 입력해주세요.</p>
       </header>
       <label htmlFor="project-customer-name">고객명 / 이름</label>
-      <input id="project-customer-name" type="text" autoComplete="name" maxLength={40} placeholder="예: 홍길동" value={draft.customerName} aria-describedby={invalid ? 'project-info-validation' : undefined} onChange={event => { setDraft({ ...draft, customerName: event.target.value }); setInvalid(false); }} />
+      <input id="project-customer-name" type="text" autoComplete="name" maxLength={40} placeholder="예: 홍길동 또는 원하는 가명" value={draft.customerName} aria-describedby={invalid ? 'project-basic-help project-info-validation' : 'project-basic-help'} onChange={event => { setDraft({ ...draft, customerName: event.target.value }); setInvalid(false); }} />
       <label htmlFor="project-name">프로젝트명</label>
-      <input id="project-name" type="text" maxLength={80} placeholder="예: 홍길동 고객님 욕실 리모델링" value={draft.projectName} aria-describedby={invalid ? 'project-info-validation' : undefined} onChange={event => { setDraft({ ...draft, projectName: event.target.value }); setInvalid(false); }} />
+      <input id="project-name" type="text" maxLength={80} placeholder="예: 홍길동 고객님 욕실 리모델링" value={draft.projectName} aria-describedby={invalid ? 'project-basic-help project-info-validation' : 'project-basic-help'} onChange={event => { setDraft({ ...draft, projectName: event.target.value }); setInvalid(false); }} />
       <fieldset className="projectOptions projectModeOptions"><legend>작성 방식</legend><div role="radiogroup" aria-label="작성 방식">{builderModes.map(mode => <button type="button" role="radio" aria-checked={draft.builderMode === mode.id} className={draft.builderMode === mode.id ? 'selected' : ''} key={mode.id} onClick={() => setDraft({ ...draft, builderMode: mode.id })}><strong>{mode.label}</strong><small>{mode.description}</small></button>)}</div></fieldset>
       {invalid && <p id="project-info-validation" role="status">고객명 또는 프로젝트명 중 하나를 입력해주세요.</p>}
       </section>

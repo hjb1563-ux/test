@@ -11,7 +11,7 @@ let slots = [], cursor = 0, effects = [], dirty = false;
 const storage = new Map();
 const params = new URLSearchParams();
 let storageFailure = false, confirmReset = false, printCalls = 0, clipboardText = '', clipboardFailure = false, navigatedTo = '';
-const browserWindow = { history: { replaceState: (_state, _title, url) => { navigatedTo = url; } }, scrollTo: () => {}, confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
+const browserWindow = { matchMedia: () => ({ matches: false }), history: { replaceState: (_state, _title, url) => { navigatedTo = url; } }, scrollTo: () => {}, confirm: () => confirmReset, print: () => printCalls++, location: { assign: url => { navigatedTo = url; } } };
 const browserNavigator = { clipboard: { writeText: async value => { if (clipboardFailure) throw new Error('Clipboard blocked'); clipboardText = value; } } };
 const hooks = {
   useRef(initial) { const [ref] = hooks.useState(() => ({current: initial})); return ref; },
@@ -39,7 +39,7 @@ function evaluate(source, filename) {
   const module = { exports: {} };
   const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true, target: ts.ScriptTarget.ES2022 } }).outputText;
   const localRequire = name => {
-    if (name === 'react') return { ...React, ...hooks };
+    if (name === 'react') return { ...React, ...hooks, useLayoutEffect: hooks.useEffect };
     if (name === 'next/navigation') return { useSearchParams: () => params };
     if (name === 'next/link') return { default: props => React.createElement('a', props), __esModule: true };
     if (name === 'next/image') return { default: props => React.createElement('img', props), __esModule: true };
@@ -113,7 +113,7 @@ const Result=load(path.join(root,'app/result/page')).default;
 function resultRender(){let tree,rounds=0;do{dirty=false;cursor=0;effects=[];tree=expand(Result());effects.forEach(fn=>fn());assert.ok(++rounds<20);}while(dirty);return tree;}
 fresh({...legacy,projectInfo:{customerName:'고객명',projectName:'최신 프로젝트'}});slots=[];tree=resultRender();assert.ok(text(tree).includes('최신 프로젝트'));assert.ok(text(tree).includes('고객명 · 고객명'));const identity=all(tree,n=>n.props.className==='sheetProjectInfo')[0];assert.ok(identity&&!identity.props.className.includes('printHide'));
 all(tree,n=>n.type==='button'&&text(n)==='인쇄 / PDF 저장')[0].props.onClick();assert.equal(printCalls,1);
-(async()=>{await all(tree,n=>n.type==='button'&&text(n)==='선택 내용 복사')[0].props.onClick();assert.ok(clipboardText.includes('프로젝트명: 최신 프로젝트'));assert.ok(clipboardText.includes('고객명: 고객명'));all(tree,n=>n.type==='button'&&n.props['aria-label']==='방수 수정')[0].props.onClick();assert.ok(navigatedTo.includes('step=3'));assert.equal(saved().projectInfo.projectName,'최신 프로젝트');console.log('PASS consultation identity, print visibility/action, copy metadata, consultation edit retains identity');// Metadata behavior through the real form, Builder storage, report, and copy helpers.
+(async()=>{await all(tree,n=>n.type==='button'&&text(n)==='요약만 복사')[0].props.onClick();assert.ok(clipboardText.includes('프로젝트명: 최신 프로젝트'));assert.ok(clipboardText.includes('고객명: 고객명'));all(tree,n=>n.type==='button'&&n.props['aria-label']==='방수 수정')[0].props.onClick();assert.ok(navigatedTo.includes('step=3'));assert.equal(saved().projectInfo.projectName,'최신 프로젝트');console.log('PASS consultation identity, print visibility/action, copy metadata, consultation edit retains identity');// Metadata behavior through the real form, Builder storage, report, and copy helpers.
 tree=fresh();tree=enter(tree,'project-customer-name','홍길동');
 function pick(label){all(tree,n=>n.type==='button'&&n.props.role==='radio'&&text(n)===label)[0].props.onClick();tree=render();}
 pick('아파트');pick('살고 있다');pick('상가');assert.equal(all(tree,n=>n.props['aria-label']==='거주 여부').length,0);pick('빌라');assert.ok(all(tree,n=>n.props['aria-label']==='거주 여부').length);assert.equal(all(tree,n=>n.type==='button'&&text(n)==='살고 있다')[0].props['aria-checked'],false);pick('살고 있다');
