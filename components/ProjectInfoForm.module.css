@@ -1,0 +1,8 @@
+.modeOptions button { word-break:keep-all; }
+.fields { display:grid;grid-template-columns:minmax(0,1fr); }
+.fields>fieldset:first-child { margin-top:0; }
+.textAction { display:block;min-height:44px;margin:4px 0 0 auto;padding:8px 0;border:0;background:transparent;color:var(--muted);font:inherit;font-size:13px;text-align:right;cursor:pointer; }
+.textAction:focus-visible { outline:2px solid var(--accent);outline-offset:3px; }
+.reveal { animation:appear 180ms ease-out; }
+@keyframes appear { from { opacity:0; } to { opacity:1; } }
+@media(prefers-reduced-motion:reduce) { .reveal { animation:none; } }

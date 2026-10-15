@@ -4,9 +4,12 @@ import { builderModes } from '../data/bathroom-builder-mode';
 import { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { calendarDate, numericDigits, formatBudgetNumber, hasProjectInfo, normalizeProjectInfo, type ProjectInfo } from '../data/bathroom-consultation';
+import styles from './ProjectInfoForm.module.css';
 
 export default function ProjectInfoForm({ initial, editing, onSave, onCancel }: { initial: ProjectInfo; editing?: boolean; onSave: (info: ProjectInfo) => void; onCancel?: () => void }) {
   const [draft, setDraft] = useState(initial);
+  const [revealed, setRevealed] = useState(() => initial.budget !== null || initial.constructionDate || initial.areaPyeong || initial.occupancyStatus || initial.propertyType ? 2 : hasProjectInfo(initial) ? 1 : 0);
+  const reveal = (stage: number) => setRevealed(current => Math.max(current, stage));
   const [dateParts, setDateParts] = useState(() => (initial.constructionDate ?? '--').split('-'));
   const dateValue = calendarDate(dateParts[0], dateParts[1], dateParts[2]);
   const dateMessage = dateParts.some(Boolean) && !dateValue ? (dateParts.every(Boolean) ? '실제 달력에 있는 날짜를 입력해주세요.' : '날짜를 모두 입력해주세요.') : '';
@@ -20,7 +23,6 @@ export default function ProjectInfoForm({ initial, editing, onSave, onCancel }: 
   return <section className="projectInfoForm">
     <div className="eyebrow">BATHROOM / PROJECT</div>
     <h1>프로젝트 정보</h1>
-    <p>이 욕실 상담서를 구분할 정보를 입력해주세요.</p>
     <form onSubmit={event => event.preventDefault()}>
       <section className="projectInfoSection" aria-labelledby="project-basic-heading">
       <header className="projectSectionHeader">
@@ -28,25 +30,26 @@ export default function ProjectInfoForm({ initial, editing, onSave, onCancel }: 
         <p id="project-basic-help" className="break-keep">고객명 또는 프로젝트명 중 편한 항목 하나만 입력해주세요.</p>
       </header>
       <label htmlFor="project-customer-name">고객명 / 이름</label>
-      <input id="project-customer-name" type="text" autoComplete="name" maxLength={40} placeholder="예: 홍길동 또는 원하는 가명" value={draft.customerName} aria-describedby={invalid ? 'project-basic-help project-info-validation' : 'project-basic-help'} onChange={event => { setDraft({ ...draft, customerName: event.target.value }); setInvalid(false); }} />
+      <input id="project-customer-name" type="text" autoComplete="name" maxLength={40} placeholder="예: 홍길동 또는 원하는 가명" value={draft.customerName} aria-describedby={invalid ? 'project-basic-help project-info-validation' : 'project-basic-help'} onChange={event => { const customerName = event.target.value; setDraft({ ...draft, customerName }); setInvalid(false); if (customerName.trim() || draft.projectName.trim()) reveal(1); }} />
       <label htmlFor="project-name">프로젝트명</label>
-      <input id="project-name" type="text" maxLength={80} placeholder="예: 홍길동 고객님 욕실 리모델링" value={draft.projectName} aria-describedby={invalid ? 'project-basic-help project-info-validation' : 'project-basic-help'} onChange={event => { setDraft({ ...draft, projectName: event.target.value }); setInvalid(false); }} />
-      <fieldset className="projectOptions projectModeOptions"><legend>작성 방식</legend><div role="radiogroup" aria-label="작성 방식">{builderModes.map(mode => <button type="button" role="radio" aria-checked={draft.builderMode === mode.id} className={draft.builderMode === mode.id ? 'selected' : ''} key={mode.id} onClick={() => setDraft({ ...draft, builderMode: mode.id })}><strong>{mode.label}</strong><small>{mode.description}</small></button>)}</div></fieldset>
+      <input id="project-name" type="text" maxLength={80} placeholder="예: 홍길동 고객님 욕실 리모델링" value={draft.projectName} aria-describedby={invalid ? 'project-basic-help project-info-validation' : 'project-basic-help'} onChange={event => { const projectName = event.target.value; setDraft({ ...draft, projectName }); setInvalid(false); if (projectName.trim() || draft.customerName.trim()) reveal(1); }} />
+      <fieldset className={`projectOptions projectModeOptions ${styles.modeOptions}`}><legend>작성 방식</legend><div role="radiogroup" aria-label="작성 방식">{builderModes.map(mode => <button type="button" role="radio" aria-checked={draft.builderMode === mode.id} className={draft.builderMode === mode.id ? 'selected' : ''} key={mode.id} onClick={() => setDraft({ ...draft, builderMode: mode.id })}><strong>{mode.label}</strong><small>{mode.description}</small></button>)}</div></fieldset>
       {invalid && <p id="project-info-validation" role="status">고객명 또는 프로젝트명 중 하나를 입력해주세요.</p>}
       </section>
-      <section className="projectInfoSection" aria-labelledby="project-site-heading">
+      {revealed >= 1 && <section className={`projectInfoSection ${styles.reveal}`} aria-labelledby="project-site-heading">
       <header className="projectSectionHeader">
         <h2 id="project-site-heading"><span>02</span>현장 정보</h2>
         <span className="projectSectionOptional">선택 입력</span>
         <p>시공 장소의 기본 정보를 입력해주세요.</p>
       </header>
-      <div className="projectFieldGrid">
-        <fieldset className="projectOptions"><legend>건물 유형</legend><div role="radiogroup" aria-label="건물 유형">{(['아파트', '빌라', '상가'] as const).map(option => <button type="button" role="radio" aria-checked={draft.propertyType === option} className={draft.propertyType === option ? 'selected' : ''} key={option} onClick={() => setDraft({ ...draft, propertyType: option, occupancyStatus: option === '상가' ? null : draft.occupancyStatus })}>{option}</button>)}</div></fieldset>
-        {draft.propertyType !== '상가' && <fieldset className="projectOptions"><legend>거주 여부</legend><div role="radiogroup" aria-label="거주 여부">{(['살고 있다', '이사갈 곳이다'] as const).map(option => <button type="button" role="radio" aria-checked={draft.occupancyStatus === option} className={draft.occupancyStatus === option ? 'selected' : ''} key={option} onClick={() => setDraft({ ...draft, occupancyStatus: option })}>{option}</button>)}</div></fieldset>}
+      <div className={styles.fields}>
+        <fieldset className="projectOptions"><legend>건물 유형</legend><div role="radiogroup" aria-label="건물 유형">{(['아파트', '빌라', '상가'] as const).map(option => <button type="button" role="radio" aria-checked={draft.propertyType === option} className={draft.propertyType === option ? 'selected' : ''} key={option} onClick={() => { setDraft({ ...draft, propertyType: option, occupancyStatus: option === '상가' ? null : draft.occupancyStatus }); reveal(2); }}>{option}</button>)}</div></fieldset>
+        {draft.propertyType !== '상가' && <fieldset className="projectOptions"><legend>거주 여부</legend><div role="radiogroup" aria-label="거주 여부">{(['살고 있다', '이사갈 곳이다'] as const).map(option => <button type="button" role="radio" aria-checked={draft.occupancyStatus === option} className={draft.occupancyStatus === option ? 'selected' : ''} key={option} onClick={() => { setDraft({ ...draft, occupancyStatus: option }); reveal(2); }}>{option}</button>)}</div></fieldset>}
       </div>
-      <label htmlFor="project-area">평수</label><div className="projectSuffixInput"><input id="project-area" inputMode="numeric" pattern="[0-9]*" maxLength={4} placeholder="예: 34" value={draft.areaPyeong} onChange={event => setDraft({ ...draft, areaPyeong: numericDigits(event.target.value, 4) })} /><span>평</span></div>
-      </section>
-      <section className="projectInfoSection" aria-labelledby="project-schedule-heading">
+      <label htmlFor="project-area">평수</label><div className="projectSuffixInput"><input id="project-area" inputMode="numeric" pattern="[0-9]*" maxLength={4} placeholder="예: 34" value={draft.areaPyeong} onChange={event => { const areaPyeong = numericDigits(event.target.value, 4); setDraft({ ...draft, areaPyeong }); if (Number(areaPyeong) > 0) reveal(2); }} /><span>평</span></div>
+      {revealed === 1 && <button type="button" className={styles.textAction} aria-label="현장 정보 건너뛰기" onClick={() => reveal(2)}>건너뛰기 →</button>}
+      </section>}
+      {revealed >= 2 && <section className={`projectInfoSection ${styles.reveal}`} aria-labelledby="project-schedule-heading">
       <header className="projectSectionHeader">
         <h2 id="project-schedule-heading"><span>03</span>일정 / 예산</h2>
         <span className="projectSectionOptional">선택 입력</span>
@@ -71,7 +74,7 @@ export default function ProjectInfoForm({ initial, editing, onSave, onCancel }: 
         while (caret < formatted.length && seen < digitsBefore) { if (/[0-9]/.test(formatted[caret])) seen++; caret++; }
         requestAnimationFrame(() => { if (document.activeElement === input) input.setSelectionRange(caret, caret); });
       }} /><span>원 이내</span></div>
-      </section>
+      </section>}
       <div className="navButtons">{onCancel && <button type="button" className="secondary" onClick={onCancel}>취소</button>}<button type="button" className="button" onClick={saveProjectInfo}>{editing ? '프로젝트 정보 저장' : '욕실 만들기 시작'}{!editing && <ArrowRight size={17} aria-hidden="true" />}</button></div>
     </form>
   </section>;

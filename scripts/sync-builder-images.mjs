@@ -18,8 +18,7 @@ export function normalizeFilename(filename) {
 }
 export const isProtected = option => option.id === 'other' || option.id === 'undecided' ||
   /모르겠|모르겠음|모르겠어요|상담.*결정/.test(option.name) || option.requiresCustomText
-  || ['bathroomCondition','drainPosition'].includes(option.groupKey)
-  || (option.groupKey === 'jendai' && ['keep','remove'].includes(option.id));
+  || ['bathroomCondition','drainPosition','ceilingPreference'].includes(option.groupKey);
 
 // Load the real Builder catalog. Ignore only the generated Builder settings so
 // the previous run cannot dictate which options are eligible for new photos.

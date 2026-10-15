@@ -218,7 +218,6 @@ export default function Configurator() {
     <progress max={totalSteps} value={displayIndex + 1} aria-label={`${totalSteps}단계 중 ${displayIndex + 1}단계`} />
     <ol>{phases.map(item => <li key={item.title} aria-current={phase === item ? 'step' : undefined}>{item.title}</li>)}</ol>
     <p className="builderPhase">{phase.title}</p>
-    <p className="builderProgressHelp">약 5~10분이면 업체에 전달할 욕실 상담서를 만들 수 있습니다.</p>
     {resumeStep !== null && <button className="resumeLink" onClick={() => { goToStep(resumeStep); setResumeStep(null); }}>이어서 만들기 · 저장된 STEP {visibleSteps.findIndex(item => item.stepIndex === nearestVisibleStep(resumeStep, mode)) + 1}</button>}
   </section>;
 

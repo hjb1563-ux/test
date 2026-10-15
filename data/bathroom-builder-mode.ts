@@ -2,9 +2,9 @@ import { builderBathroomSteps } from './bathroom-builder-options';
 import type { BathroomStep, ChoiceGroup } from './bathroom-options';
 
 export type BuilderMode = 'consumer' | 'professional';
-type Audience = 'both' | 'professional';
+type Audience = 'both' | 'professional' | 'consumer';
 export const builderModes = [
-  { id: 'consumer', label: '일반 고객용', description: '디자인과 사용 방식 중심으로 간단하게 선택해요.' },
+  { id: 'consumer', label: '일반 고객용', description: '디자인과 사용 방식을 간단히 선택해요.' },
   { id: 'professional', label: '전문가용', description: '방수·배수·공법 등 기술 항목까지 확인해요.' },
 ] as const;
 export const builderModeLabel = (mode: BuilderMode) => builderModes.find(item => item.id === mode)!.label;
@@ -19,6 +19,8 @@ const stepPresentation: Record<string, { audience?: Audience; title?: string; qu
 };
 const groupPresentation: Record<string, { audience?: Audience; title?: string; choiceDescriptions?: Record<string, string>; selectionHelp?: { ids: string[]; text: string } }> = {
   demolition: { audience: 'professional' },
+  ceiling: { audience: 'professional' },
+  ceilingPreference: { audience: 'consumer', title: '욕실 천장' },
   jendai: { title: '욕실 선반벽(젠다이)' },
   niche: { title: '매립 선반(샴푸박스)' },
   grout: { choiceDescriptions: {
@@ -29,7 +31,7 @@ const groupPresentation: Record<string, { audience?: Audience; title?: string; c
   faucet: { selectionHelp: { ids: ['concealed'], text: '매립 수전은 벽체와 배관 상태에 따라 시공 가능 여부가 달라질 수 있어요.' } },
   showerFaucet: { selectionHelp: { ids: ['concealed-shower'], text: '매립 수전은 벽체와 배관 상태에 따라 시공 가능 여부가 달라질 수 있어요.' } },
 };
-export const isVisibleForMode = (audience: Audience | undefined, mode: BuilderMode) => mode === 'professional' || audience !== 'professional';
+export const isVisibleForMode = (audience: Audience | undefined, mode: BuilderMode) => !audience || audience === 'both' || audience === mode;
 export function getVisibleSections(step: BathroomStep, mode: BuilderMode): ChoiceGroup[] {
   return step.groups.filter(group => isVisibleForMode(groupPresentation[group.key]?.audience, mode)).map(group => ({
     ...group, title: mode === 'consumer' ? groupPresentation[group.key]?.title ?? group.title : group.title,

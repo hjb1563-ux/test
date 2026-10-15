@@ -28,7 +28,15 @@ const builderSteps: BathroomStep[] = bathroomSteps.filter(step => step.key !== '
     ...step,
     title: step.key === 'ventilation' ? '환풍기' : step.key === 'lighting' ? '조명' : step.key === 'checklist' ? '최종 검토' : step.title,
     question: step.key === 'ventilation' ? '원하는 환풍기 제품명을 입력해주세요.' : step.question,
-    groups: step.groups.filter(group => !['floorTileSize', 'window', 'concealed', 'showerBooth'].includes(group.key)).map(group => {
+    groups: step.groups.flatMap(group => group.key === 'ceiling' ? [group, {
+      ...group, key: 'ceilingPreference', title: '욕실 천장',
+      choices: [textChoice('standard', '일반용'), textChoice('premium', '고급용'), textChoice('free-design', '자유로운 디자인')],
+    }] : [group]).filter(group => !['floorTileSize', 'window', 'concealed', 'showerBooth'].includes(group.key)).map(group => {
+      if (group.key === 'ceiling') return { ...group, choices: [
+        ...group.choices.filter(choice => choice.id !== 'other'),
+        textChoice('inosol', '이노솔'), textChoice('painted', '도장'),
+        ...group.choices.filter(choice => choice.id === 'other'),
+      ] };
       if (group.key === 'bathroomCondition') return { ...group, choices: [
         textChoice('damaged-tile', '기존타일이 깨졌거나 들떠 있다'),
         ...group.choices.filter(choice => !['cracked', 'loose'].includes(choice.id)).map(choice => ({

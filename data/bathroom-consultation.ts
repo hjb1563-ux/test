@@ -142,7 +142,7 @@ const summaryGroups = [
   { id: 'tile', title: '타일', keys: ['wallTileSize', 'tile', 'tileSurface'] },
   { id: 'fixtures', title: '주요 위생도기', keys: ['sink', 'toilet', 'cabinet', 'mirror'] },
   { id: 'water', title: '수전 / 샤워 / 욕조', keys: ['faucet', 'showerFaucet', 'bathtub'] },
-  { id: 'details', title: '마감 / 디테일', keys: ['ceiling', 'drain', 'drainPosition', 'ventilation', 'lighting', 'accessoryFinish', 'accessory', 'grout', 'threshold'] },
+  { id: 'details', title: '마감 / 디테일', keys: ['ceiling', 'ceilingPreference', 'drain', 'drainPosition', 'ventilation', 'lighting', 'accessoryFinish', 'accessory', 'grout', 'threshold'] },
 ];
 
 export function generateConsultationSummary(values: BathroomValues, mode: BuilderMode = 'professional') {

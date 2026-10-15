@@ -39,6 +39,7 @@ function evaluate(source, filename) {
   const module = { exports: {} };
   const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true, target: ts.ScriptTarget.ES2022 } }).outputText;
   const localRequire = name => {
+    if (name.endsWith('.module.css')) return { __esModule: true, default: new Proxy({}, { get: (_target, key) => key }) };
     if (name === 'react') return { ...React, ...hooks, useLayoutEffect: hooks.useEffect };
     if (name === 'next/navigation') return { useSearchParams: () => params };
     if (name === 'next/link') return { default: props => React.createElement('a', props), __esModule: true };

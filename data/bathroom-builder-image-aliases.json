@@ -16,7 +16,11 @@
     "lighting:light-recessed": "lighting/천장 매립 조명.png",
     "lighting:indirect": "lighting/천장 간접 조명.png",
     "partitionShower:door-booth": "structure/partition-shower-booth/샤워부스 도어형2.png",
-    "jendai:new": "structure/jendai/젠다이 신설2.png",
+    "jendai:keep": "structure/jendai/기존 젠다이 유지2.png",
+    "jendai:remove": "structure/jendai/기존 젠다이 철거.png",
+    "jendai:new": "structure/jendai/젠다이 신설6.png",
+    "ceiling:inosol": "ceiling/천장 이노솔 마감.png",
+    "ceiling:painted": "ceiling/천장 도장 마감.png",
     "partitionShower:fixed-glass": "structure/partition-shower-booth/샤워부스 유리 고정형2.png",
     "cabinet:standard-cabinet": "cabinet/bathroom-cabinet/일반 거울장2.png",
     "ceiling:smc-flat": "ceiling/SMC 평천장2.png",
@@ -34,6 +38,8 @@
     "grout:grout-polyurea": "grout/폴리우레아 줄눈.png"
   },
   "exact": {
+    "천장 이노솔 마감": "ceiling:inosol",
+    "천장 도장 마감": "ceiling:painted",
     "문턱 인조대리석 마감": "threshold:threshold-artificial-stone",
     "문턱 타일 마감": "threshold:threshold-tile",
     "니켈 액세서리": "accessoryFinish:nickel",

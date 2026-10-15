@@ -28,7 +28,7 @@ const key = 'bath-designer-selections-v2';
       assert.equal(await page.locator('#project-customer-name').getAttribute('placeholder'), '예: 홍길동 또는 원하는 가명');
       assert.equal(await page.locator('#project-customer-name').inputValue(), '');
       assert.equal(await page.locator('#project-name').getAttribute('placeholder'), '예: 홍길동 고객님 욕실 리모델링');
-      assert.equal(await page.locator('.projectSectionOptional').count(), 2);
+      assert.equal(await page.locator('.projectSectionOptional').count(), 0);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
       await page.screenshot({ path: `tests/artifacts/project-actions/form-${width}.png`, fullPage: true });
       await page.getByRole('button', { name: '욕실 만들기 시작', exact: true }).click();
