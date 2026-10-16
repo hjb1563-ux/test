@@ -1,0 +1,13 @@
+{
+  "project_ref": "istsrambmbzuemkgutgh",
+  "project_name": "bath-designer-dev",
+  "mode": "session",
+  "dashboard_confirmed": false,
+  "host": "aws-0-ap-northeast-2.pooler.supabase.com",
+  "port": 5432,
+  "database": "postgres",
+  "user": "postgres.istsrambmbzuemkgutgh",
+  "psql_path": "",
+  "ca_file": "",
+  "pgpass_file": ""
+}

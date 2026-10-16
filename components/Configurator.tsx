@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { FEATURE_FLAGS } from '../config/features';
+import { notifyCustomerLocalSave, notifyCustomerLocalReset } from '../data/customer-builder-cloud';
 import { AlertTriangle, ArrowLeft, ArrowRight, RotateCcw, X } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import BuilderSelectionSections from './BuilderSelectionSections';
@@ -140,7 +141,7 @@ export default function Configurator() {
 
   useEffect(() => {
     if (!hydrated) return;
-    try { const saved = readProject(); localStorage.setItem(STORAGE, JSON.stringify(updateProjectContent(saved, { values, specialNotes, current, imageHistoryOrder, projectInfo }))); setSaveStatus('자동 저장됨'); } catch { setSaveStatus('자동 저장할 수 없어요. 상담 내용을 복사해 보관해주세요.'); }
+    try { const saved = readProject(); const next = updateProjectContent(saved, { values, specialNotes, current, imageHistoryOrder, projectInfo }); localStorage.setItem(STORAGE, JSON.stringify(next)); notifyCustomerLocalSave(next); setSaveStatus('자동 저장됨'); } catch { setSaveStatus('자동 저장할 수 없어요. 상담 내용을 복사해 보관해주세요.'); }
   }, [values, specialNotes, current, imageHistoryOrder, projectInfo, hydrated]);
 
 
@@ -205,6 +206,7 @@ export default function Configurator() {
   function reset() {
     if (!window.confirm('현재 선택 내용이 삭제됩니다. 처음부터 다시 시작할까요?')) return;
     try { localStorage.removeItem(STORAGE); } catch { setSaveStatus('저장소를 초기화할 수 없어요.'); return; }
+    notifyCustomerLocalReset();
     setProjectInfo(normalizeProjectInfo(null)); setProjectFormOpen(true);
     visitedSections.current.clear();
     setLastEditedCategory(null);
