@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { FEATURE_FLAGS } from '../config/features';
 import { ArrowDown, ArrowRight, ArrowUpRight } from 'lucide-react';
 import SiteHeader from '../components/SiteHeader';
+import { getVisibleSteps } from '../data/bathroom-builder-mode';
 
 const chapters = [
   { number: '01', title: '공간의 바탕', detail: '시공 방식 · 구조 · 방수', href: '/guide/demolition' },
@@ -40,7 +41,7 @@ export default function Home() {
       <figure className="plannerFigure"><Image src="/images/bathroom/showroom-v1.png" alt="석재 타일과 간접 조명으로 정돈된 욕실의 세면대와 샤워 공간" width={1672} height={941} sizes="(max-width: 800px) 100vw, 60vw" unoptimized />
         <figcaption><span>SPACE, MATERIAL & LIGHT</span><span>나의 일상에 맞는 공간</span></figcaption>
       </figure>
-      <div className="plannerCopy"><span className="kicker">02 / YOUR BATHROOM, CONSIDERED</span><h2>취향은 구체적으로.<br />준비는 차분하게.</h2><p>타일의 분위기, 욕조의 형태, 빛의 위치.<br />하나씩 선택하며 내가 원하는 욕실을 그려보세요.</p><p>고른 요소는 사진과 함께 확인하고, 선택한 내용은 상담을 위한 목록으로 정리할 수 있습니다.</p><Link href="/design" className="editorialLink">내 욕실 만들기 시작하기 <ArrowUpRight size={20} aria-hidden="true" /></Link><div className="plannerNote"><b>13</b><span>개의 단계,<br />나만의 선택 목록</span></div></div>
+      <div className="plannerCopy"><span className="kicker">02 / YOUR BATHROOM, CONSIDERED</span><h2>취향은 구체적으로.<br />준비는 차분하게.</h2><p>타일의 분위기, 욕조의 형태, 빛의 위치.<br />하나씩 선택하며 내가 원하는 욕실을 그려보세요.</p><p>고른 요소는 사진과 함께 확인하고, 선택한 내용은 상담을 위한 목록으로 정리할 수 있습니다.</p><Link href="/design" className="editorialLink">내 욕실 만들기 시작하기 <ArrowUpRight size={20} aria-hidden="true" /></Link><div className="plannerNote"><b>{getVisibleSteps('consumer').length}</b><span>개의 단계,<br />나만의 선택 목록</span></div></div>
     </section>
     <section className="homeProcess editorialSection">
       <div className="sectionHeading"><span className="kicker">03 / HOW IT WORKS</span><span className="sectionAside">알아보고, 선택하고, 정리하세요.</span></div>

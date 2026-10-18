@@ -18,8 +18,9 @@ const selection = load(path.join(root, 'data/bathroom-selection'));
 const consultation = load(path.join(root, 'data/bathroom-consultation'));
 const history = load(path.join(root, 'data/bathroom-image-history'));
 const professional = modes.getVisibleSteps('professional').find(step => step.key === 'ceiling');
-const consumer = modes.getVisibleSteps('consumer').find(step => step.key === 'ceiling');
-assert.equal(modes.getVisibleSteps('consumer').length, 13); assert.equal(modes.getVisibleSteps('professional').length, 15);
+const consumer = {groups: load(path.join(root, 'data/bathroom-builder-options')).builderBathroomSteps.find(step=>step.key==='ceiling').groups.filter(g=>g.key==='ceilingPreference')};
+assert.equal(modes.getVisibleSteps('consumer').some(step=>step.key==='ceiling'),false);
+assert.equal(modes.getVisibleSteps('consumer').length, 10); assert.equal(modes.getVisibleSteps('professional').length, 15);
 assert.equal(professional.groups.length, 1); assert.equal(consumer.groups.length, 1);
 assert.equal(professional.groups[0].key, 'ceiling'); assert.equal(consumer.groups[0].key, 'ceilingPreference');
 assert.deepEqual(professional.groups[0].choices.map(choice => choice.name), ['SMC 평천장','SMC 돔천장','이노솔','도장','기타']);
@@ -37,9 +38,10 @@ for (const mode of ['consumer','professional','consumer','professional']) {
   assert.deepEqual(project.values, normalized);
   const rows = consultation.consultationRows(project.values, mode);
   const row = rows.find(row => row.key === (mode === 'consumer' ? 'ceilingPreference' : 'ceiling'));
-  assert.equal(row.label, mode === 'consumer' ? '고급용' : '이노솔');
+  if (mode === 'consumer') assert.equal(row, undefined); else assert.equal(row.label, '이노솔');
   const text = consultation.consultationSummaryText(project);
-  assert.ok(text.includes(mode === 'consumer' ? '고급용' : '이노솔'));
+  assert.equal(text.includes('이노솔'), mode === 'professional');
+  assert.ok(!text.includes('고급용'));
   assert.ok(!text.includes(mode === 'consumer' ? '이노솔' : '고급용'));
   const changed = selection.toggleSelection(project.values, mode === 'consumer' ? 'ceilingPreference' : 'ceiling', mode === 'consumer' ? 'free-design' : 'painted');
   assert.equal(changed[mode === 'consumer' ? 'ceiling' : 'ceilingPreference'], mode === 'consumer' ? 'inosol' : 'premium');
@@ -47,7 +49,7 @@ for (const mode of ['consumer','professional','consumer','professional']) {
 for (const id of ['smc-flat','smc-dome','other']) {
   const project = consultation.normalizeProject({ version: 3, values: { ceiling: id, ceilingOther: '기존 입력' }, projectInfo: { builderMode: 'consumer' } });
   assert.equal(project.values.ceiling, id); assert.equal(project.values.ceilingPreference, undefined);
-  assert.equal(consultation.consultationRows(project.values, 'consumer').find(row => row.key === 'ceilingPreference').label, '미정');
+  assert.equal(consultation.consultationRows(project.values, 'consumer').find(row => row.key === 'ceilingPreference'), undefined);
 }
 for (const id of ['inosol','painted','smc-flat','smc-dome']) {
   const item = history.selectedImageItems({ ceiling: id })[0]; assert.ok(item.choice.showBuilderImage);
@@ -56,4 +58,4 @@ for (const id of ['inosol','painted','smc-flat','smc-dome']) {
 const jendai = history.selectedImageItems({ jendai: ['new'] })[0];
 assert.equal(jendai.id, 'jendai:new'); assert.ok(decodeURIComponent(jendai.choice.builderImage).endsWith('젠다이 신설6.png'));
 assert.ok(fs.existsSync(path.join(root, 'public/images/bathroom-builder/structure/jendai/젠다이 신설2.png')));
-console.log('PASS ceiling: independent mode fields, legacy/custom values, 13/15 steps, mode-aware report/summary, single choice, no-image consumer, shared images and unchanged jendai ID');
+console.log('PASS ceiling: independent mode fields, legacy/custom values, 10/15 steps, mode-aware report/summary, single choice, no-image consumer, shared images and unchanged jendai ID');

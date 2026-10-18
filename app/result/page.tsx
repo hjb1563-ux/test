@@ -8,7 +8,7 @@ import { useSearchParams } from 'next/navigation';
 import SiteHeader from '../../components/SiteHeader';
 import { builderBathroomSteps as steps } from '../../data/bathroom-builder-options';
 import { normalizeBathroomValues } from '../../data/bathroom-selection';
-import { projectMetadata, STORAGE, consultationEditUrl, readProject, normalizeProject, consultationRows, consultationSummaryText, generateConsultationSummary, formatLastModified, updateProjectContent, type LocalProject } from '../../data/bathroom-consultation';
+import { projectMetadata, STORAGE, consultationEditUrl, readProject, normalizeProject, consultationOutputRows, consultationSummaryText, generateConsultationSummary, formatLastModified, updateProjectContent, type LocalProject } from '../../data/bathroom-consultation';
 
 function Content() {
   const params = useSearchParams();
@@ -61,9 +61,10 @@ function Content() {
   }, [params]);
 
   const mode = project.projectInfo.builderMode;
-  const visibleSteps = getVisibleSteps(mode).filter(step => step.key !== 'checklist');
-  const columnSize = Math.ceil(visibleSteps.length / 2);
-  const rows = consultationRows(project.values, mode);
+  const rows = consultationOutputRows(project.values, mode);
+  const allVisibleSteps = getVisibleSteps(mode);
+  const visibleSteps = allVisibleSteps.filter(step => mode === 'professional' || rows.some(row => row.stepIndex === step.stepIndex));
+  const columnSize = Math.max(1, Math.ceil(visibleSteps.length / 2));
   const summary = generateConsultationSummary(project.values, mode);
   const modified = formatLastModified(project.lastModifiedAt);
   const metadata = projectMetadata(project.projectInfo);
@@ -104,7 +105,7 @@ function Content() {
     finally { imageCopyBusyRef.current = false; setImageCopyBusy(false); }
   }
 
-  function edit(step = visibleSteps[0].stepIndex + 1) {
+  function edit(step = allVisibleSteps[0].stepIndex + 1) {
     try {
       localStorage.setItem(STORAGE, JSON.stringify({ ...project, current: step - 1 }));
       window.location.assign(consultationEditUrl(step - 1));
@@ -135,7 +136,7 @@ function Content() {
         {summary.length ? <dl>{summary.map(group => <div key={group.id}><dt>{group.title}</dt><dd>{group.text}</dd></div>)}</dl> : <p>아직 선택된 주요 항목이 없습니다.</p>}
       </section>
       <section className="sheetSelections"><h2>STEP별 선택 내용</h2>
-        <div className="sheetColumns">{[0, columnSize].map(start => <div className="sheetColumn" key={start}>{visibleSteps.slice(start, start + columnSize).map((step, offset) => { const index = start + offset; return <section id={`consultation-${step.key}`} className={`sheetStep${highlightedCategory === step.key ? ' sheetStep--highlighted' : ''}`} key={step.key}><header><h3><span>{String(index + 1).padStart(2, '0')}</span> {step.title}</h3><button data-capture-ignore="true" className="printHide resumeLink" aria-label={`${step.title} 수정`} onClick={() => edit(step.stepIndex + 1)}>수정</button></header>
+        <div className="sheetColumns">{[0, columnSize].map(start => <div className="sheetColumn" key={start}>{visibleSteps.slice(start, start + columnSize).map((step, offset) => { const index = allVisibleSteps.findIndex(item => item.key === step.key); return <section id={`consultation-${step.key}`} className={`sheetStep${highlightedCategory === step.key ? ' sheetStep--highlighted' : ''}`} key={step.key}><header><h3><span>{String(index + 1).padStart(2, '0')}</span> {step.title}</h3><button data-capture-ignore="true" className="printHide resumeLink" aria-label={`${step.title} 수정`} onClick={() => edit(step.stepIndex + 1)}>수정</button></header>
           <dl>{rows.filter(row => row.stepIndex === step.stepIndex).map(row => <div className={`sheetRow${row.pending ? ' sheetRow--pending' : ''}`} key={row.key}><dt>{row.title}</dt><dd><strong className={row.label === '미정' ? 'sheetUndecidedValue' : undefined}>{row.choices.length && !row.choices.some(choice => choice.requiresCustomText) ? row.choices.map(choice => choice.name).join(' · ') : row.label}</strong><div className="rowStatus">{row.pending && row.reason !== row.label && <span>{row.reason}</span>}</div>
           </dd></div>)}</dl></section>; })}</div>)}</div>
       </section>

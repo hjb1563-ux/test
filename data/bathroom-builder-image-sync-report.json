@@ -1124,6 +1124,20 @@
       }
     },
     {
+      "key": "bathroomCondition:poor-ventilation",
+      "name": "환기가 잘되지 않거나 곰팡이가 자주 생긴다",
+      "category": "현재 욕실 상태",
+      "action": "UNCHANGED",
+      "previous": {
+        "builderImage": null,
+        "showBuilderImage": false
+      },
+      "next": {
+        "builderImage": null,
+        "showBuilderImage": false
+      }
+    },
+    {
       "key": "bathroomCondition:leak",
       "name": "누수 이력이 있다",
       "category": "현재 욕실 상태",

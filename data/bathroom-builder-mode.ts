@@ -15,12 +15,15 @@ const stepPresentation: Record<string, { audience?: Audience; title?: string; qu
   layout: { title: '구조와 샤워 공간' },
   waterproofing: { audience: 'professional' },
   drainage: { audience: 'professional' },
-  ceiling: { title: '욕실 천장', question: '원하는 천장 형태를 선택해주세요.' },
+  ceiling: { audience: 'professional', title: '욕실 천장', question: '원하는 천장 형태를 선택해주세요.' },
+  ventilation: { audience: 'professional' },
+  accessories: { audience: 'professional' },
 };
 const groupPresentation: Record<string, { audience?: Audience; title?: string; choiceDescriptions?: Record<string, string>; selectionHelp?: { ids: string[]; text: string } }> = {
   demolition: { audience: 'professional' },
   ceiling: { audience: 'professional' },
   ceilingPreference: { audience: 'consumer', title: '욕실 천장' },
+  drainPosition: { audience: 'professional' },
   jendai: { title: '욕실 선반벽(젠다이)' },
   niche: { title: '매립 선반(샴푸박스)' },
   grout: { choiceDescriptions: {

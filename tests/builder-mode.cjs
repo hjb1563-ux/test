@@ -21,14 +21,14 @@ assert.equal(c.normalizeProject({ values: {} }).projectInfo.builderMode, 'consum
 assert.equal(c.normalizeProject({ values: { waterproofing: 'combined-waterproofing' } }).projectInfo.builderMode, 'professional');
 assert.equal(c.normalizeProject({ values: { accessoryOther: '선반' } }).projectInfo.builderMode, 'professional');
 const consumer = modes.getVisibleSteps('consumer'), pro = modes.getVisibleSteps('professional');
-assert.deepEqual(consumer.map(s => s.stepIndex), [0,1,3,4,5,6,7,8,10,11,12,13,14]);
+assert.deepEqual(consumer.map(s => s.stepIndex), [0,1,3,4,5,6,8,11,13,14]);
 assert.equal(pro.length, 15);
 assert.deepEqual(consumer[0].groups.map(g => g.key), ['bathroomCondition']);
 assert.equal(pro[0].groups.length, 2);
 assert.equal(consumer[1].groups[0].title, '욕실 선반벽(젠다이)');
 assert.equal(consumer[1].groups[2].title, '매립 선반(샴푸박스)');
 assert.equal(modes.nearestVisibleStep(2, 'consumer'), 3);
-assert.equal(modes.nearestVisibleStep(9, 'consumer'), 10);
+assert.equal(modes.nearestVisibleStep(9, 'consumer'), 11);
 for (const mode of ['consumer', 'professional']) {
   assert.equal(modes.nearestVisibleStep(15, mode), 14);
   assert.equal(modes.getVisibleSteps(mode).some(step => step.key === 'checklist'), false);
@@ -36,14 +36,14 @@ for (const mode of ['consumer', 'professional']) {
 const values = {demolition:'full-demolition',waterproofing:'combined-waterproofing',drain:'linear-drain',drainPosition:'move',bathroomCondition:['leak'],wallTileSize:'600x600',tile:'white',tileSurface:'matte',sink:'undermount-basin',toilet:'two-piece',faucet:'concealed',showerFaucet:['concealed-shower','rain'],grout:'grout-epoxy',accessoryOther:'수건걸이'};
 const project = c.normalizeProject({version:3, values, projectInfo:{projectName:'공유 프로젝트',builderMode:'professional'},imageHistoryOrder:['waterproofing:combined-waterproofing','tile:white']});
 const fingerprint = JSON.stringify(project.values), history = JSON.stringify(project.imageHistoryOrder);
-const hidden = ['demolition','waterproofing','drain','drainPosition'];
+const hidden = ['demolition','waterproofing','drain','drainPosition','ceiling','ventilation','accessoryFinish','accessory'];
 for (const mode of ['consumer','professional','consumer','professional']) {
   const next = c.updateProjectContent(project, {projectInfo:{...project.projectInfo,builderMode:mode}});
   assert.equal(JSON.stringify(next.values), fingerprint);
   assert.equal(JSON.stringify(next.imageHistoryOrder), history);
   const rows = c.consultationRows(next.values, mode);
-  assert.equal(rows.length, c.consultationRows(next.values).length - (mode === 'consumer' ? 4 : 0));
-  assert.equal(rows.filter(r => r.pending).length, c.consultationRows({}).length - Object.keys(values).length);
+  assert.equal(rows.length, modes.getVisibleSteps(mode).reduce((n,s)=>n+s.groups.length,0));
+  assert.equal(rows.filter(r => r.pending).length, rows.filter(r => r.label === '미정').length);
   for (const key of hidden) assert.equal(rows.some(r => r.key === key), mode === 'professional');
   const texts = [c.consultationSummaryText(next), c.consultationText(rows,'','',next.projectInfo), c.consultationText(c.consultationRows(next.values),'','',next.projectInfo)];
   for (const text of texts) {
@@ -56,4 +56,4 @@ for (const mode of ['consumer','professional','consumer','professional']) {
   else assert.ok(texts[1].includes('04 타일'));
 }
 assert.deepEqual(selection.toggleSelection(values,'showerFaucet','other',true).showerFaucet,['concealed-shower','rain','other']);
-console.log('PASS modes: defaults, legacy, stable IDs, 13/15 mapping, sections, nearest navigation, hidden counts, shared values/history, summaries and copy filtering');
+console.log('PASS modes: defaults, legacy, stable IDs, 10/15 mapping, sections, nearest navigation, hidden counts, shared values/history, summaries and copy filtering');

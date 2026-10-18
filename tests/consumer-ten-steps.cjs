@@ -1,0 +1,16 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),ts=require('typescript');
+require.extensions['.ts']=(m,f)=>m._compile(ts.transpileModule(fs.readFileSync(f,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText,f);
+const m=require('../data/bathroom-builder-mode.ts'),c=require('../data/bathroom-consultation.ts'),s=require('../data/bathroom-selection.ts');
+const keys=['demolition','layout','tile','basin','furniture','bathtub','faucet','lighting','grout','threshold'];
+test('consumer order uses ten original stable IDs, professional keeps fifteen',()=>{
+ const steps=m.getVisibleSteps('consumer');assert.deepEqual(steps.map(s=>s.key),keys);assert.deepEqual(steps.map(s=>s.stepIndex),[0,1,3,4,5,6,8,11,13,14]);assert.equal(m.getVisibleSteps('professional').length,15);for(const key of ['ceiling','ventilation','accessories','drainage','waterproofing'])assert.ok(m.getVisibleSteps('professional').some(s=>s.key===key));
+ for(const index of [2,7,9,10,12,15])assert.ok(steps.some(s=>s.stepIndex===m.nearestVisibleStep(index,'consumer')));
+});
+test('ventilation concern is one optional shared multi-select and appears in output',()=>{
+ for(const mode of ['consumer','professional']){const group=m.getVisibleSteps(mode)[0].groups.find(g=>g.key==='bathroomCondition');assert.equal(group.multiple,true);assert.equal(group.choices.filter(c=>c.id==='poor-ventilation').length,1);const p=c.normalizeProject({version:3,values:{bathroomCondition:['leak','poor-ventilation']},projectInfo:{builderMode:mode}});assert.ok(c.consultationSummaryText(p).includes('곰팡이'));assert.ok(c.consultationText(c.consultationRows(p.values,mode),'','',p.projectInfo).includes('환기가 잘되지'));}
+});
+test('mode switching and old hidden-step restoration preserve every stored choice and image order',()=>{
+ let p=c.normalizeProject({version:3,current:7,values:{ceiling:'inosol',ceilingPreference:'premium',ventilationOther:'전문가 환풍기',accessoryOther:'전문가 액세서리',drainPosition:'move',faucet:'concealed',tile:'white'},projectInfo:{builderMode:'professional'},imageHistoryOrder:['ceiling:inosol','faucet:concealed','tile:white']});const values=JSON.stringify(p.values),history=JSON.stringify(p.imageHistoryOrder);
+ for(const mode of ['consumer','professional','consumer']){p=c.normalizeProject({...p,projectInfo:{...p.projectInfo,builderMode:mode}});assert.equal(JSON.stringify(p.values),values);assert.equal(JSON.stringify(p.imageHistoryOrder),history);if(mode==='consumer'){assert.equal(m.nearestVisibleStep(p.current,mode),8);const rows=c.consultationOutputRows(p.values,mode);for(const key of ['ceiling','ceilingPreference','ventilation','accessory','drainPosition'])assert.ok(!rows.some(r=>r.key===key));const text=c.consultationSummaryText(p)+c.consultationText(c.consultationRows(p.values),'','',p.projectInfo);for(const marker of ['이노솔','고급용','전문가 환풍기','전문가 액세서리','배수 위치','미정'])assert.ok(!text.includes(marker));assert.ok(text.includes('07 수전 & 샤워'));}}
+});
+test('empty consumer report has no unanswered categories; professional report retains them',()=>{assert.deepEqual(c.consultationOutputRows({},'consumer'),[]);assert.ok(c.consultationOutputRows({},'professional').length>0);});

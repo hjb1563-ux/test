@@ -15,6 +15,10 @@
     "builderImage": null,
     "showBuilderImage": false
   },
+  "bathroomCondition:poor-ventilation": {
+    "builderImage": null,
+    "showBuilderImage": false
+  },
   "bathroomCondition:leak": {
     "builderImage": null,
     "showBuilderImage": false

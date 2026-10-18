@@ -63,6 +63,10 @@ export function consultationRows(values: BathroomValues, mode: BuilderMode = 'pr
   }));
 }
 export type ConsultationRow = ReturnType<typeof consultationRows>[number];
+// Output omits unanswered consumer categories; Builder counts keep all visible questions.
+export function consultationOutputRows(values: BathroomValues, mode: BuilderMode) {
+  return consultationRows(values, mode).filter(row => mode === 'professional' || !row.pending);
+}
 
 export type ProjectInfo = { builderMode: BuilderMode; customerName: string; projectName: string; propertyType: '아파트' | '빌라' | '상가' | null; occupancyStatus: '살고 있다' | '이사갈 곳이다' | null; areaPyeong: string; constructionDate: string | null; budget: number | null };
 export const numericDigits = (value: string, max: number) => value.replace(/[^0-9]/g, '').slice(0, max);
@@ -182,9 +186,10 @@ export const checkFingerprint = (row: ConsultationRow) => JSON.stringify([row.la
 export function consultationText(rows: ConsultationRow[], specialNotes: string, memo: string, projectInfo: ProjectInfo = normalizeProjectInfo({ builderMode: 'professional' }), lastModifiedAt: string | null = null) {
   const visibleKeys = new Set(getVisibleSteps(projectInfo.builderMode).flatMap(step => step.groups.map(group => group.key)));
   rows = rows.filter(row => visibleKeys.has(row.key));
+  if (projectInfo.builderMode === 'consumer') rows = rows.filter(row => !row.pending);
   const pending = rows.filter(row => row.pending);
   return ['[욕실 리모델링 상담서]', ...(projectInfo.projectName ? [`프로젝트명: ${projectInfo.projectName}`] : []), ...(projectInfo.customerName ? [`고객명: ${projectInfo.customerName}`] : []), `작성 모드 · ${builderModeLabel(projectInfo.builderMode)}`, ...projectMetadata(projectInfo), ...(formatLastModified(lastModifiedAt) ? [`마지막 수정: ${formatLastModified(lastModifiedAt)}`] : []), `선택 완료 ${rows.length - pending.length}`, '집계 기준: 선택 카테고리 수',
-    ...getVisibleSteps(projectInfo.builderMode).filter(step => step.key !== 'checklist').map((step, index) => `\n${String(index + 1).padStart(2, '0')} ${step.title}\n${rows.filter(row => row.stepIndex === step.stepIndex).map(row => `${row.title}: ${row.label}`).join('\n')}`),
+    ...getVisibleSteps(projectInfo.builderMode).filter(step => step.key !== 'checklist').flatMap((step, index) => projectInfo.builderMode === 'consumer' && !rows.some(row => row.stepIndex === step.stepIndex) ? [] : [`\n${String(index + 1).padStart(2, '0')} ${step.title}\n${rows.filter(row => row.stepIndex === step.stepIndex).map(row => `${row.title}: ${row.label}`).join('\n')}`]),
     '\n업체 실측 후 최종 확인이 필요합니다. 선택 내용은 상담을 위한 희망 사항입니다.',
     ...(specialNotes.trim() ? [`\n[특이사항]\n${specialNotes.trim()}`] : []),
     ...(memo.trim() ? [`\n[업체에 전달할 메모]\n${memo.trim()}`] : []),

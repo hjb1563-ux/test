@@ -39,6 +39,7 @@ const builderSteps: BathroomStep[] = bathroomSteps.filter(step => step.key !== '
       ] };
       if (group.key === 'bathroomCondition') return { ...group, choices: [
         textChoice('damaged-tile', '기존타일이 깨졌거나 들떠 있다'),
+        textChoice('poor-ventilation', '환기가 잘되지 않거나 곰팡이가 자주 생긴다'),
         ...group.choices.filter(choice => !['cracked', 'loose'].includes(choice.id)).map(choice => ({
           ...choice, name: choice.id === 'leak' ? '누수 이력이 있다' : choice.id === 'remove-bath' ? '욕조를 철거하고 싶다' : choice.name,
         })),

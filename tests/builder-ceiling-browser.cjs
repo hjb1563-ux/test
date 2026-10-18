@@ -31,12 +31,12 @@ const key = 'bath-designer-selections-v2';
     assert.ok(await image.evaluate(image => image.naturalWidth > 0));
   }
   async function report(mode, label) {
-    await page.goto(base + '/result'); await page.locator('.sheetStep').first().waitFor();
+    await page.goto(base + '/result'); await page.locator('.consultationSheet').waitFor();
     const card = page.locator('#consultation-ceiling');
-    assert.ok((await card.textContent()).includes(label));
-    assert.ok(!(await card.textContent()).includes(mode === 'consumer' ? '도장' : '고급용'));
+    if (mode === 'consumer') assert.equal(await card.count(), 0);
+    else assert.ok((await card.textContent()).includes(label));
     await page.getByRole('button', { name: '요약만 복사', exact: true }).click();
-    const text = await page.evaluate(() => navigator.clipboard.readText()); assert.ok(text.includes(label));
+    const text = await page.evaluate(() => navigator.clipboard.readText()); assert.equal(text.includes(label), mode === 'professional');
     assert.ok(!text.includes(mode === 'consumer' ? '도장' : '고급용'));
     assert.equal(await page.getByRole('button', { name: '선택 내용 복사', exact: true }).count(), 0);
     await page.getByRole('button', { name: '인쇄 / PDF 저장', exact: true }).click(); assert.equal(await page.evaluate(() => window.printCount), 1);
@@ -47,7 +47,7 @@ const key = 'bath-designer-selections-v2';
     }
   }
   try {
-    for (const [width, height] of [[1920,1080],[1440,900],[1280,720],[1024,768],[768,1024],[430,932],[390,844],[375,812]]) {
+    for (const [width, height] of [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024],[430,932],[390,844],[375,812]]) {
       mobile = width < 768; await page.setViewportSize({ width, height });
       for (const mode of ['consumer','professional']) {
         await seed(2, mode, { jendai: ['new'] });
@@ -68,20 +68,19 @@ const key = 'bath-designer-selections-v2';
       if (mobile) await preview('도장', '천장 도장 마감.png');
       await changeMode('consumer');
       const preference = page.locator('#builder-ceilingPreference-content');
-      assert.deepEqual(await preference.locator('[role=radio] .builderChoiceLabel').allTextContents(), ['일반용','고급용','자유로운 디자인']);
-      assert.equal(await preference.getByRole('radio', { name: '고급용', exact: true }).getAttribute('aria-checked'), 'true');
+      assert.equal(await preference.count(), 0);
+      assert.equal(await page.locator('progress').getAttribute('max'), '10');
+      assert.ok((await page.locator('.stepMeta').textContent()).includes('07 / 10 수전 & 샤워'));
       const historyBefore = (await saved()).imageHistoryOrder;
-      for (const label of ['일반용','자유로운 디자인','고급용']) {
-        await preference.getByRole('radio', { name: label, exact: true }).click();
-        assert.deepEqual((await saved()).imageHistoryOrder, historyBefore);
-        if (mobile) { assert.equal(await page.locator('.builderSwipeTrack').count(), 0); assert.equal(await page.locator('.builderSwipeEmpty').isVisible(), true); }
-      }
+      await page.reload(); await page.locator('.builderCompactFlow').waitFor();
+      assert.deepEqual((await saved()).imageHistoryOrder, historyBefore);
       assert.equal((await saved()).values.ceiling, 'painted'); assert.equal((await saved()).values.ceilingPreference, 'premium');
       await nav.locator('.button').click(); await nav.locator('button.secondary').first().click();
-      assert.equal(await preference.getByRole('radio', { name: '고급용', exact: true }).getAttribute('aria-checked'), 'true');
+      assert.equal(await preference.count(), 0);
       await page.screenshot({ path: `tests/artifacts/ceiling/consumer-${width}.png`, fullPage: true, animations: 'disabled' });
       await report('consumer', '고급용');
       await page.goto(base + '/design?step=8'); await page.locator('.builderCompactFlow').waitFor(); await changeMode('professional');
+      await page.goto(base + '/design?step=8'); await page.locator('.builderCompactFlow').waitFor();
       assert.equal(await page.getByRole('radio', { name: '도장', exact: true }).getAttribute('aria-checked'), 'true');
       if (!mobile) { if (width < 1200) await page.locator('.selectionHistory>.builderDisclosureToggle').click(); await page.locator('.historyPreviewButton').first().click(); }
       await preview('도장', '천장 도장 마감.png');
@@ -90,7 +89,7 @@ const key = 'bath-designer-selections-v2';
       for (const [id, label] of [['smc-flat','SMC 평천장'],['smc-dome','SMC 돔천장']]) {
         await seed(8, 'consumer', { ceiling: id });
         assert.equal(await page.locator('#builder-ceilingPreference-content [aria-checked=true]').count(), 0);
-        await changeMode('professional'); assert.equal(await page.getByRole('radio', { name: label, exact: true }).getAttribute('aria-checked'), 'true');
+        await changeMode('professional'); await page.goto(base + '/design?step=8'); await page.locator('.builderCompactFlow').waitFor(); assert.equal(await page.getByRole('radio', { name: label, exact: true }).getAttribute('aria-checked'), 'true');
         if (mobile) assert.equal(await page.locator('.builderSwipeLabel').textContent(), label);
       }
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);

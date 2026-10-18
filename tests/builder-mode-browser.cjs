@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const base = process.env.BUILDER_TEST_URL || 'http://localhost:3000';
 const key = 'bath-designer-selections-v2';
-const sizes = [[1920,1080],[1440,900],[1280,720],[1024,768],[768,1024],[430,932],[390,844],[375,812]];
+const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024],[430,932],[390,844],[375,812]];
 (async () => {
   const browser = await chromium.launch({headless:true,channel:'chrome'});
   const context = await browser.newContext({permissions:['clipboard-read','clipboard-write']});
@@ -39,7 +39,7 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1024,768],[768,1024],[430,932]
     assert.equal(await page.locator('#project-info-validation').count(),1);
     await page.locator('#project-customer-name').fill('신규 고객');
     await page.getByRole('button',{name:'욕실 만들기 시작'}).click();
-    assert.equal(await page.locator('progress').getAttribute('max'),'13');
+    assert.equal(await page.locator('progress').getAttribute('max'),'10');
     assert.equal(await page.locator('#builder-demolition-title').count(),0);
     assert.equal((await saved()).projectInfo.builderMode,'consumer');
     await select('누수 이력이 있다',true);
@@ -54,7 +54,7 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1024,768],[768,1024],[430,932]
       await page.setViewportSize({width,height});
       for (const mode of ['consumer','professional']) {
         await seed(mode,0,technical);
-        assert.equal(await page.locator('progress').getAttribute('max'),mode==='consumer'?'13':'15');
+        assert.equal(await page.locator('progress').getAttribute('max'),mode==='consumer'?'10':'15');
         assert.equal(await page.locator('#builder-demolition-title').count(),mode==='consumer'?0:1);
         if (width<1200) {
           assert.equal(await group().count(),1);
@@ -64,21 +64,21 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1024,768],[768,1024],[430,932]
         assert.ok((await page.locator('.stepMeta').textContent()).includes(mode==='consumer'?'구조와 샤워 공간':'구조 변경'));
         assert.equal(await page.locator('#builder-jendai-title').textContent(),mode==='consumer'?'욕실 선반벽(젠다이)':'젠다이');
         await nextStep();
-        assert.ok((await page.locator('.stepMeta').textContent()).includes(mode==='consumer'?'03 / 13 타일':'03 / 15 방수'));
+        assert.ok((await page.locator('.stepMeta').textContent()).includes(mode==='consumer'?'03 / 10 타일':'03 / 15 방수'));
         if (mode==='consumer') {
           if(width<1200) await nav().getByRole('button',{name:'이전',exact:true}).click();
           else await page.locator('.navButtons:visible').getByRole('button',{name:'이전',exact:true}).click();
-          assert.ok((await page.locator('.stepMeta').textContent()).includes('02 / 13'));
+          assert.ok((await page.locator('.stepMeta').textContent()).includes('02 / 10'));
           await nextStep();
-          await nextStep(); assert.ok((await page.locator('.stepMeta').textContent()).includes('04 / 13 세면대 & 변기'));
+          await nextStep(); assert.ok((await page.locator('.stepMeta').textContent()).includes('04 / 10 세면대 & 변기'));
         }
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth>innerWidth),false);
         await seed(mode,8,technical); await nextStep();
-        assert.ok((await page.locator('.stepMeta').textContent()).includes(mode==='consumer'?'09 / 13 환풍기':'10 / 15 배수 & 구배'));
+        assert.ok((await page.locator('.stepMeta').textContent()).includes(mode==='consumer'?'08 / 10 조명':'10 / 15 배수 & 구배'));
         await seed(mode,15,technical); assert.equal(await page.getByText('최종 검토',{exact:true}).count(),0);
         await page.locator('a:visible').filter({hasText:/상담서 보기/}).last().click();
         await page.locator('.sheetStep').first().waitFor();
-        assert.equal(await page.locator('.sheetStep').count(),mode==='consumer'?13:15);
+        assert.equal(await page.locator('.sheetStep').count(),mode==='consumer'?3:15);
         assert.equal(await page.locator('#consultation-waterproofing').count(),mode==='consumer'?0:1);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth>innerWidth),false);
         await page.screenshot({path:`tests/artifacts/builder-mode/${mode}-${width}-report.png`,fullPage:true});
@@ -89,7 +89,7 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1024,768],[768,1024],[430,932]
     await seed('professional',2,technical);
     const before = await saved();
     await switchMode('consumer');
-    assert.ok((await page.locator('.stepMeta').textContent()).includes('03 / 13 타일'));
+    assert.ok((await page.locator('.stepMeta').textContent()).includes('03 / 10 타일'));
     assert.deepEqual((await saved()).values,before.values);
     assert.deepEqual((await saved()).imageHistoryOrder,before.imageHistoryOrder);
     assert.equal(await page.locator('.selectionHistoryStrip').getByText('액방 + 도막',{exact:true}).count(),0);
@@ -97,18 +97,18 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1024,768],[768,1024],[430,932]
     await page.goto(base+'/design?step=3'); await page.locator('#builder-waterproofing-title').waitFor();
     assert.equal(await page.getByRole('radio',{name:'액방 + 도막',exact:true}).getAttribute('aria-checked'),'true');
     await seed('professional',9,technical); await switchMode('consumer');
-    assert.ok((await page.locator('.stepMeta').textContent()).includes('09 / 13 환풍기'));
+    assert.ok((await page.locator('.stepMeta').textContent()).includes('08 / 10 조명'));
     await seed('consumer',8,technical);
     assert.equal(await page.locator('.builderRestriction:visible').count(),1);
     await nav().getByRole('button',{name:'다음 항목 →',exact:true}).click();
     await select('매립 샤워&욕조 수전',true);
-    assert.equal(await page.locator('progress').getAttribute('value'),'8');
+    assert.equal(await page.locator('progress').getAttribute('value'),'7');
     assert.equal(await page.locator('.builderRestriction:visible').count(),1);
     await seed('consumer',13,technical);
     assert.equal(await page.locator('.builderChoiceDescription').count(),3);
     await seed('consumer',15,technical);
     await page.locator('a:visible').filter({hasText:/상담서 보기/}).last().click(); await page.locator('.sheetStep').first().waitFor();
-    for(const name of ['요약만 복사','선택 내용 복사']) {
+    for(const name of ['요약만 복사']) {
       await page.getByRole('button',{name,exact:true}).click();
       const text=await page.evaluate(()=>navigator.clipboard.readText());
       assert.ok(text.includes('600×600')); assert.ok(!text.includes('액방 + 도막')); assert.ok(!text.includes('전체 철거')); assert.ok(!text.includes('라인 배수구'));
@@ -120,13 +120,13 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1024,768],[768,1024],[430,932]
     await page.emulateMedia({media:'screen'});
     await page.getByRole('button',{name:'타일 수정',exact:true}).click(); await page.locator('.stepMeta').waitFor({state:'attached'});
     assert.ok(page.url().includes('step=4'));
-    assert.ok((await page.locator('.stepMeta').textContent()).includes('03 / 13'));
+    assert.ok((await page.locator('.stepMeta').textContent()).includes('03 / 10'));
     await page.getByRole('link',{name:'상담서로 돌아가기',exact:true}).click(); await page.locator('#consultation-tile').waitFor();
-    assert.equal(await page.locator('.sheetStep').count(),13);
+    assert.equal(await page.locator('.sheetStep').count(),3);
     await page.getByRole('link',{name:'내 욕실 만들기로 돌아가기',exact:true}).click(); await page.locator('.builderProgress').waitFor();
     await switchMode('professional');
     await page.goto(base+'/result'); await page.locator('#consultation-waterproofing').waitFor();
-    for(const name of ['요약만 복사','선택 내용 복사']) {
+    for(const name of ['요약만 복사']) {
       await page.getByRole('button',{name,exact:true}).click();
       assert.ok((await page.evaluate(()=>navigator.clipboard.readText())).includes('액방 + 도막'));
     }
