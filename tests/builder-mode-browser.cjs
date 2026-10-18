@@ -20,7 +20,11 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024
   const nav = () => page.locator('.mobileBuilderNav:visible');
   const group = () => page.locator('.choiceGroup:visible');
   async function nextStep() {
-    if (await nav().count()) await nav().getByRole('button',{name:'현재 STEP 전체 건너뛰기',exact:true}).click();
+    if (await nav().count()) {
+      const skip = nav().getByRole('button',{name:'현재 STEP 전체 건너뛰기',exact:true});
+      if (await skip.isVisible()) await skip.click();
+      else await nav().locator('button.button:visible').click(); // Mobile single-section first step hides skip.
+    }
     else await page.locator('.navButtons:visible').getByRole('button',{name:'다음',exact:true}).click();
   }
   async function switchMode(mode) {
@@ -137,17 +141,21 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024
       await page.setViewportSize({width,height});
       await seed('consumer',1,technical);
       await select('젠다이 신설',true);
-      await page.locator('.selectedHeroImage img:visible').waitFor();
+      await page.locator('.selectedHeroImage img:visible, .builderSwipeGallery img:visible').first().waitFor();
       assert.equal(await page.locator('progress').getAttribute('value'),'2');
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
       if(width<1200) {
         assert.equal(await group().count(),1);
         const bounds=await page.evaluate(()=>({selection:document.querySelector('.builderSelectionScroll').getBoundingClientRect(),nav:document.querySelector('.mobileBuilderNav').getBoundingClientRect(),height:document.documentElement.scrollHeight,viewport:innerHeight}));
         assert.ok(bounds.selection.bottom<=bounds.nav.top);
-        assert.equal(bounds.height,bounds.viewport);
+        // Existing <=767px CSS uses natural page scrolling, not a fixed-height workspace.
+        if (width >= 768) assert.equal(bounds.height,bounds.viewport);
+        else assert.ok(bounds.height >= bounds.viewport);
       }
       await page.screenshot({path:`tests/artifacts/builder-mode/consumer-${width}-builder.png`,fullPage:true});
       await page.getByRole('button',{name:'프로젝트 정보 수정',exact:true}).click();
+      // Existing form reveals schedule after selecting a building type.
+      await page.locator('[aria-labelledby=project-site-heading] .projectOptions').first().getByRole('radio').first().click();
       assert.equal(await page.locator('.projectInfoSection').count(),3);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
       await page.screenshot({path:`tests/artifacts/builder-mode/${width}-project-info.png`,fullPage:true});
