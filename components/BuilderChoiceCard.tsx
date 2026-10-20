@@ -31,8 +31,11 @@ export default function BuilderChoiceCard({ label, description, selected, multip
     }}>
     {imageOption?.showBuilderImage && <span className="builderSurfaceThumbnail" aria-hidden="true"><BuilderOptionImage option={imageOption} /></span>}
     <span className="builderChoiceLabel">{label}{description && <small className="builderChoiceDescription">{description}</small>}</span>
-    <span aria-hidden="true" className={`builderChoiceIndicator${multiple ? ' builderChoiceIndicator--multiple' : ''}`}>
-      {selected && <Check size={13} strokeWidth={2.5} />}
+    <span aria-hidden="true" className={`builderChoiceIndicator${multiple ? ' builderChoiceIndicator--multiple' : ''}${disabled ? ' builderChoiceIndicator--disabled' : ''}`}>
+      {disabled ? <svg className="builderChoiceProhibitedIcon" width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" focusable="false">
+        <circle cx="10" cy="10" r="8" />
+        <line x1="4.87" y1="15.13" x2="15.13" y2="4.87" />
+      </svg> : selected && <Check size={13} strokeWidth={2.5} />}
     </span>
   </button>;
 }

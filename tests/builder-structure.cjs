@@ -121,7 +121,7 @@ assert.equal(builderSteps.length,16);
 assert.equal(data.bathroomSteps.length,17);
 assert.deepEqual(plain(builderSteps[1].groups.map(g=>g.key)),['jendai','partitionShower','niche']);
 assert.deepEqual(plain(groups.find(g=>g.key==='jendai').choices.map(c=>c.id)),['none','keep','remove','new']);
-assert.deepEqual(plain(groups.find(g=>g.key==='partitionShower').choices.map(c=>c.name)),['없음','하프 파티션','풀 파티션','고정 유리형 샤워부스','도어형 샤워부스']);
+assert.deepEqual(plain(groups.find(g=>g.key==='partitionShower').choices.map(c=>c.name)),['없음','하프 파티션','풀 파티션','고정 유리형 샤워부스','도어형 샤워부스','욕조 파티션']);
 assert.ok(!groups.some(g=>['window','concealed','partition','showerBooth'].includes(g.key)));
 assert.deepEqual(plain(builderSteps[4].groups.map(g=>g.key)),['sink','toilet']);
 assert.equal(builderSteps[12].key,'accessories');
@@ -327,3 +327,40 @@ tileResolver.tileSurfaceImages['600x1200'].dark.glossy=missingSurface;
 const disabled={...getGroup('tileSurface').choices[0],builderImage:null,showBuilderImage:false};
 assert.equal(tileResolver.resolveBuilderImage('tileSurface',disabled,{wallTileSize:'600x600',tile:'dark'}),disabled);
 console.log('PASS: 24 surface combinations, shared option/history resolver, normalized dimensions and missing/custom/text-only fallbacks');
+
+const partitionConflict = { partitionShower:'bathtub-partition', bathtub:'none', tile:'ivory', sink:'other', sinkOther:'기존 내용' };
+const compatible = selection.normalizeBathroomValues(partitionConflict);
+assert.equal(compatible.bathtub,undefined);
+assert.equal(compatible.partitionShower,'bathtub-partition');
+assert.equal(compatible.tile,'ivory');assert.equal(compatible.sinkOther,'기존 내용');
+assert.deepEqual(plain(selection.normalizeBathroomValues(compatible)),plain(compatible));
+assert.equal(selection.toggleSelection({bathtub:'none',tile:'ivory'},'partitionShower','bathtub-partition').bathtub,undefined);
+assert.equal(selection.toggleSelection(compatible,'bathtub','none').bathtub,undefined);
+for(const id of ['bath-standard','bath-masonry','bath-half-body']) {
+ const valid=selection.toggleSelection(compatible,'bathtub',id);
+ assert.equal(valid.bathtub,id);
+ assert.equal(selection.toggleSelection(valid,'partitionShower','bathtub-partition').bathtub,id);
+}
+const blockedMessage='욕조 파티션 선택 시 선택 불가';
+tree=mount(6,partitionConflict);
+const noneCard=all(groupSection(tree,'bathtub'),n=>n.type==='button'&&text(n).startsWith('욕조 없음'))[0];
+assert.equal(noneCard.props.disabled,true);assert.equal(noneCard.props.tabIndex,-1);
+const label=all(noneCard,n=>n.props.className==='builderChoiceLabel')[0];
+assert.equal(text(label),'욕조 없음'+blockedMessage);
+assert.equal(all(label,n=>n.props.className==='builderChoiceDescription').length,1);
+assert.equal(all(groupSection(tree,'bathtub'),n=>n.type==='button'&&n.props.tabIndex===0).length,1);
+assert.equal(state().bathtub,undefined);
+noneCard.props.onClick();tree=render();assert.equal(state().bathtub,undefined);
+tree=mount(6,{bathtub:'bath-standard'});
+const restoredNone=all(groupSection(tree,'bathtub'),n=>n.type==='button'&&text(n)==='욕조 없음')[0];
+assert.equal(restoredNone.props.disabled,false);assert.ok(!text(restoredNone).includes(blockedMessage));
+const project=consultation.normalizeProject({version:3,values:partitionConflict,memo:'메모 유지',checks:{bathtub:'확인'},imageHistoryOrder:['bathtub:none','tile:ivory']});
+assert.equal(project.memo,'메모 유지');assert.equal(project.checks.bathtub,'확인');assert.equal(project.values.bathtub,undefined);
+const persisted=consultation.updateProjectContent(project,{values:partitionConflict});
+assert.equal(persisted.values.bathtub,undefined);assert.ok(!persisted.imageHistoryOrder.includes('bathtub:none'));
+for(const mode of ['consumer','professional']) {
+ const rows=consultation.consultationRows(partitionConflict,mode);
+ assert.equal(rows.find(r=>r.key==='bathtub').choices.length,0);
+ assert.equal(rows.find(r=>r.key==='partitionShower').label,'욕조 파티션');
+}
+console.log('PASS: bathtub partition A/B/C/D, invariant, valid tub preservation, disabled card/inner description/tab stop, storage/history and consultation in both modes');

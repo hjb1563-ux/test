@@ -67,6 +67,10 @@
     "builderImage": "/images/bathroom-builder/structure/partition-shower-booth/%EC%83%A4%EC%9B%8C%EB%B6%80%EC%8A%A4%20%EB%8F%84%EC%96%B4%ED%98%952.png",
     "showBuilderImage": true
   },
+  "partitionShower:bathtub-partition": {
+    "builderImage": "/images/bathroom-builder/inbox/%EC%9A%95%EC%A1%B0%20%ED%8C%8C%ED%8B%B0%EC%85%98.png",
+    "showBuilderImage": true
+  },
   "niche:none": {
     "builderImage": null,
     "showBuilderImage": false

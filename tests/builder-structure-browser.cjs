@@ -5,7 +5,8 @@ run('structure', async (h) => {
     await h.seed(1);
     assert.equal(await page.locator('.choiceGroup').count(), 3);
     assert.equal(await h.group('jendai').getByRole('checkbox').count(), 4);
-    assert.equal(await h.group('partitionShower').getByRole('radio').count(), 5);
+    assert.equal(await h.group('partitionShower').getByRole('radio').count(), 6);
+    assert.equal(await h.group('partitionShower').getByRole('radio', { name: '욕조 파티션', exact: true }).count(), 1);
     await h.choose('partitionShower', '하프 파티션');
     await h.choose('partitionShower', '도어형 샤워부스');
     assert.equal((await h.saved()).values.partitionShower, 'door-booth');

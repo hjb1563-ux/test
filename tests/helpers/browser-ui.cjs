@@ -12,7 +12,7 @@ async function run(name, fn) {
     page.setDefaultTimeout(12000);
     page.on('pageerror', e => errors.push(e.message));
     page.on('console', m => {
-        if (m.type() === 'error' && !/fonts.googleapis.com|fonts.gstatic.com|favicon.ico/.test(m.location().url || ''))
+        if (m.type() === 'error' && !/favicon.ico/.test(m.location().url || ''))
             errors.push(m.text());
     });
     page.on('response', r => {

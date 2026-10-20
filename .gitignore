@@ -39,4 +39,5 @@ public/images/bathroom-builder/archive/
 
 # BEGIN builder image sources
 !public/images/bathroom-builder/inbox/**/
+!public/images/bathroom-builder/inbox/욕조 파티션.png
 # END builder image sources

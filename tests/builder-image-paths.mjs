@@ -3,6 +3,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { loadOptions } from '../scripts/sync-builder-images.mjs';
+import { execFileSync } from 'node:child_process';
+import { verifyInventory } from './helpers/image-inventory.mjs';
 const root = path.resolve('.');
 const publicRoot = path.join(root,'public');
 const options = await loadOptions(root,{includeGenerated:true});
@@ -18,7 +20,9 @@ for(const url of new Set(refs)){
  let folder=publicRoot;for(const segment of decoded.slice(1).split('/')){assert.ok((await fs.readdir(folder)).includes(segment),'Exact case/Unicode path: '+url);folder=path.join(folder,segment);}assert.ok((await fs.stat(filename)).isFile());
 }
 const inventory=JSON.parse(await fs.readFile('docs/BUILDER_IMAGE_INVENTORY.json','utf8'));
-for(const image of inventory.images){const current=await fs.readFile(image.destination);assert.equal(createHash('sha256').update(current).digest('hex'),image.hash,'Original bytes: '+image.destination);}
+const tracked = new Set(execFileSync('git', ['ls-files', '-z'], {encoding:'utf8'}).split('\0'));
+const referenced = new Set(refs.map(url => 'public' + decodeURIComponent(url)));
+const inventoryResult = await verifyInventory(inventory.images, {tracked, referenced});
 const surfaceImport=JSON.parse(await fs.readFile('docs/BUILDER_TILE_SURFACE_IMPORT.json','utf8'));
 for(const image of surfaceImport.moved){const current=await fs.readFile(path.join('public/images/bathroom-builder',image.to));assert.equal(createHash('sha256').update(current).digest('hex'),image.hash,'Surface original bytes: '+image.to);assert.equal(await fs.access(path.join('public/images/bathroom-builder',image.from)).then(()=>true,()=>false),false);}
-console.log('PASS: '+refs.length+' image references ('+new Set(refs).size+' unique), exact case/Unicode paths, '+inventory.images.length+' original hashes, '+inventory.moves.length+' moves, 0 missing images');
+console.log('PASS: '+refs.length+' image references ('+new Set(refs).size+' unique), exact case/Unicode paths, '+inventoryResult.verified+' original hashes, '+inventoryResult.absentArchives+' untracked/unreferenced archive originals absent, '+inventory.moves.length+' moves, 0 missing product images');

@@ -3,7 +3,7 @@
 import { getConsumerGroupHelp, type BuilderMode } from '../data/bathroom-builder-mode';
 import { Fragment } from 'react';
 import type { ChoiceGroup } from '../data/bathroom-options';
-import { customTextKey, selectedIds, selectionLabel, type BathroomValues } from '../data/bathroom-selection';
+import { customTextKey, hasBathtubPartition, selectedIds, selectionLabel, type BathroomValues } from '../data/bathroom-selection';
 import BuilderChoiceCard from './BuilderChoiceCard';
 import { resolveBuilderImage } from '../data/bathroom-builder-image-resolver';
 
@@ -30,6 +30,8 @@ export default function BuilderChoiceGroup({ mode = 'professional', group, numbe
 }) {
   const help = mode === 'consumer' ? getConsumerGroupHelp(group.key) : undefined;
   const ids = selectedIds(values[group.key]);
+  const blocked = (id: string) => group.key === 'bathtub' && id === 'none' && hasBathtubPartition(values);
+  const firstEnabled = group.choices.findIndex(choice => !blocked(choice.id));
 
   const customChoice = group.choices.find(choice => choice.requiresCustomText && ids.includes(choice.id));
   const draft = values[customTextKey(group.key)];
@@ -59,9 +61,10 @@ export default function BuilderChoiceGroup({ mode = 'professional', group, numbe
     {group.choices.length > 0 && <div className="builderChoiceGrid" role={group.multiple ? 'group' : 'radiogroup'} aria-label={group.title}>
       {group.choices.map((choice, index) => {
         const selected = ids.includes(choice.id);
-        return <Fragment key={choice.id}><BuilderChoiceCard description={help?.choiceDescriptions?.[choice.id]} label={choice.name} selected={selected} multiple={group.multiple}
+        const disabled = blocked(choice.id);
+        return <Fragment key={choice.id}><BuilderChoiceCard disabled={disabled} description={disabled ? '욕조 파티션 선택 시 선택 불가' : help?.choiceDescriptions?.[choice.id]} label={choice.name} selected={selected} multiple={group.multiple}
           imageOption={group.key === 'tileSurface' ? resolveBuilderImage(group.key, choice, values) : undefined}
-          tabIndex={group.multiple || selected || (!ids.length && index === 0) ? 0 : -1}
+          tabIndex={!disabled && (group.multiple || selected || (!ids.length && index === firstEnabled)) ? 0 : -1}
           onSelect={() => {
             onSelect(group.key, choice.id, group.multiple);
           }} />
@@ -76,7 +79,9 @@ export default function BuilderChoiceGroup({ mode = 'professional', group, numbe
     {help?.selectionHelp && ids.some(id => help.selectionHelp!.ids.includes(id)) && <p className="builderRestriction">{help.selectionHelp.text}</p>}
     </div>
     <style>{`
-      .design .builderChoiceCard:disabled{opacity:.55;cursor:not-allowed;background:#f0ede7;border-color:#ded7cc}
+      body .design.builderCompactFlow .options .builderChoiceCard:disabled,body .design.builderCompactFlow .options .builderChoiceCard:disabled:hover,body .design.builderCompactFlow .options .builderChoiceCard:disabled:active{opacity:1;cursor:not-allowed;background:#E7E7E5;border-color:#BEC3C6;color:#4B5563;box-shadow:none;transform:none;transition:none}
+      .design .builderChoiceCard:disabled .builderChoiceDescription{color:#5C6670;white-space:nowrap;font-size:11px;line-height:1.5}
+      .design .builderChoiceCard:disabled .builderChoiceIndicator--disabled{border:0;color:#6F7478}
       .design .builderRestriction{margin:10px 0 0;font-size:12px;line-height:1.5;color:#716b63}
       .design .options .choiceGroup{padding:0;min-width:0;border-top:0}
       .design .options .choiceGroup + .choiceGroup{margin-top:32px}
@@ -88,7 +93,7 @@ export default function BuilderChoiceGroup({ mode = 'professional', group, numbe
       .design .options .builderSectionTitleRow small{flex-shrink:0;margin:0;color:#716b63;font-size:11px;font-weight:500;line-height:1.4;white-space:nowrap}
       .design .builderChoiceGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0}
       .design .builderChoiceCard{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-width:0;min-height:48px;padding:10px 16px;border:1px solid #ded7cc;border-radius:10px;background:#fcfbf8;color:#303631;font:500 14px/1.4 'Noto Sans KR',sans-serif;text-align:left;cursor:pointer;transition:border-color 160ms,background-color 160ms;box-shadow:none;transform:none}
-      .design .builderChoiceCard:hover{border-color:#b6aa9a;background:#faf6ef}
+      .design .builderChoiceCard:not(:disabled):hover{border-color:#b6aa9a;background:#faf6ef}
       .design .builderChoiceCard.selected{border-color:#a87359;background:#fff5ef}
       .design .builderChoiceCard:focus-visible{outline:2px solid #a87359;outline-offset:3px}
       .design .builderChoiceLabel{min-width:0;white-space:normal;overflow-wrap:anywhere;text-align:left}

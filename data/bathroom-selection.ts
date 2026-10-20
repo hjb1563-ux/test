@@ -7,6 +7,19 @@ export const customTextKey = (groupKey: string): `${string}Other` => `${groupKey
 export const selectedIds = (value: string | string[] | undefined): string[] =>
   Array.isArray(value) ? value : value ? [value] : [];
 
+export const hasBathtubPartition = (values: BathroomValues): boolean =>
+  selectedIds(values.partitionShower).includes('bathtub-partition');
+
+/** Shared invariant for interactions, restoration, storage and consultation output. */
+export function enforceBathtubCompatibility(values: BathroomValues): BathroomValues {
+  if (!hasBathtubPartition(values) || !selectedIds(values.bathtub).includes('none')) return values;
+  const result = { ...values };
+  const remaining = selectedIds(values.bathtub).filter(id => id !== 'none');
+  if (remaining.length) result.bathtub = Array.isArray(values.bathtub) ? remaining : remaining[0];
+  else delete result.bathtub;
+  return result;
+}
+
 export function updateCustomText(values: BathroomValues, key: string, text: string): BathroomValues {
   const result = { ...values, [customTextKey(key)]: text };
   if (key === 'accessory' || key === 'ventilation') delete result[key];
@@ -73,18 +86,19 @@ export function normalizeBathroomValues(input: unknown, steps: BathroomStep[] = 
   // Unknown used to exclude an accessory draft. Do not revive that hidden text.
   if (selectedIds(raw.accessory as string | string[] | undefined).some(id => /^(undecided|notSure|unknown)$/i.test(id) || /모르겠/.test(id))) delete result.accessoryOther;
   else if (typeof result.accessoryOther === 'string') result.accessoryOther = result.accessoryOther.trim();
-  return result;
+  return enforceBathtubCompatibility(result);
 }
 
 export function toggleSelection(values: BathroomValues, key: string, id: string, multiple = false): BathroomValues {
+  if (key === 'bathtub' && id === 'none' && hasBathtubPartition(values)) return enforceBathtubCompatibility(values);
   if (!multiple) {
     const result = { ...values, [key]: values[key] === id ? '' : id };
-    return result;
+    return enforceBathtubCompatibility(result);
   }
   const before = selectedIds(values[key]);
   const next = before.includes(id) ? before.filter(item => item !== id)
     : id === 'none' ? [id]
     : [...before.filter(item => item !== 'none'
       && !(key === 'jendai' && ((id === 'keep' && item === 'remove') || (id === 'remove' && item === 'keep')))), id];
-  return { ...values, [key]: next };
+  return enforceBathtubCompatibility({ ...values, [key]: next });
 }

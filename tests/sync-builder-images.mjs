@@ -5,6 +5,11 @@ import os from 'node:os';
 import { normalizeFilename, loadOptions, matchFilename, matchTileCombination, matchTileSurfaceCombination, syncImages } from '../scripts/sync-builder-images.mjs';
 const options = await loadOptions();
 const aliases = JSON.parse(await fs.readFile('data/bathroom-builder-image-aliases.json', 'utf8'));
+for (const filename of ['욕조 파티션.png', '욕조 파티션 (1).PNG', '욕조 파티션2.webp']) {
+  const found = matchFilename(filename, options, aliases);
+  assert.equal(found.status, 'MATCHED');
+  assert.equal(found.option.key, 'partitionShower:bathtub-partition');
+}
 for (const [name, target] of Object.entries(aliases.exact)) {
   for (const suffix of ['', '(1)', '2', '3 (2)']) {
     const found = matchFilename(`${name}${suffix}.PNG`, options, aliases);

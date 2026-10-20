@@ -68,7 +68,7 @@ const builderSteps: BathroomStep[] = bathroomSteps.filter(step => step.key !== '
       ] };
       if (group.key === 'partition') {
         return { ...group, key: 'partitionShower', title: '파티션 & 샤워부스', multiple: false,
-          choices: [...group.choices, ...showerBooth.choices.filter(choice => !['none', 'undecided'].includes(choice.id))]
+          choices: [...group.choices, ...showerBooth.choices.filter(choice => !['none', 'undecided'].includes(choice.id)), textChoice('bathtub-partition', '욕조 파티션')]
             .map(choice => ({ ...choice, name: partitionLabels[choice.id] ?? choice.name })) };
       }
       if (group.key === 'accessoryFinish') return { ...group, choices: group.choices.map(choice => ({

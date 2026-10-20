@@ -1,7 +1,7 @@
 import { getVisibleSteps, builderModeLabel, type BuilderMode } from './bathroom-builder-mode';
 import { normalizeImageHistoryOrder } from './bathroom-image-history';
 import { builderBathroomSteps as steps } from './bathroom-builder-options';
-import { customTextKey, normalizeBathroomValues, selectedIds, selectionLabel, type BathroomValues } from './bathroom-selection';
+import { customTextKey, enforceBathtubCompatibility, normalizeBathroomValues, selectedIds, selectionLabel, type BathroomValues } from './bathroom-selection';
 
 export const STORAGE = 'bath-designer-selections-v2';
 export const consultationEditUrl = (stepIndex: number) => `/design?step=${stepIndex + 1}&returnTo=consultation`;
@@ -48,6 +48,7 @@ export function siteCheck(key: string, values: BathroomValues): string | undefin
 }
 
 export function consultationRows(values: BathroomValues, mode: BuilderMode = 'professional') {
+  values = enforceBathtubCompatibility(values);
   return getVisibleSteps(mode).flatMap((step, displayIndex) => step.groups.map(group => {
     const stepIndex = step.stepIndex;
     const choices = group.choices.filter(choice => selectedIds(values[group.key]).includes(choice.id));
@@ -125,7 +126,9 @@ export function readProject(): LocalProject {
 
 // Navigation and image feedback are not consultation content changes.
 export function updateProjectContent(before: LocalProject, patch: Partial<LocalProject>, now = () => new Date().toISOString()): LocalProject {
-  const next = { ...before, ...patch };
+  const merged = { ...before, ...patch };
+  const values = enforceBathtubCompatibility(merged.values);
+  const next = { ...merged, values, imageHistoryOrder: normalizeImageHistoryOrder(merged.imageHistoryOrder, values) };
   const content = (project: LocalProject) => [
     Object.entries(normalizeBathroomValues(project.values, steps)).sort(([a], [b]) => a.localeCompare(b)),
     normalizeProjectInfo(project.projectInfo), project.specialNotes, project.memo,
