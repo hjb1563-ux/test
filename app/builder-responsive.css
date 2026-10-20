@@ -280,10 +280,10 @@ body .design .builderSectionPosition,body .design .builderCurrentSectionSelectio
 /* Expanded summary occupies its own row; choices retain a scrollable area. */
 @media(max-width:1199px) and (min-height:600px) {
   body .design.builderCompactFlow .designGrid:has(.builderSummaryPanel[data-open=true]) {
-    grid-template-rows:auto auto minmax(64px,.5fr) minmax(88px,1fr);
+    grid-template-rows:auto minmax(0,auto) minmax(64px,.5fr) minmax(88px,1fr);
   }
   body .design.builderCompactFlow .designGrid:has(.builderConsultationEdit):has(.builderSummaryPanel[data-open=true]) {
-    grid-template-rows:auto auto auto minmax(64px,.5fr) minmax(88px,1fr);
+    grid-template-rows:auto auto minmax(0,auto) minmax(64px,.5fr) minmax(88px,1fr);
   }
 }
 
@@ -477,4 +477,15 @@ body .design.builderCompactFlow .builderSwipeGallery { display:none; }
   body .design.builderCompactFlow .builderSwipeLabel { margin:8px 0 0;color:var(--foreground);font-size:14px;font-weight:500;line-height:1.5; }
   body .design.builderCompactFlow .builderSwipeEmpty { display:flex;align-items:center;justify-content:center;width:100%;height:clamp(180px,28dvh,260px);margin:0;padding:24px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--muted);font-size:14px;line-height:1.6;word-break:keep-all;text-align:center; }
   body .design.builderCompactFlow .mobileBuilderNav { padding-top:24px; }
+}
+
+/* Fit the tablet preview into its Grid track when the expanded summary needs space.
+   Keep the choices (64px), summary (88px), and bottom navigation in normal flow. */
+@media (min-width:768px) and (max-width:1199px) and (min-height:600px) {
+  body .design.builderCompactFlow .designGrid:has(.builderSummaryPanel[data-open=true]) .builderPreviewPanel { height:100%;min-height:0;align-self:stretch; }
+  body .design.builderCompactFlow .designGrid:has(.builderSummaryPanel[data-open=true]) .builderPreviewPanel>.builderDisclosureBody { height:100%;min-height:0; }
+  body .design.builderCompactFlow .designGrid:has(.builderSummaryPanel[data-open=true]) .selectedGallery { display:flex;flex-direction:column;height:100%;min-height:0; }
+  body .design.builderCompactFlow .designGrid:has(.builderSummaryPanel[data-open=true]) .selectedGallery>.galleryHead,
+  body .design.builderCompactFlow .designGrid:has(.builderSummaryPanel[data-open=true]) .selectedHeroLabel { flex-shrink:0; }
+  body .design.builderCompactFlow .designGrid:has(.builderSummaryPanel[data-open=true]) .selectedHeroImage { flex-shrink:1;min-height:0; }
 }

@@ -81,7 +81,7 @@ export default function Configurator() {
   const selectedItems = step.groups.flatMap((group) => { const value = values[group.key]; const ids = Array.isArray(value) ? value : value ? [value] : []; return ids.map((id) => ({ title: group.title, choice: group.choices.find((choice) => choice.id === id)! })).filter((item) => item.choice); });
   const historyItems = useMemo(() => {
     const visibleGroups = new Map(getVisibleSteps(mode).flatMap(step => step.groups.map(group => [group.key, group] as const)));
-    const items = new Map(selectedImageItems(values).filter(item => visibleGroups.has(item.id.split(':')[0])).map(item => [item.id, { ...item, title: visibleGroups.get(item.id.split(':')[0])!.title }]));
+    const items = new Map(selectedImageItems(values).filter(item => visibleGroups.has(item.id.split(':')[0])).map(item => [item.id, { ...item, title: visibleGroups.get(item.id.split(':')[0])!.title, choice: { ...item.choice, name: visibleGroups.get(item.id.split(':')[0])!.choices.find(choice => choice.id === item.choice.id)!.name } }]));
     return normalizeImageHistoryOrder(imageHistoryOrder, values).flatMap(id => {
       const item = items.get(id);
       return item ? [item] : [];

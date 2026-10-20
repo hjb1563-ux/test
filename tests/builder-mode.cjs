@@ -23,8 +23,8 @@ assert.equal(c.normalizeProject({ values: { accessoryOther: '선반' } }).projec
 const consumer = modes.getVisibleSteps('consumer'), pro = modes.getVisibleSteps('professional');
 assert.deepEqual(consumer.map(s => s.stepIndex), [0,1,3,4,5,6,8,11,13,14]);
 assert.equal(pro.length, 15);
-assert.deepEqual(consumer[0].groups.map(g => g.key), ['bathroomCondition']);
-assert.equal(pro[0].groups.length, 2);
+assert.deepEqual(consumer[0].groups.map(g => g.key), ['demolition','bathroomCondition']);
+assert.deepEqual(pro[0].groups.map(g => g.key), ['demolition']);
 assert.equal(consumer[1].groups[0].title, '욕실 선반벽(젠다이)');
 assert.equal(consumer[1].groups[2].title, '매립 선반(샴푸박스)');
 assert.equal(modes.nearestVisibleStep(2, 'consumer'), 3);
@@ -36,7 +36,7 @@ for (const mode of ['consumer', 'professional']) {
 const values = {demolition:'full-demolition',waterproofing:'combined-waterproofing',drain:'linear-drain',drainPosition:'move',bathroomCondition:['leak'],wallTileSize:'600x600',tile:'white',tileSurface:'matte',sink:'undermount-basin',toilet:'two-piece',faucet:'concealed',showerFaucet:['concealed-shower','rain'],grout:'grout-epoxy',accessoryOther:'수건걸이'};
 const project = c.normalizeProject({version:3, values, projectInfo:{projectName:'공유 프로젝트',builderMode:'professional'},imageHistoryOrder:['waterproofing:combined-waterproofing','tile:white']});
 const fingerprint = JSON.stringify(project.values), history = JSON.stringify(project.imageHistoryOrder);
-const hidden = ['demolition','waterproofing','drain','drainPosition','ceiling','ventilation','accessoryFinish','accessory'];
+const hidden = ['waterproofing','drain','drainPosition','ceiling','ventilation','accessoryFinish','accessory'];
 for (const mode of ['consumer','professional','consumer','professional']) {
   const next = c.updateProjectContent(project, {projectInfo:{...project.projectInfo,builderMode:mode}});
   assert.equal(JSON.stringify(next.values), fingerprint);

@@ -19,8 +19,9 @@ const stepPresentation: Record<string, { audience?: Audience; title?: string; qu
   ventilation: { audience: 'professional' },
   accessories: { audience: 'professional' },
 };
-const groupPresentation: Record<string, { audience?: Audience; title?: string; choiceDescriptions?: Record<string, string>; selectionHelp?: { ids: string[]; text: string } }> = {
-  demolition: { audience: 'professional' },
+const groupPresentation: Record<string, { audience?: Audience; title?: string; intro?: string; choiceNames?: Record<string, string>; choiceOrder?: string[]; choiceDescriptions?: Record<string, string>; selectionHelp?: { ids: string[]; text: string } }> = {
+  demolition: { intro: '희망하는 방식을 선택해주세요. 현장 상태에 따라 시공 방식이 달라질 수 있습니다.', choiceNames: { 'full-demolition': '올철거', 'partial-demolition-overlay': '부분철거' }, choiceOrder: ['overlay', 'full-demolition', 'partial-demolition-overlay'] },
+  bathroomCondition: { audience: 'consumer' },
   ceiling: { audience: 'professional' },
   ceilingPreference: { audience: 'consumer', title: '욕실 천장' },
   drainPosition: { audience: 'professional' },
@@ -36,9 +37,15 @@ const groupPresentation: Record<string, { audience?: Audience; title?: string; c
 };
 export const isVisibleForMode = (audience: Audience | undefined, mode: BuilderMode) => !audience || audience === 'both' || audience === mode;
 export function getVisibleSections(step: BathroomStep, mode: BuilderMode): ChoiceGroup[] {
-  return step.groups.filter(group => isVisibleForMode(groupPresentation[group.key]?.audience, mode)).map(group => ({
-    ...group, title: mode === 'consumer' ? groupPresentation[group.key]?.title ?? group.title : group.title,
-  }));
+  return step.groups.filter(group => isVisibleForMode(groupPresentation[group.key]?.audience, mode)).map(group => {
+    const display = mode === 'consumer' ? groupPresentation[group.key] : undefined;
+    const choices = display?.choiceOrder
+      ? display.choiceOrder.flatMap(id => group.choices.filter(choice => choice.id === id)).concat(group.choices.filter(choice => !display.choiceOrder!.includes(choice.id)))
+      : group.choices;
+    return { ...group, title: display?.title ?? group.title,
+      choices: display?.choiceNames ? choices.map(choice => ({ ...choice, name: display.choiceNames![choice.id] ?? choice.name })) : choices,
+    };
+  });
 }
 export function getVisibleSteps(mode: BuilderMode) {
   return builderBathroomSteps.flatMap((step, stepIndex) => {

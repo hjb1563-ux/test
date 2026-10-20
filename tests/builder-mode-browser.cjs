@@ -44,7 +44,7 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024
     await page.locator('#project-customer-name').fill('신규 고객');
     await page.getByRole('button',{name:'욕실 만들기 시작'}).click();
     assert.equal(await page.locator('progress').getAttribute('max'),'10');
-    assert.equal(await page.locator('#builder-demolition-title').count(),0);
+    assert.equal(await page.locator('#builder-demolition-title').count(),1);
     assert.equal((await saved()).projectInfo.builderMode,'consumer');
     await select('누수 이력이 있다',true);
     assert.equal(await page.locator('progress').getAttribute('value'),'1');
@@ -59,10 +59,10 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024
       for (const mode of ['consumer','professional']) {
         await seed(mode,0,technical);
         assert.equal(await page.locator('progress').getAttribute('max'),mode==='consumer'?'10':'15');
-        assert.equal(await page.locator('#builder-demolition-title').count(),mode==='consumer'?0:1);
+        assert.equal(await page.locator('#builder-demolition-title').count(),1);
         if (width<1200) {
           assert.equal(await group().count(),1);
-          assert.equal(await group().locator('.builderSectionPosition').textContent(),mode==='consumer'?'1 / 1':'1 / 2');
+          assert.equal(await group().locator('.builderSectionPosition').textContent(),mode==='consumer'?'1 / 2':'1 / 1');
         }
         await nextStep();
         assert.ok((await page.locator('.stepMeta').textContent()).includes(mode==='consumer'?'구조와 샤워 공간':'구조 변경'));
@@ -82,7 +82,7 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024
         await seed(mode,15,technical); assert.equal(await page.getByText('최종 검토',{exact:true}).count(),0);
         await page.locator('a:visible').filter({hasText:/상담서 보기/}).last().click();
         await page.locator('.sheetStep').first().waitFor();
-        assert.equal(await page.locator('.sheetStep').count(),mode==='consumer'?3:15);
+        assert.equal(await page.locator('.sheetStep').count(),mode==='consumer'?4:15);
         assert.equal(await page.locator('#consultation-waterproofing').count(),mode==='consumer'?0:1);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth>innerWidth),false);
         await page.screenshot({path:`tests/artifacts/builder-mode/${mode}-${width}-report.png`,fullPage:true});
@@ -126,7 +126,7 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024
     assert.ok(page.url().includes('step=4'));
     assert.ok((await page.locator('.stepMeta').textContent()).includes('03 / 10'));
     await page.getByRole('link',{name:'상담서로 돌아가기',exact:true}).click(); await page.locator('#consultation-tile').waitFor();
-    assert.equal(await page.locator('.sheetStep').count(),3);
+    assert.equal(await page.locator('.sheetStep').count(),4);
     await page.getByRole('link',{name:'내 욕실 만들기로 돌아가기',exact:true}).click(); await page.locator('.builderProgress').waitFor();
     await switchMode('professional');
     await page.goto(base+'/result'); await page.locator('#consultation-waterproofing').waitFor();

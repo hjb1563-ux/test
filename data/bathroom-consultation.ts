@@ -164,6 +164,7 @@ export function generateConsultationSummary(values: BathroomValues, mode: Builde
         if (!choice) return [];
         if (choice.requiresCustomText) return custom ? [custom] : [];
         // Short config labels need their category to remain understandable in a summary.
+        if (mode === 'consumer' && key === 'demolition') return [`시공 방식: ${choice.name}`];
         if (key === 'sink' && choice.id === 'undermount-basin') return ['언더볼 세면대'];
         if (key === 'toilet') return [`${choice.name} 변기`];
         if (choice.name === '없음') return [`${group.title} 없음`];
@@ -186,7 +187,12 @@ export const checkFingerprint = (row: ConsultationRow) => JSON.stringify([row.la
 export function consultationText(rows: ConsultationRow[], specialNotes: string, memo: string, projectInfo: ProjectInfo = normalizeProjectInfo({ builderMode: 'professional' }), lastModifiedAt: string | null = null) {
   const visibleKeys = new Set(getVisibleSteps(projectInfo.builderMode).flatMap(step => step.groups.map(group => group.key)));
   rows = rows.filter(row => visibleKeys.has(row.key));
-  if (projectInfo.builderMode === 'consumer') rows = rows.filter(row => !row.pending);
+  if (projectInfo.builderMode === 'consumer') {
+    const construction = getVisibleSteps('consumer')[0].groups.find(group => group.key === 'demolition')!;
+    rows = rows.filter(row => !row.pending).map(row => row.key !== 'demolition' ? row : {
+      ...row, label: row.choices.map(choice => construction.choices.find(item => item.id === choice.id)?.name ?? choice.name).join(', ') || row.label,
+    });
+  }
   const pending = rows.filter(row => row.pending);
   return ['[욕실 리모델링 상담서]', ...(projectInfo.projectName ? [`프로젝트명: ${projectInfo.projectName}`] : []), ...(projectInfo.customerName ? [`고객명: ${projectInfo.customerName}`] : []), `작성 모드 · ${builderModeLabel(projectInfo.builderMode)}`, ...projectMetadata(projectInfo), ...(formatLastModified(lastModifiedAt) ? [`마지막 수정: ${formatLastModified(lastModifiedAt)}`] : []), `선택 완료 ${rows.length - pending.length}`, '집계 기준: 선택 카테고리 수',
     ...getVisibleSteps(projectInfo.builderMode).filter(step => step.key !== 'checklist').flatMap((step, index) => projectInfo.builderMode === 'consumer' && !rows.some(row => row.stepIndex === step.stepIndex) ? [] : [`\n${String(index + 1).padStart(2, '0')} ${step.title}\n${rows.filter(row => row.stepIndex === step.stepIndex).map(row => `${row.title}: ${row.label}`).join('\n')}`]),

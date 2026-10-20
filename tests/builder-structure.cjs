@@ -110,8 +110,8 @@ const stateKey = consultation.STORAGE;
 const state = () => JSON.parse(storage.get(stateKey)).values;
 const plain = value => JSON.parse(JSON.stringify(value));
 const groupSection = (tree, key) => all(tree,n => n.props.className === 'choiceGroup' && all(n,c=>c.props.id === `builder-${key}-content`).length)[0];
-function mount(current=0,values={},version=3) {
-  storage.set(stateKey, JSON.stringify({current, values, version, projectInfo:{projectName:'회귀 검증',builderMode:'professional'}})); slots=[]; params.delete('step'); return render();
+function mount(current=0,values={},version=3,mode='professional') {
+  storage.set(stateKey, JSON.stringify({current, values, version, projectInfo:{projectName:'회귀 검증',builderMode:mode}})); slots=[]; params.delete('step'); return render();
 }
 function choose(tree,key,label) {
   const option=all(groupSection(tree,key),n=>n.type==='button' && ['radio','checkbox'].includes(n.props.role) && text(n)===label)[0];
@@ -169,9 +169,9 @@ console.log('PASS: 16 steps, removed fields, radios, independent basin/toilet, l
 // Missing selections are state, never selectable options or image cards.
 assert.ok(groups.every(g=>g.choices.every(c=>!/모르겠|undecided|notSure|unknown/.test(c.name+c.id))));
 assert.equal(groups.length,26); // Includes the independently stored consumer ceiling preference.
-assert.equal(consultation.consultationRows({}).filter(r=>r.pending).length,25);
+assert.equal(consultation.consultationRows({}).filter(r=>r.pending).length,24);
 assert.equal(consultation.consultationRows({sink:'top-bowl'}).filter(r=>!r.pending).length,1);
-assert.equal(consultation.consultationRows({sink:'top-bowl'}).filter(r=>r.pending).length,24);
+assert.equal(consultation.consultationRows({sink:'top-bowl'}).filter(r=>r.pending).length,23);
 for(const value of ['undecided','notSure','unknown','unknown-condition','아직 모르겠어요','아직 모르겠음']) {
  const legacyValues=Object.fromEntries(groups.map(g=>[g.key,g.multiple?[value]:value]));
  const normalized=selection.normalizeBathroomValues(legacyValues);
@@ -188,12 +188,12 @@ for(const [key,id] of [['bathtub','none'],['partitionShower','none'],['cabinet',
 }
 assert.equal(consultation.consultationRows({sink:'other',sinkOther:''}).find(r=>r.key==='sink').pending,true);
 tree=mount(11);tree=choose(tree,'lighting','천장 매립 조명');assert.equal(consultation.consultationRows(state()).find(r=>r.key==='lighting').pending,false);tree=choose(tree,'lighting','천장 매립 조명');assert.equal(consultation.consultationRows(state()).find(r=>r.key==='lighting').label,'미정');
-tree=mount();for(let i=0;i<14;i++){assert.equal(all(tree,n=>n.props.className==='builderChoiceCard selected').length,0);assert.equal(all(tree,n=>n.type==='img').length,i===3?2:0);assert.equal(all(tree,n=>n.props.className==='selectedHeroImage').length,0);tree=click(tree,'다음');}assert.equal(all(tree,n=>n.type==='progress')[0].props.value,15);assert.equal(consultation.consultationRows(state()).filter(r=>r.pending).length,25);
+tree=mount();for(let i=0;i<14;i++){assert.equal(all(tree,n=>n.props.className==='builderChoiceCard selected').length,0);assert.equal(all(tree,n=>n.type==='img').length,i===3?2:0);assert.equal(all(tree,n=>n.props.className==='selectedHeroImage').length,0);tree=click(tree,'다음');}assert.equal(all(tree,n=>n.type==='progress')[0].props.value,15);assert.equal(consultation.consultationRows(state()).filter(r=>r.pending).length,24);
 params.set('step','5');slots=[];tree=render();params.delete('step');assert.equal(all(tree,n=>n.type==='progress')[0].props.value,5);assert.equal(all(tree,n=>n.props['aria-checked']===true).length,0);
 for(const [id,label] of [['shower','일반 샤워&욕조 수전'],['concealed-shower','매립 샤워&욕조 수전']]) {
  const rows=consultation.consultationRows({showerFaucet:id});assert.equal(rows.find(r=>r.key==='showerFaucet').label,label);assert.ok(consultation.consultationText(rows,'','').includes(label));
 }
-console.log('PASS: zero unknown options, 25 section counts, legacy unknown migration, empty navigation and review editing, none/consult distinction, multi-select deselection, shower labels');
+console.log('PASS: zero unknown options, 24 professional section counts, legacy unknown migration, empty navigation and review editing, none/consult distinction, multi-select deselection, shower labels');
 
 // Catalog update: persisted IDs, custom fields and report-only count removal.
 const getGroup = key => groups.find(group => group.key === key);
@@ -220,17 +220,17 @@ for(const old of [{ventilation:['other'],ventilationOther:'힘펠 휴젠뜨'},{v
  assert.equal(consultation.consultationRows(migrated).find(r=>r.key==='ventilation').pending,false);
 }
 for(const [key,current,draft] of [['bathroomCondition',0,'천장에서 누수 흔적 있음'],['ventilation',10,'힘펠 휴젠뜨']]) {
- tree=mount(current); if(key!=='ventilation')tree=choose(tree,key,'기타');
+ const mode=key==='bathroomCondition'?'consumer':'professional'; tree=mount(current,{},3,mode); if(key!=='ventilation')tree=choose(tree,key,'기타');
  const input=()=>all(tree,n=>n.props.id===`builder-${key}-other`)[0];
  for(const value of ['', '   ', draft]) {
   input().props.onChange({target:{value}});tree=render();
-  const row=consultation.consultationRows(state()).find(r=>r.key===key);
+  const row=consultation.consultationRows(state(),mode).find(r=>r.key===key);
   assert.equal(row.pending,!value.trim());
   if(!value.trim())assert.equal(row.label,'미정');
  }
  slots=[];tree=render();assert.equal(input().props.value,draft);
  if(key==='ventilation')assert.ok(text(all(tree,n=>n.props.className==='builderDisclosure builderSummaryPanel')[0]).includes('1개'));
- assert.ok(consultation.consultationText(consultation.consultationRows(state()),'','').includes(draft));
+ assert.ok(consultation.consultationText(consultation.consultationRows(state(),mode),'','',consultation.normalizeProjectInfo({builderMode:mode})).includes(draft));
 }
 const changed={bathroomCondition:['damaged-tile','other'],bathroomConditionOther:'누수 흔적',niche:'shower-niche',cabinet:'standard-cabinet',ventilation:['other'],ventilationOther:'힘펠 휴젠뜨',grout:'grout-polyurea'};
 tree=mount(15,changed);assert.ok(!text(tree).includes('최종 검토'));assert.equal(state().ventilationOther,changed.ventilationOther);

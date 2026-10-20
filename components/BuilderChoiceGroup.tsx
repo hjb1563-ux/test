@@ -44,6 +44,7 @@ export default function BuilderChoiceGroup({ mode = 'professional', group, numbe
       <span className="builderCurrentSectionSelection">{selectionLabel(values, group)}</span>
     </header>
     <div className="builderSectionContent" id={`builder-${group.key}-content`}>
+    {help?.intro && <p className="builderRestriction">{help.intro}</p>}
     {group.key === 'ventilation' && <label className="builderCustomText" htmlFor="builder-ventilation-other">
       환풍기
       <input id="builder-ventilation-other" type="text" value={typeof draft === 'string' ? draft : ''}

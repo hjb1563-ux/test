@@ -132,18 +132,20 @@ assert.equal(partial.length, 1); assert.equal(partial[0].text, '해바라기 샤
 assert.equal(consultation.generateConsultationSummary({ wallTileSize: 'other', wallTileSizeOther: '모자이크 타일' })[0].text, '모자이크 타일');
 assert.equal(consultation.generateConsultationSummary({ toilet: 'other', toiletOther: '비데 일체형 변기' })[0].text, '비데 일체형 변기');
 const conditionValues={...original.values,bathroomCondition:['damaged-tile','leak','remove-bath','other'],bathroomConditionOther:'천장 누수 흔적이 있다'};
-const conditionSummary=consultation.generateConsultationSummary(conditionValues);
-assert.equal(conditionSummary.length,6);assert.equal(conditionSummary[0].id,'condition');assert.equal(conditionSummary[0].title,'현재 욕실 상태');
+const consumerBaseline=consultation.generateConsultationSummary(original.values,'consumer');
+const conditionSummary=consultation.generateConsultationSummary(conditionValues,'consumer');
+assert.equal(conditionSummary.length,consumerBaseline.length+1);assert.equal(conditionSummary[0].id,'condition');assert.equal(conditionSummary[0].title,'현재 욕실 상태');
 assert.equal(conditionSummary[0].text,'기존타일이 깨졌거나 들떠 있다 · 누수 이력이 있다 · 욕조를 철거하고 싶다 · 천장 누수 흔적이 있다');
-assert.equal(conditionSummary[1].text,summary[0].text);
-assert.equal(conditionSummary.slice(1).map(group=>group.text).join('\n'),summaryText);
-assert.ok(consultation.consultationSummaryText({...original,values:conditionValues}).includes('현재 욕실 상태: '+conditionSummary[0].text));
+assert.equal(conditionSummary[1].text,consumerBaseline[0].text);
+assert.equal(conditionSummary.slice(1).map(group=>group.text).join('\n'),consumerBaseline.map(group=>group.text).join('\n'));
+assert.ok(consultation.consultationSummaryText({...original,values:conditionValues,projectInfo:{...original.projectInfo,builderMode:'consumer'}}).includes('현재 욕실 상태: '+conditionSummary[0].text));
 for(const absent of [undefined,null,[],'','   ','미정',['unknown-condition'],['invalid'],['other']]){
- assert.ok(!consultation.generateConsultationSummary({...original.values,bathroomCondition:absent}).some(group=>group.id==='condition'));
- assert.ok(!consultation.consultationSummaryText({...original,values:{...original.values,bathroomCondition:absent}}).includes('현재 욕실 상태:'));
+ assert.ok(!consultation.generateConsultationSummary({...original.values,bathroomCondition:absent},'consumer').some(group=>group.id==='condition'));
+ assert.ok(!consultation.consultationSummaryText({...original,values:{...original.values,bathroomCondition:absent},projectInfo:{...original.projectInfo,builderMode:'consumer'}}).includes('현재 욕실 상태:'));
 }
-assert.equal(consultation.generateConsultationSummary({bathroomCondition:['leak']})[0].text,'누수 이력이 있다');
-assert.equal(consultation.generateConsultationSummary({bathroomCondition:['other'],bathroomConditionOther:'바닥 일부 파손'})[0].text,'바닥 일부 파손');
+assert.equal(consultation.generateConsultationSummary({bathroomCondition:['leak']},'consumer')[0].text,'누수 이력이 있다');
+assert.equal(consultation.generateConsultationSummary({bathroomCondition:['other'],bathroomConditionOther:'바닥 일부 파손'},'consumer')[0].text,'바닥 일부 파손');
+assert.deepEqual(consultation.generateConsultationSummary(conditionValues,'professional'),summary);
 assert.equal(consultation.formatLastModified(timestamp), '2026.10.08 00:32');
 assert.equal(consultation.formatLastModified(null), '');
 assert.equal(consultation.formatLastModified('invalid'), '');

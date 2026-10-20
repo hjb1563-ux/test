@@ -1,0 +1,7 @@
+tests/
+supabase/
+docs/
+.env*
+review-export/
+.codex/
+.agents/
