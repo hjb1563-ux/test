@@ -1,0 +1,4 @@
+.counter { display:flex; align-items:center; flex-wrap:wrap; gap:8px 18px; padding:18px clamp(20px,5vw,80px); background:#f6f2e9; border-bottom:1px solid #ded7cd; color:#48433d; font-size:13px; }
+.eyebrow { font-size:10px; letter-spacing:.12em; color:#8c6a58; }
+.value { font-variant-numeric:tabular-nums; margin-left:auto; color:#33302b; font-weight:500; }
+@media(max-width:430px) { .eyebrow { flex-basis:100%; } }

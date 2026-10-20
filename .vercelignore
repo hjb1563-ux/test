@@ -1,0 +1,6 @@
+# Local visitor integration runner and private execution artifacts must not be uploaded.
+tests/visitor-live/
+tests/visitor-live-safety.test.mjs
+tests/artifacts/
+.env*
+review-export/

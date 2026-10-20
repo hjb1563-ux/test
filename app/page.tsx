@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { FEATURE_FLAGS } from '../config/features';
 import { ArrowDown, ArrowRight, ArrowUpRight } from 'lucide-react';
 import SiteHeader from '../components/SiteHeader';
+import HomeVisitorCounter from '../components/HomeVisitorCounter';
+import { visitorCounterEnabled } from '../server/visitors';
 import { getVisibleSteps } from '../data/bathroom-builder-mode';
 
 const chapters = [
@@ -30,6 +32,7 @@ export default function Home() {
       </div>
       <div className="heroFootnote"><span>A quieter beginning, for your everyday.</span><a href="#considerations" aria-label="리모델링 준비 과정 알아보기">EXPLORE <ArrowDown size={15} aria-hidden="true" /></a></div>
     </section>
+    <HomeVisitorCounter enabled={visitorCounterEnabled(process.env)} />
     <section className="homeConsider editorialSection" id="considerations">
       <div className="sectionHeading"><span className="kicker">01 / BEFORE YOU BEGIN</span><span className="sectionAside">공간을 바꾸기 전, 나의 기준부터.</span></div>
       <div className="introColumns"><h2>작은 공간에도,<br />많은 선택이 담깁니다.</h2><p>욕실 공사를 알아보기 전에 생각보다 많은 선택을 해야 합니다. 어려운 용어를 모두 알 필요는 없어요. 바탕이 되는 공정부터 매일 손이 닿는 디테일까지, 나에게 필요한 것부터 차근차근 살펴보세요.</p></div>
