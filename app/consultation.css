@@ -262,3 +262,17 @@ body .consultationSheet .consultationCounts b{font-size:28px;font-weight:600;mar
   .consultationSheet .sheetCoreSummary dd{font-size:10pt}
   .consultationSheet .sheetStep.sheetStep--highlighted{background:white;border-color:var(--review-border);transition:none}
 }
+
+/* PNG-only clone: keep export geometry independent of viewport media queries.
+   Full-width headings also tolerate font metric changes in SVG foreignObject. */
+body .consultationSheet.consultationImageCapture{padding:32px;min-width:0}
+body .consultationImageCapture .sheetHeading h1{font-size:32px}
+body .consultationImageCapture .sheetProjectTitle{font-size:19px}
+body .consultationImageCapture .sheetColumns{grid-template-columns:minmax(0,1fr);gap:0}
+body .consultationImageCapture .sheetOverview ul{grid-template-columns:repeat(2,minmax(0,1fr))}
+body .consultationImageCapture .sheetCoreSummary dl>div{grid-template-columns:112px minmax(0,1fr);gap:12px}
+body .consultationImageCapture.unifiedSheet .sheetRow{grid-template-columns:150px minmax(0,1fr);padding:12px 0}
+body .consultationImageCapture .sheetStep{margin-bottom:18px;transition:none}
+body .consultationImageCapture .sheetStep>header{align-items:baseline;min-height:48px;padding:12px 16px}
+body .consultationImageCapture .sheetStep h3{flex:1 1 auto;min-width:0;width:auto;height:auto;margin:0;line-height:1.5;word-break:keep-all;overflow-wrap:break-word;white-space:normal}
+body .consultationImageCapture .sheetStep h3 span{display:inline-block;white-space:nowrap}

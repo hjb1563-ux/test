@@ -7,8 +7,10 @@ async function captureConsultation(root: HTMLElement): Promise<Blob> {
   clone.querySelectorAll<HTMLElement>('[data-capture-text="true"]').forEach(node => {
     node.style.setProperty('display', 'block', 'important');
   });
-  // Layout the document at its current width, with no viewport-height limit.
-  const width = Math.ceil(root.getBoundingClientRect().width);
+  // Shareable image layout is independent of the phone/browser viewport.
+  // The class is applied only to this offscreen clone, never the live sheet.
+  const width = 800;
+  clone.classList.add('consultationImageCapture');
   const host = document.createElement('div');
   host.className = 'consultationPage';
   host.setAttribute('aria-hidden', 'true');
@@ -17,6 +19,7 @@ async function captureConsultation(root: HTMLElement): Promise<Blob> {
   host.appendChild(clone);
   document.body.appendChild(host);
   try {
+    await document.fonts.ready;
     const height = Math.ceil(Math.max(clone.scrollHeight, clone.getBoundingClientRect().height));
     // Prefer 2x resolution, bounded by canvas dimensions and a 24-megapixel budget.
     const pixelRatio = Math.min(2, 16384 / Math.max(width, height), Math.sqrt(24_000_000 / (width * height)));
