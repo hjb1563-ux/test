@@ -82,8 +82,12 @@ run('catalog', async (h) => {
         assert.equal(text.includes('힘펠 휴젠뜨'), mode === 'professional');
         assert.ok(!/LED 거울장|탄성 줄눈|욕실 창문|매립 설비/.test(text));
         const copied = await h.copy();
-        assert.ok(copied.includes('폴리우레아 줄눈'));
-        assert.equal(copied.includes('곰팡이가 심함'), mode === 'consumer');
+        assert.ok(copied.includes('[공사 개요]'));
+        assert.ok(!copied.includes('폴리우레아 줄눈') && !copied.includes('곰팡이가 심함'), 'overview omits finish and condition details');
+        assert.equal((await h.saved()).values.grout, 'grout-polyurea');
+        const before = await h.saved(); await page.reload(); await page.locator('.consultationSheet').waitFor();
+        assert.deepEqual(await h.saved(), before);
+        await h.fullCopyContains(['샤워 샴푸박스', '일반 거울장', '폴리우레아 줄눈', mode === 'consumer' ? '곰팡이가 심함' : '힘펠 휴젠뜨'], mode, mode === 'professional' ? ['곰팡이가 심함'] : ['힘펠 휴젠뜨']);
         await h.pdf(mode);
     }
     for (const value of Object.values(h.settings).filter(x => x.showBuilderImage))

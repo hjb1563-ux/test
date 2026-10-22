@@ -30,6 +30,7 @@ assert.equal(initialImages.length, 8);
 const initialOrder = initialImages.map(item => item.id).reverse();
 (async () => {
  const browser=await chromium.launch({channel:'chrome',headless:true});const context=await browser.newContext({hasTouch:true});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await require('./helpers/font-response-cache.cjs').install(page.context(), errors);
  const saved=()=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)),storage);
  async function seed(){await page.goto(base+'/design');await page.locator('.projectInfoForm,.builderCompactFlow').first().waitFor();await page.evaluate(({storage,values,initialOrder})=>localStorage.setItem(storage,JSON.stringify({version:3,current:8,values,imageHistoryOrder:initialOrder,projectInfo:{projectName:'Gallery',builderMode:'consumer'}})),{storage,values,initialOrder});await page.goto(base+'/design?step=9');await page.locator('.builderCompactFlow').waitFor();}
  async function position(index,total){await page.locator('.builderSwipeTrack').evaluate((e,i)=>e.scrollTo({left:i*e.clientWidth,behavior:'instant'}),index);await page.waitForFunction(({index,total})=>document.querySelector('.builderSwipeCounter')?.textContent===String(index+1)+' / '+total,{index,total});}

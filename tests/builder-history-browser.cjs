@@ -61,9 +61,13 @@ run('history', async (h) => {
     await h.report();
     for (const s of ['일반 샤워&욕조 수전', '해바라기 샤워 수전', '벽부형 온도조절 샤워 수전', '니켈(무광)']) {
         assert.ok((await page.locator('.consultationSheet').textContent()).includes(s));
-        assert.ok((await h.copy()).includes(s));
     }
+    const copied = await h.copy();
+    for (const s of ['일반 샤워&욕조 수전', '해바라기 샤워 수전', '벽부형 온도조절 샤워 수전']) assert.ok(copied.includes(s));
+    assert.ok(!copied.includes('니켈(무광)'), 'overview does not repeat accessory finish');
+    assert.equal((await h.saved()).values.accessoryFinish, 'nickel');
+    await h.fullCopyContains(['일반 샤워&욕조 수전', '해바라기 샤워 수전', '벽부형 온도조절 샤워 수전', '니켈(무광)'], 'multi-details');
     // master 51944b9 already exposes these four actions; full-selection text is covered by consultation unit tests.
-    assert.deepEqual(await page.locator('.resultActions button').allTextContents(), ['요약만 복사', '상담서 이미지 복사', '인쇄 / PDF 저장', '선택 수정']);
+    assert.deepEqual(await page.locator('.resultActions button').allTextContents(), ['공사 개요만 복사', '상담서 전체 복사', '인쇄 / PDF 저장', '선택 수정']);
     await h.pdf('multi');
 }).catch(e => { console.error(e); process.exitCode = 1; });

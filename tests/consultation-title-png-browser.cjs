@@ -2,6 +2,7 @@ const fs = require('node:fs'), path = require('node:path'), ts = require('typesc
 const { run } = require('./helpers/browser-ui.cjs');
 require.extensions['.ts'] = (m, f) => m._compile(ts.transpileModule(fs.readFileSync(f, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true } }).outputText, f);
 const { getVisibleSteps } = require('../data/bathroom-builder-mode.ts');
+const { generateConsultationSummary } = require('../data/bathroom-consultation.ts');
 
 run('consultation-title-png', async h => {
   const { page, assert } = h, output = 'tests/artifacts/consultation-title-png';
@@ -17,6 +18,10 @@ run('consultation-title-png', async h => {
     }
     await h.seed(14, values, mode, { memo }); await h.report();
     await page.evaluate(() => document.fonts.ready);
+    const overview = generateConsultationSummary(values, mode);
+    assert.equal(await page.locator('#consultation-core-summary').innerText(), '공사 개요');
+    assert.equal(await page.locator('.sheetCoreSummary dl>div').count(), overview.length);
+    assert.deepEqual(await page.locator('.sheetCoreSummary dd').allTextContents(), overview.map(row => row.text));
     assert.equal(await page.locator('.sheetStep').count(), mode === 'consumer' ? 10 : 15);
     const before = await h.saved();
     const liveGeometry = () => page.locator('.consultationDocument').evaluate(root => {
@@ -44,8 +49,8 @@ run('consultation-title-png', async h => {
         return result;
       };
     });
-    await page.getByRole('button', { name: '상담서 이미지 복사', exact: true }).click();
-    await page.getByText('상담서 이미지가 복사되었습니다.', { exact: true }).waitFor({ timeout: 120000 });
+    await page.getByRole('button', { name: '상담서 전체 복사', exact: true }).click();
+    await page.getByText('상담서 전체가 PNG 이미지로 복사되었습니다.', { exact: true }).waitFor({ timeout: 120000 });
     const png = await page.evaluate(async () => {
       const item = (await navigator.clipboard.read()).find(i => i.types.includes('image/png'));
       const blob = await item.getType('image/png'), bitmap = await createImageBitmap(blob);
@@ -73,6 +78,8 @@ run('consultation-title-png', async h => {
       assert.ok(png.text.includes(steps[i].title), 'export retains each title');
     }
     assert.ok(png.text.includes('내용 보존 검증 마지막 줄'));
+    assert.ok(png.text.includes('공사 개요') && !png.text.includes('핵심 선택 요약'));
+    for (const row of overview) assert.ok(png.text.includes(row.text), 'actual PNG SVG retains complete overview: '+row.title);
     assert.deepEqual(await h.saved(), before, 'copy must not mutate stored content');
     assert.deepEqual(await liveGeometry(), originalLayout, 'capture-only styles must not affect the live sheet');
     assert.equal(await page.locator('.consultationImageCapture').count(), 0, 'offscreen clone is removed');
@@ -80,4 +87,22 @@ run('consultation-title-png', async h => {
     if (width === 390 || width === 1440) await h.pdf(mode + '-' + width);
     console.log(`PASS ${mode} ${width}: actual PNG ${png.width}x${png.height}, ${steps.length} titles/rows, storage, live layout, copy and PDF`);
   }
+  const savedBeforeFailure = await h.saved();
+  await page.evaluate(() => { window.__originalClipboardItem = window.ClipboardItem; window.ClipboardItem = undefined; });
+  try {
+    await page.getByRole('button', { name: '상담서 전체 복사', exact: true }).click();
+    await page.getByText('상담서 전체 이미지 복사에 실패했습니다.', { exact: true }).waitFor();
+    assert.equal(await page.getByRole('button', { name: '상담서 전체 복사', exact: true }).isEnabled(), true);
+  } finally { await page.evaluate(() => { window.ClipboardItem = window.__originalClipboardItem; }); }
+  await page.evaluate(() => {
+    window.__originalWriteText = navigator.clipboard.writeText.bind(navigator.clipboard);
+    navigator.clipboard.writeText = async () => { throw new Error('Test denied clipboard permission'); };
+  });
+  try {
+    await page.getByRole('button', { name: '공사 개요만 복사', exact: true }).click();
+    await page.getByText('공사 개요를 복사하지 못했어요. 아래 내용을 선택해 직접 복사해주세요.', { exact: true }).waitFor();
+    assert.ok((await page.locator('.copyFallback textarea').inputValue()).includes('[공사 개요]'));
+  } finally { await page.evaluate(() => { navigator.clipboard.writeText = window.__originalWriteText; }); }
+  assert.deepEqual(await h.saved(), savedBeforeFailure);
+  console.log('PASS renamed copy failure messages, actual fallback text, button recovery and storage preservation');
 }).catch(e => { console.error(e); process.exitCode = 1; });

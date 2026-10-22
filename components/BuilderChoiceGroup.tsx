@@ -62,7 +62,7 @@ export default function BuilderChoiceGroup({ mode = 'professional', group, numbe
       {group.choices.map((choice, index) => {
         const selected = ids.includes(choice.id);
         const disabled = blocked(choice.id);
-        return <Fragment key={choice.id}><BuilderChoiceCard disabled={disabled} description={disabled ? '욕조 파티션 선택 시 선택 불가' : help?.choiceDescriptions?.[choice.id]} label={choice.name} selected={selected} multiple={group.multiple}
+        return <Fragment key={choice.id}><BuilderChoiceCard disabled={disabled} description={disabled ? '욕조 파티션 선택 시 선택 불가' : group.key === 'jendai' && choice.id === 'keep' ? choice.sub : help?.choiceDescriptions?.[choice.id]} label={choice.name} selected={selected} multiple={group.multiple}
           imageOption={group.key === 'tileSurface' ? resolveBuilderImage(group.key, choice, values) : undefined}
           tabIndex={!disabled && (group.multiple || selected || (!ids.length && index === firstEnabled)) ? 0 : -1}
           onSelect={() => {

@@ -8,6 +8,7 @@ const key = 'bath-designer-selections-v2';
     const page = await browser.newPage();
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
+    await require('./helpers/font-response-cache.cjs').install(page.context(), errors);
     fs.mkdirSync('tests/artifacts/project-sections', { recursive: true });
     const field = id => page.locator('#project-' + id), start = () => page.locator('.projectInfoForm .button');
     const saved = () => page.evaluate(key => JSON.parse(localStorage.getItem(key)), key);

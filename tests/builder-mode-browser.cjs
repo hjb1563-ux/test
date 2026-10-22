@@ -9,6 +9,7 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024
   const context = await browser.newContext({permissions:['clipboard-read','clipboard-write']});
   const page = await context.newPage(), errors=[];
   page.on('pageerror', error => errors.push(error.message));
+    await require('./helpers/font-response-cache.cjs').install(page.context(), errors);
   fs.mkdirSync('tests/artifacts/builder-mode', {recursive:true});
   const saved = () => page.evaluate(key => JSON.parse(localStorage.getItem(key)), key);
   async function seed(mode, current=0, values={}) {
@@ -112,7 +113,7 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024
     assert.equal(await page.locator('.builderChoiceDescription').count(),3);
     await seed('consumer',15,technical);
     await page.locator('a:visible').filter({hasText:/상담서 보기/}).last().click(); await page.locator('.sheetStep').first().waitFor();
-    for(const name of ['요약만 복사']) {
+    for(const name of ['공사 개요만 복사']) {
       await page.getByRole('button',{name,exact:true}).click();
       const text=await page.evaluate(()=>navigator.clipboard.readText());
       assert.ok(text.includes('600×600')); assert.ok(!text.includes('액방 + 도막')); assert.ok(!text.includes('전체 철거')); assert.ok(!text.includes('라인 배수구'));
@@ -130,9 +131,12 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024
     await page.getByRole('link',{name:'내 욕실 만들기로 돌아가기',exact:true}).click(); await page.locator('.builderProgress').waitFor();
     await switchMode('professional');
     await page.goto(base+'/result'); await page.locator('#consultation-waterproofing').waitFor();
-    for(const name of ['요약만 복사']) {
+    for(const name of ['공사 개요만 복사']) {
       await page.getByRole('button',{name,exact:true}).click();
-      assert.ok((await page.evaluate(()=>navigator.clipboard.readText())).includes('액방 + 도막'));
+      const overviewText=await page.evaluate(()=>navigator.clipboard.readText());
+      assert.ok(overviewText.includes('[공사 개요]'));
+      assert.ok(!overviewText.includes('액방 + 도막'));
+      assert.ok((await page.locator('#consultation-waterproofing').innerText()).includes('액방 + 도막'));
     }
     await page.emulateMedia({media:'print'}); assert.equal(await page.locator('#consultation-waterproofing:visible').count(),1);
     await page.screenshot({path:'tests/artifacts/builder-mode/professional-print.png',fullPage:true});

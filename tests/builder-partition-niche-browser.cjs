@@ -40,7 +40,12 @@ run('partition-niche', async (h) => {
         await h.noOverflow();
         await h.report();
         assert.ok((await page.locator('.consultationSheet').textContent()).includes('파티션 샴푸박스'));
-        assert.ok((await h.copy()).includes('파티션 샴푸박스'));
+        const copied = await h.copy();
+        assert.ok(!copied.includes('파티션 샴푸박스'), 'overview does not repeat niche details');
+        assert.ok(copied.includes('모자이크 포인트 타일'));
+        assert.equal((await h.saved()).values.niche, 'partition-niche');
+        assert.equal((await h.saved()).values.wallTileSizeOther, '모자이크 포인트 타일');
+        await h.fullCopyContains(['파티션 샴푸박스', '모자이크 포인트 타일'], width);
         await h.pdf(width);
         console.log('PASS niche ' + width);
     }

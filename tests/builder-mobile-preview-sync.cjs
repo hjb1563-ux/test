@@ -9,6 +9,7 @@ const emptyText = '옵션을 선택하면 시공 예시 이미지가 여기에 �
   const context = await browser.newContext({ hasTouch: true });
   const page = await context.newPage();
   const errors = []; page.on('pageerror', error => errors.push(error.message));
+    await require('./helpers/font-response-cache.cjs').install(page.context(), errors);
   fs.mkdirSync('tests/artifacts/preview-sync', { recursive: true });
   const group = () => page.locator('.choiceGroup:visible');
   const next = () => page.locator('.mobileBuilderNav .button').click();

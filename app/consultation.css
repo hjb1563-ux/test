@@ -235,7 +235,7 @@ body .consultationSheet .consultationCounts b{font-size:28px;font-weight:600;mar
 .consultationSheet .sheetCoreSummary dl{margin:0}
 .consultationSheet .sheetCoreSummary dl>div{display:grid;grid-template-columns:112px minmax(0,1fr);gap:12px;margin:6px 0;line-height:1.6}
 .consultationSheet .sheetCoreSummary dt{font-size:12px;color:var(--muted);font-weight:400}
-.consultationSheet .sheetCoreSummary dd{min-width:0;margin:0;font-size:14px;color:var(--ink);overflow-wrap:anywhere}
+.consultationSheet .sheetCoreSummary dd{min-width:0;margin:0;font-size:14px;font-weight:500;color:var(--ink);word-break:keep-all;overflow-wrap:anywhere}
 .consultationSheet .sheetCoreSummary>p{font-size:13px;color:var(--muted);margin:0}
 .consultationSheet .sheetStep{transition:background-color 400ms,border-color 400ms}
 .consultationSheet .sheetStep.sheetStep--highlighted{background:var(--review-stone);border-color:var(--accent)}

@@ -8,6 +8,7 @@ const key = 'bath-designer-selections-v2';
   const context = await browser.newContext({ permissions: ['clipboard-read','clipboard-write'] });
   const page = await context.newPage(); const errors = [];
   page.on('pageerror', error => errors.push(error.message));
+    await require('./helpers/font-response-cache.cjs').install(page.context(), errors);
   await page.addInitScript(() => { window.print = () => { window.printCount = (window.printCount || 0) + 1; }; });
   fs.mkdirSync('tests/artifacts/ceiling', { recursive: true });
   const saved = () => page.evaluate(key => JSON.parse(localStorage.getItem(key)), key);
@@ -35,15 +36,28 @@ const key = 'bath-designer-selections-v2';
     const card = page.locator('#consultation-ceiling');
     if (mode === 'consumer') assert.equal(await card.count(), 0);
     else assert.ok((await card.textContent()).includes(label));
-    await page.getByRole('button', { name: '요약만 복사', exact: true }).click();
-    const text = await page.evaluate(() => navigator.clipboard.readText()); assert.equal(text.includes(label), mode === 'professional');
+    await page.getByRole('button', { name: '공사 개요만 복사', exact: true }).click();
+    const text = await page.evaluate(() => navigator.clipboard.readText());
+    assert.ok(text.includes('[공사 개요]'));
+    assert.ok(!text.includes(label), 'overview copy omits ceiling specifications');
+    assert.ok(!(await page.locator('.sheetCoreSummary').innerText()).includes(label));
     assert.ok(!text.includes(mode === 'consumer' ? '도장' : '고급용'));
     assert.equal(await page.getByRole('button', { name: '선택 내용 복사', exact: true }).count(), 0);
     await page.getByRole('button', { name: '인쇄 / PDF 저장', exact: true }).click(); assert.equal(await page.evaluate(() => window.printCount), 1);
+    if ([390,1440].includes(page.viewportSize().width)) {
+      await page.emulateMedia({media:'print'});
+      if(mode==='professional')assert.ok((await card.innerText()).includes(label));
+      await page.pdf({path:`tests/artifacts/ceiling/${mode}-${page.viewportSize().width}-${label}.pdf`,format:'A4',printBackground:true});
+      await page.emulateMedia({media:'screen'});
+    }
     if (page.viewportSize().width === 390) {
-      await page.getByRole('button', { name: '상담서 이미지 복사', exact: true }).click();
-      await page.getByText('상담서 이미지가 복사되었습니다.', { exact: true }).waitFor({ timeout: 60000 });
-      assert.equal(await page.evaluate(async () => (await navigator.clipboard.read()).some(item => item.types.includes('image/png'))), true);
+      const before=await saved();
+      await page.evaluate(()=>{const serialize=XMLSerializer.prototype.serializeToString;XMLSerializer.prototype.serializeToString=function(node){const text=serialize.call(this,node);if(node.nodeName==='svg'&&text.includes('consultationDocument'))window.__ceilingExportText=node.textContent;return text;};});
+      await page.getByRole('button', { name: '상담서 전체 복사', exact: true }).click();
+      await page.getByText('상담서 전체가 PNG 이미지로 복사되었습니다.', { exact: true }).waitFor({ timeout: 60000 });
+      const png=await page.evaluate(async()=>{const item=(await navigator.clipboard.read()).find(item=>item.types.includes('image/png'));const blob=await item.getType('image/png'),bitmap=await createImageBitmap(blob);return {width:bitmap.width,bytes:[...new Uint8Array(await blob.arrayBuffer())],text:window.__ceilingExportText};});
+      assert.equal(png.width,1600);assert.equal(png.text.includes(label),mode==='professional','full image keeps ceiling detail while overview copy omits it');
+      fs.writeFileSync(`tests/artifacts/ceiling/${mode}-390-${label}.png`,Buffer.from(png.bytes));assert.deepEqual(await saved(),before);
     }
   }
   try {
@@ -54,6 +68,14 @@ const key = 'bath-designer-selections-v2';
         if (!mobile) { if (width < 1200) await page.locator('.selectionHistory>.builderDisclosureToggle').click(); await page.locator('.historyPreviewButton').first().click(); }
         await preview('젠다이 신설', '젠다이 신설6.png'); assert.deepEqual((await saved()).values.jendai, ['new']);
       }
+      await seed(8,'professional',{ceilingPreference:'premium'});
+      await page.locator('#builder-ceiling-content').getByRole('radio',{name:'이노솔',exact:true}).click();
+      await page.reload();await page.locator('.builderCompactFlow').waitFor();assert.equal((await saved()).values.ceiling,'inosol');
+      await report('professional','이노솔');
+      await page.getByRole('button',{name:'천장 수정',exact:true}).click();await page.locator('.builderConsultationEdit').waitFor();
+      assert.equal(await page.getByRole('radio',{name:'이노솔',exact:true}).getAttribute('aria-checked'),'true');
+      await page.getByRole('link',{name:'상담서로 돌아가기',exact:true}).click();await page.locator('#consultation-ceiling').waitFor();
+      assert.ok((await page.locator('#consultation-ceiling').innerText()).includes('이노솔'));assert.equal((await saved()).values.ceiling,'inosol');
       await seed(8, 'professional', { ceilingPreference: 'premium' });
       const group = page.locator('#builder-ceiling-content');
       assert.deepEqual(await group.locator('[role=radio] .builderChoiceLabel').allTextContents(), ['SMC 평천장','SMC 돔천장','이노솔','도장','기타']);

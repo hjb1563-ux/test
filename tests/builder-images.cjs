@@ -114,7 +114,7 @@ function mount(current=0,values={},version=3,mode='professional') {
   storage.set(stateKey, JSON.stringify({current, values, version, projectInfo:{projectName:'회귀 검증',builderMode:mode}})); slots=[]; for(const k of [...params.keys()])params.delete(k); return render();
 }
 function choose(tree,key,label) {
-  const option=all(groupSection(tree,key),n=>n.type==='button' && ['radio','checkbox'].includes(n.props.role) && text(n)===label)[0];
+  const option=all(groupSection(tree,key),n=>n.type==='button' && ['radio','checkbox'].includes(n.props.role) && text(all(n,c=>c.props.className==='builderChoiceLabel')[0]?.children?.[0])===label)[0];
   assert.ok(option,`${key}: ${label}`);option.props.onClick();return render();
 }
 
@@ -189,8 +189,8 @@ test('none/consult choices stay image-free and exclusive; multi-select showers k
 
 test('consultation metadata, memo isolation, copy success/fallback, print, edit, storage failures and reset are preserved',async()=>{
  let tree=mount(0,{demolition:'overlay'});let r=showResult();let memo=all(r,n=>n.props.id==='consultation-memo')[0];memo.props.onChange({target:{value:'OWN_MEMO'}});r=resultRender();assert.equal(saved().memo,'OWN_MEMO');r=showResult();assert.equal(all(r,n=>n.props.id==='consultation-memo')[0].props.value,'OWN_MEMO');
- await press(r,'요약만 복사').props.onClick();r=resultRender();assert.ok(clipboardText.includes('OWN_MEMO'));assert.ok(clipboardText.includes(getGroup('demolition').choices.find(c=>c.id==='overlay').name));
- clipboardFailure=true;await press(r,'요약만 복사').props.onClick();r=resultRender();assert.ok(all(r,n=>n.type==='textarea').some(n=>String(n.props.value).includes('OWN_MEMO')));clipboardFailure=false;
+ await press(r,'공사 개요만 복사').props.onClick();r=resultRender();assert.ok(clipboardText.includes('OWN_MEMO'));assert.ok(clipboardText.includes(getGroup('demolition').choices.find(c=>c.id==='overlay').name));
+ clipboardFailure=true;await press(r,'공사 개요만 복사').props.onClick();r=resultRender();assert.ok(all(r,n=>n.type==='textarea').some(n=>String(n.props.value).includes('OWN_MEMO')));clipboardFailure=false;
  press(r,'인쇄 / PDF 저장').props.onClick();assert.equal(printCalls,1);press(r,'선택 수정').props.onClick();assert.equal(navigatedTo,'/design?step=1&returnTo=consultation');
  const before=storage.get(stateKey);r=showResult('plan='+encodeURIComponent(JSON.stringify({sink:'other',sinkOther:'FOREIGN_100%'})));assert.equal(all(r,n=>n.props.id==='consultation-memo')[0].props.value,'');all(r,n=>n.props.id==='consultation-memo')[0].props.onChange({target:{value:'FOREIGN_MEMO'}});r=resultRender();assert.equal(storage.get(stateKey),before);r=showResult('plan='+encodeURIComponent(JSON.stringify({sink:'other',sinkOther:'FOREIGN_100%'})));assert.equal(all(r,n=>n.props.id==='consultation-memo')[0].props.value,'FOREIGN_MEMO');assert.ok(text(r).includes('FOREIGN_100%'));r=showResult('plan=%invalid');assert.ok(text(r).includes('링크의 선택 내용을 읽지 못해'));
  storageFailure=true;r=showResult();all(r,n=>n.props.id==='consultation-memo')[0].props.onChange({target:{value:'UNSAVED_MEMO'}});r=resultRender();assert.equal(all(r,n=>n.props.id==='consultation-memo')[0].props.value,'UNSAVED_MEMO');assert.ok(text(r).includes('저장'));storageFailure=false;

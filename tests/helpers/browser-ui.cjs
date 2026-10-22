@@ -19,8 +19,10 @@ async function run(name, fn) {
         if (r.status() >= 400 && new URL(r.url()).origin === new URL(base).origin && !r.url().endsWith('/favicon.ico'))
             errors.push(r.status() + ' ' + new URL(r.url()).pathname);
     });
-    await context.route('**/*', r => {
+    const serveFont = require('./font-response-cache.cjs')(errors, 12000);
+    await context.route('**/*', async r => {
         const u = new URL(r.request().url());
+        if (await serveFont(r)) return;
         if (u.origin === new URL(base).origin || ['fonts.googleapis.com', 'fonts.gstatic.com'].includes(u.hostname))
             return r.continue();
         external.push(u.hostname);
@@ -119,7 +121,38 @@ async function run(name, fn) {
     h.noOverflow = async () => assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     h.report = async () => { await page.goto(base + '/result', { waitUntil: "domcontentloaded" }); await page.locator('.consultationSheet').waitFor(); };
     h.summary = () => page.locator('.summary').textContent();
-    h.copy = async () => { await page.getByRole('button', { name: '요약만 복사', exact: true }).click(); return page.evaluate(() => navigator.clipboard.readText()); };
+    h.copy = async () => { await page.getByRole('button', { name: '공사 개요만 복사', exact: true }).click(); return page.evaluate(() => navigator.clipboard.readText()); };
+    h.fullCopyContains = async (labels, suffix, absent = []) => {
+        const output = 'tests/artifacts/overview-details'; fs.mkdirSync(output, { recursive: true });
+        const before = await h.saved();
+        await page.evaluate(() => {
+            const serialize = XMLSerializer.prototype.serializeToString;
+            XMLSerializer.prototype.serializeToString = function (node) {
+                const text = serialize.call(this, node);
+                if (node.nodeName === 'svg' && text.includes('consultationDocument')) window.__fullDetailText = node.textContent;
+                return text;
+            };
+        });
+        await page.getByRole('button', { name: '상담서 전체 복사', exact: true }).click();
+        await page.getByText('상담서 전체가 PNG 이미지로 복사되었습니다.', { exact: true }).waitFor({ timeout: 120000 });
+        const png = await page.evaluate(async () => {
+            const item = (await navigator.clipboard.read()).find(item => item.types.includes('image/png'));
+            if (!item) throw new Error('Native PNG clipboard item missing');
+            const blob = await item.getType('image/png'), bitmap = await createImageBitmap(blob);
+            return { width: bitmap.width, height: bitmap.height, bytes: [...new Uint8Array(await blob.arrayBuffer())], text: window.__fullDetailText };
+        });
+        assert.equal(png.width, 1600); assert.ok(png.bytes.length > 10000);
+        for (const text of labels) assert.ok(png.text.includes(text), 'full PNG retains: ' + text);
+        for (const text of absent) assert.ok(!png.text.includes(text), 'mode-hidden detail stays absent: ' + text);
+        fs.writeFileSync(path.join(output, name + '-' + suffix + '.png'), Buffer.from(png.bytes));
+        await page.emulateMedia({ media: 'print' });
+        const printText = await page.locator('.consultationDocument:visible').innerText();
+        for (const text of labels) assert.ok(printText.includes(text), 'PDF source retains: ' + text);
+        for (const text of absent) assert.ok(!printText.includes(text));
+        const pdf = await page.pdf({ path: path.join(output, name + '-' + suffix + '.pdf'), format: 'A4', printBackground: true });
+        assert.ok(pdf.length > 10000); await page.emulateMedia({ media: 'screen' });
+        assert.deepEqual(await h.saved(), before, 'full image and PDF never change stored content');
+    };
     h.pdf = async (suffix) => { fs.mkdirSync('tests/artifacts/ui-blockers-20261020/pdf', { recursive: true }); await page.emulateMedia({ media: 'print' }); assert.equal(await page.locator('.consultationSheet:visible').count(), 1); const bytes = await page.pdf({ path: path.join('tests/artifacts/ui-blockers-20261020/pdf', name + '-' + suffix + '.pdf'), format: 'A4', printBackground: true }); assert.ok(bytes.length > 10000); await page.emulateMedia({ media: 'screen' }); };
     try {
         await page.goto(base + '/', { waitUntil: "domcontentloaded" });

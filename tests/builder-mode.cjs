@@ -46,10 +46,14 @@ for (const mode of ['consumer','professional','consumer','professional']) {
   assert.equal(rows.filter(r => r.pending).length, rows.filter(r => r.label === '미정').length);
   for (const key of hidden) assert.equal(rows.some(r => r.key === key), mode === 'professional');
   const texts = [c.consultationSummaryText(next), c.consultationText(rows,'','',next.projectInfo), c.consultationText(c.consultationRows(next.values),'','',next.projectInfo)];
-  for (const text of texts) {
+  assert.ok(texts[0].includes('공사 개요'));
+  assert.ok(texts[0].includes(mode === 'consumer' ? '시공 방식: 올철거' : '시공 방식: 전체 철거'));
+  for (const label of ['액방 + 도막','라인 배수구']) assert.ok(!texts[0].includes(label), 'technical detail is not repeated in overview');
+  for (const text of texts.slice(1)) {
     for (const label of ['전체 철거','액방 + 도막','라인 배수구']) assert.equal(text.includes(label), mode === 'professional', label);
     assert.ok(text.includes('600×600')); assert.ok(text.includes('매립 세면 수전'));
   }
+  assert.ok(texts[0].includes('600×600')); assert.ok(texts[0].includes('매립 세면 수전'));
   assert.ok(!texts[0].includes('작성 모드'));
   assert.ok(texts[1].includes('작성 모드'));
   if (mode === 'consumer') assert.ok(texts[1].includes('03 타일'));

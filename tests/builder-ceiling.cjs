@@ -40,7 +40,13 @@ for (const mode of ['consumer','professional','consumer','professional']) {
   const row = rows.find(row => row.key === (mode === 'consumer' ? 'ceilingPreference' : 'ceiling'));
   if (mode === 'consumer') assert.equal(row, undefined); else assert.equal(row.label, '이노솔');
   const text = consultation.consultationSummaryText(project);
-  assert.equal(text.includes('이노솔'), mode === 'professional');
+  assert.ok(!text.includes('이노솔'), 'compact construction overview does not repeat ceiling details');
+  const detail = consultation.consultationText(rows, '', '', project.projectInfo);
+  assert.equal(detail.includes('이노솔'), mode === 'professional', 'full professional consultation retains the selected ceiling');
+  assert.equal(project.values.ceiling, 'inosol', 'overview omission never removes stored selection');
+  const restored = consultation.normalizeProject(JSON.parse(JSON.stringify(project)));
+  assert.equal(restored.values.ceiling, 'inosol');
+  assert.equal(consultation.consultationRows(restored.values, mode).some(row => row.key === 'ceiling' && row.label === '이노솔'), mode === 'professional');
   assert.ok(!text.includes('고급용'));
   assert.ok(!text.includes(mode === 'consumer' ? '이노솔' : '고급용'));
   const changed = selection.toggleSelection(project.values, mode === 'consumer' ? 'ceilingPreference' : 'ceiling', mode === 'consumer' ? 'free-design' : 'painted');

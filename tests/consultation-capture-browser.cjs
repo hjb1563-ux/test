@@ -22,8 +22,8 @@ run('consultation-capture', async (h) => {
                 assert.ok(copied.includes(s), s);
             assert.ok(!copied.includes('작성 모드'));
             const before = await h.saved(), documentHeight = await page.locator('.consultationDocument').evaluate(e => e.scrollHeight);
-            await page.getByRole('button', { name: '상담서 이미지 복사', exact: true }).click();
-            await page.getByText('상담서 이미지가 복사되었습니다.', { exact: true }).waitFor({ timeout: 60000 });
+            await page.getByRole('button', { name: '상담서 전체 복사', exact: true }).click();
+            await page.getByText('상담서 전체가 PNG 이미지로 복사되었습니다.', { exact: true }).waitFor({ timeout: 60000 });
             const png = await page.evaluate(async () => { const item = (await navigator.clipboard.read()).find(i => i.types.includes('image/png')); if (!item)
                 throw Error('PNG missing'); const blob = await item.getType('image/png'), bitmap = await createImageBitmap(blob); const result = { size: blob.size, width: bitmap.width, height: bitmap.height }; bitmap.close(); return result; });
             assert.ok(png.size > 20000);
@@ -63,9 +63,9 @@ run('consultation-capture', async (h) => {
     }
     await page.evaluate(() => { window.originalClipboardItem = window.ClipboardItem; window.ClipboardItem = undefined; });
     try {
-        await page.getByRole('button', { name: '상담서 이미지 복사', exact: true }).click();
-        await page.getByText('상담서 이미지 복사에 실패했습니다.', { exact: true }).waitFor();
-        assert.equal(await page.getByRole('button', { name: '상담서 이미지 복사', exact: true }).isEnabled(), true);
+        await page.getByRole('button', { name: '상담서 전체 복사', exact: true }).click();
+        await page.getByText('상담서 전체 이미지 복사에 실패했습니다.', { exact: true }).waitFor();
+        assert.equal(await page.getByRole('button', { name: '상담서 전체 복사', exact: true }).isEnabled(), true);
     }
     finally {
         await page.evaluate(() => { window.ClipboardItem = window.originalClipboardItem; });

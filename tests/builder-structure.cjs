@@ -114,7 +114,7 @@ function mount(current=0,values={},version=3,mode='professional') {
   storage.set(stateKey, JSON.stringify({current, values, version, projectInfo:{projectName:'회귀 검증',builderMode:mode}})); slots=[]; params.delete('step'); return render();
 }
 function choose(tree,key,label) {
-  const option=all(groupSection(tree,key),n=>n.type==='button' && ['radio','checkbox'].includes(n.props.role) && text(n)===label)[0];
+  const option=all(groupSection(tree,key),n=>n.type==='button' && ['radio','checkbox'].includes(n.props.role) && text(all(n,c=>c.props.className==='builderChoiceLabel')[0]?.children?.[0])===label)[0];
   assert.ok(option,`${key}: ${label}`);option.props.onClick();return render();
 }
 assert.equal(builderSteps.length,16);

@@ -144,46 +144,66 @@ export function formatLastModified(value: string | null): string {
 }
 
 const summaryGroups = [
-  { id: 'condition', title: '현재 욕실 상태', keys: ['bathroomCondition'] },
-  { id: 'construction', title: '공사 방식 / 구조', keys: ['demolition', 'jendai', 'partitionShower', 'niche', 'waterproofing'] },
+  { id: 'construction', title: '시공 방식', keys: ['demolition'] },
+  { id: 'space', title: '공간 구성', keys: ['partitionShower', 'bathtub', 'jendai'] },
   { id: 'tile', title: '타일', keys: ['wallTileSize', 'tile', 'tileSurface'] },
-  { id: 'fixtures', title: '주요 위생도기', keys: ['sink', 'toilet', 'cabinet', 'mirror'] },
-  { id: 'water', title: '수전 / 샤워 / 욕조', keys: ['faucet', 'showerFaucet', 'bathtub'] },
-  { id: 'details', title: '마감 / 디테일', keys: ['ceiling', 'ceilingPreference', 'drain', 'drainPosition', 'ventilation', 'lighting', 'accessoryFinish', 'accessory', 'grout', 'threshold'] },
+  { id: 'fixtures', title: '주요 설비', keys: ['sink', 'toilet', 'bathtub', 'faucet', 'showerFaucet'] },
 ];
 
 export function generateConsultationSummary(values: BathroomValues, mode: BuilderMode = 'professional') {
   const normalized = normalizeBathroomValues(values, steps);
   const groups = getVisibleSteps(mode).flatMap(step => step.groups);
-  return summaryGroups.flatMap(summary => {
-    const items = summary.keys.flatMap(key => {
+  const seen = new Set<string>();
+  const pending = new Set<string>();
+  const labels = (key: string) => {
       const group = groups.find(item => item.key === key);
       if (!group) return [];
       const draft = normalized[customTextKey(key)];
       const custom = typeof draft === 'string' ? draft.trim() : '';
-      if (['accessory', 'ventilation'].includes(key)) return custom ? [custom] : [];
       return selectedIds(normalized[key]).flatMap(id => {
         const choice = group.choices.find(item => item.id === id);
         if (!choice) return [];
+        // Only a current, explicitly selected decision-later value is pending.
+        // Unanswered and removed legacy IDs remain absent, as in detailed output.
+        const name = choice.requiresCustomText ? custom : choice.name;
+        if (choice.id === 'consult' || /^(undecided|notSure|unknown(?:-condition)?)$/i.test(id)
+          || /^(?:미정|아직 모르겠어요|모르겠어요|상담 후 결정|업체와 상담 후 결정)$/.test(name)) {
+          pending.add(group.title);
+          return [];
+        }
         if (choice.requiresCustomText) return custom ? [custom] : [];
-        // Short config labels need their category to remain understandable in a summary.
-        if (mode === 'consumer' && key === 'demolition') return [`시공 방식: ${choice.name}`];
         if (key === 'sink' && choice.id === 'undermount-basin') return ['언더볼 세면대'];
         if (key === 'toilet') return [`${choice.name} 변기`];
         if (choice.name === '없음') return [`${group.title} 없음`];
         return [choice.name];
       });
+  };
+  // Keep scope decisions visible without reproducing every technical detail.
+  for (const key of ['demolition', 'partitionShower', 'bathtub', 'wallTileSize', 'tile', 'tileSurface', 'sink', 'toilet', 'faucet', 'showerFaucet', 'waterproofing', 'drainPosition']) labels(key);
+  const summary = summaryGroups.flatMap(section => {
+    const candidates = section.keys.flatMap(key => {
+      if (key === 'bathtub') {
+        const absent = selectedIds(normalized.bathtub).includes('none');
+        if (section.id === 'space' ? !absent : absent) return [];
+      }
+      return labels(key);
     });
-    const meaningful = items.filter(item => item.trim() && item !== '미정');
-    return meaningful.length ? [{ id: summary.id, title: mode === 'consumer' && summary.id === 'construction' ? '구조와 샤워 공간' : summary.title, items: meaningful, text: meaningful.join(' · ') }] : [];
+    // Stable priority: partition / no-bath / structure; basin / toilet / bath,
+    // then representative faucets only when there is room (three values per row).
+    const items = Array.from(new Set(candidates)).filter(item => !seen.has(item)).slice(0, 3);
+    items.forEach(item => seen.add(item));
+    return items.length ? [{ id: section.id, title: section.title, items, text: items.join(' · ') }] : [];
   });
+  const undecided = Array.from(pending);
+  return undecided.length ? [...summary, { id: 'pending', title: '미정 사항', items: undecided, text: undecided.join(' · ') }] : summary;
 }
 
 export function consultationSummaryText(project: LocalProject): string {
   const info = project.projectInfo;
   const identity = [info.projectName ? `프로젝트명: ${info.projectName}` : '', info.customerName ? `고객명: ${info.customerName}` : ''].filter(Boolean).join(' · ');
   const summary = generateConsultationSummary(project.values, info.builderMode);
-  return [identity, ...projectMetadata(info), ...summary.map(group => `${group.title}: ${group.text}`), ...(project.memo.trim() ? [`\n[업체에 전달할 메모]\n${project.memo.trim()}`] : [])].filter(Boolean).join('\n');
+  const threshold = consultationOutputRows(project.values, info.builderMode).find(row => row.key === 'threshold' && !row.pending);
+  return [identity, ...projectMetadata(info), '[공사 개요]', ...summary.map(group => `${group.title}: ${group.text}`), ...(threshold ? [`문턱 마감: ${threshold.label}`] : []), ...(project.memo.trim() ? [`\n[업체에 전달할 메모]\n${project.memo.trim()}`] : [])].filter(Boolean).join('\n');
 }
 // Store the selection fingerprint: changing a choice invalidates its old field check.
 export const checkFingerprint = (row: ConsultationRow) => JSON.stringify([row.label, row.site]);

@@ -59,7 +59,9 @@ const builderSteps: BathroomStep[] = bathroomSteps.filter(step => step.key !== '
       if (group.key === 'grout') return { ...group, choices: group.choices.map(choice =>
         choice.id === 'grout-elastic' ? textChoice('grout-polyurea', '폴리우레아 줄눈')
           : { ...choice, name: choice.id === 'grout-cement' ? '시멘트 줄눈(메지)' : choice.name }) };
-      if (group.key === 'jendai') return { ...group, multiple: true, choices: ['none', 'keep', 'remove', 'new'].flatMap(id => group.choices.filter(choice => choice.id === id)) };
+      if (group.key === 'jendai') return { ...group, multiple: true, choices: ['none', 'keep', 'remove', 'new'].flatMap(id => group.choices.filter(choice => choice.id === id))
+        .map(choice => choice.id === 'keep' ? { ...choice, name: '기존 젠다이 유지', sub: '덧방·부분철거 시' } : choice) };
+      if (group.key === 'threshold') return { ...group, choices: [textChoice('threshold-keep', '기존 문턱 유지'), ...group.choices] };
       if (group.key === 'showerFaucet') return { ...group, multiple: true, choices: [
         ...group.choices.filter(choice => choice.id === 'shower').map(choice => ({ ...choice, name: '일반 샤워&욕조 수전' })),
         ...group.choices.filter(choice => choice.id === 'concealed-shower').map(choice => ({ ...choice, name: '매립 샤워&욕조 수전' })),

@@ -7,6 +7,7 @@ const key = 'bath-designer-selections-v2';
     const page = await browser.newPage();
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
+    await require('./helpers/font-response-cache.cjs').install(page.context(), errors);
     const name = () => page.locator('#project-customer-name'), project = () => page.locator('#project-name');
     const start = () => page.getByRole('button', { name: '욕실 만들기 시작', exact: true });
     const saved = () => page.evaluate(k => JSON.parse(localStorage.getItem(k)), key);

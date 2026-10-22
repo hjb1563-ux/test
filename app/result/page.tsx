@@ -90,8 +90,8 @@ function Content() {
 
   async function copy() {
     const text = consultationSummaryText(project);
-    try { await navigator.clipboard.writeText(text); setCopyFallback(''); setStatus('요약을 복사했어요. 업체에 붙여넣어 전달하세요.'); }
-    catch { setCopyFallback(text); setStatus('클립보드에 접근할 수 없어요. 아래 내용을 선택해 직접 복사해주세요.'); }
+    try { await navigator.clipboard.writeText(text); setCopyFallback(''); setStatus('공사 개요를 복사했어요. 업체에 붙여넣어 전달하세요.'); }
+    catch { setCopyFallback(text); setStatus('공사 개요를 복사하지 못했어요. 아래 내용을 선택해 직접 복사해주세요.'); }
   }
 
   async function copyImage() {
@@ -100,8 +100,8 @@ function Content() {
     setImageCopyBusy(true);
     try {
       await copyConsultationImage(consultationCaptureRef.current);
-      setStatus('상담서 이미지가 복사되었습니다.');
-    } catch { setStatus('상담서 이미지 복사에 실패했습니다.'); }
+      setStatus('상담서 전체가 PNG 이미지로 복사되었습니다.');
+    } catch { setStatus('상담서 전체 이미지 복사에 실패했습니다.'); }
     finally { imageCopyBusyRef.current = false; setImageCopyBusy(false); }
   }
 
@@ -116,7 +116,8 @@ function Content() {
   return <main className="consultationPage">
     <div className="printHide"><SiteHeader /></div>
     <div className="consultationActionsWrap printHide" data-capture-ignore="true">
-      <div className="resultActions" role="group" aria-label="상담서 작업"><button className="secondary" onClick={copy}>요약만 복사</button><button className="secondary" disabled={imageCopyBusy} aria-busy={imageCopyBusy} onClick={copyImage}>{imageCopyBusy ? '복사 중...' : '상담서 이미지 복사'}</button><button className="secondary" onClick={() => window.print()}>인쇄 / PDF 저장</button><button className="secondary" onClick={() => edit()}>선택 수정</button></div>
+      <div className="resultActions" role="group" aria-label="상담서 작업"><button className="secondary" onClick={copy}>공사 개요만 복사</button><button className="secondary" disabled={imageCopyBusy} aria-busy={imageCopyBusy} aria-describedby="consultation-image-copy-help" onClick={copyImage}>{imageCopyBusy ? '복사 중...' : '상담서 전체 복사'}</button><button className="secondary" onClick={() => window.print()}>인쇄 / PDF 저장</button><button className="secondary" onClick={() => edit()}>선택 수정</button></div>
+      <span id="consultation-image-copy-help" className="sr-only">상담서 전체를 PNG 이미지로 클립보드에 복사합니다.</span>
       <p className="consultationNote" role="status">{status}</p>
       {copyFallback && <label className="copyFallback">복사할 상담 내용<textarea readOnly value={copyFallback} onFocus={event => event.currentTarget.select()} /></label>}
     </div>
@@ -132,7 +133,7 @@ function Content() {
           {modified && <p className="sheetProjectInfo"><span className="sheetLastModified">마지막 수정 · <time dateTime={project.lastModifiedAt!}>{modified}</time></span></p>}
         </div>}
       </header>
-      <section className="sheetCoreSummary" aria-labelledby="consultation-core-summary"><h2 id="consultation-core-summary">핵심 선택 요약</h2>
+      <section className="sheetCoreSummary" aria-labelledby="consultation-core-summary"><h2 id="consultation-core-summary">공사 개요</h2>
         {summary.length ? <dl>{summary.map(group => <div key={group.id}><dt>{group.title}</dt><dd>{group.text}</dd></div>)}</dl> : <p>아직 선택된 주요 항목이 없습니다.</p>}
       </section>
       <section className="sheetSelections"><h2>STEP별 선택 내용</h2>

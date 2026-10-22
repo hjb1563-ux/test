@@ -121,9 +121,17 @@ function resultRender() {
 const byClass = (tree, cls) => all(tree, node => node.props.className?.split(' ').includes(cls));
 const button = (tree, label) => all(tree, node => node.type === 'button' && text(node).trim() === label)[0];
 const summary = consultation.generateConsultationSummary(original.values);
-assert.equal(summary.length, 5);
+assert.equal(summary.length, 4);
+assert.deepEqual(Array.from(summary, group => group.title), ['시공 방식', '공간 구성', '타일', '주요 설비']);
+assert.equal(summary.find(group=>group.id==='construction').text, '부분 철거 + 덧방');
+assert.equal(summary.find(group=>group.id==='tile').text, '600×600 · 화이트 · 무광');
+assert.equal(summary.find(group=>group.id==='fixtures').text, '언더볼 세면대 · 투피스 변기 · 일반 욕조');
 const summaryText = summary.map(group => group.text).join('\n');
-for (const value of ['부분 철거 + 덧방', '600×600', '화이트', '무광', '언더볼 세면대', '투피스 변기', '매립 세면 수전', '매립 샤워&욕조 수전', '해바라기 샤워 수전', '온도조절 수전', '에폭시 줄눈', '힘펠 휴젠뜨']) assert.ok(summaryText.includes(value), value);
+const detailText = consultation.consultationText(consultation.consultationRows(original.values), original.specialNotes, original.memo, original.projectInfo);
+for (const value of ['매립 세면 수전', '매립 샤워&욕조 수전', '해바라기 샤워 수전', '온도조절 수전', '에폭시 줄눈', '힘펠 휴젠뜨']) {
+  assert.ok(!summaryText.includes(value), 'overview is representative: '+value);
+  assert.ok(detailText.includes(value), 'full details retained: '+value);
+}
 assert.ok(!summaryText.includes('미정')); assert.ok(!summaryText.includes('기타'));
 assert.deepEqual(Array.from(consultation.generateConsultationSummary({})), []);
 assert.deepEqual(Array.from(consultation.generateConsultationSummary({ ventilationOther: '미정', showerFaucet: ['other'], showerFaucetOther: '  ' })), []);
@@ -133,18 +141,15 @@ assert.equal(consultation.generateConsultationSummary({ wallTileSize: 'other', w
 assert.equal(consultation.generateConsultationSummary({ toilet: 'other', toiletOther: '비데 일체형 변기' })[0].text, '비데 일체형 변기');
 const conditionValues={...original.values,bathroomCondition:['damaged-tile','leak','remove-bath','other'],bathroomConditionOther:'천장 누수 흔적이 있다'};
 const consumerBaseline=consultation.generateConsultationSummary(original.values,'consumer');
-const conditionSummary=consultation.generateConsultationSummary(conditionValues,'consumer');
-assert.equal(conditionSummary.length,consumerBaseline.length+1);assert.equal(conditionSummary[0].id,'condition');assert.equal(conditionSummary[0].title,'현재 욕실 상태');
-assert.equal(conditionSummary[0].text,'기존타일이 깨졌거나 들떠 있다 · 누수 이력이 있다 · 욕조를 철거하고 싶다 · 천장 누수 흔적이 있다');
-assert.equal(conditionSummary[1].text,consumerBaseline[0].text);
-assert.equal(conditionSummary.slice(1).map(group=>group.text).join('\n'),consumerBaseline.map(group=>group.text).join('\n'));
-assert.ok(consultation.consultationSummaryText({...original,values:conditionValues,projectInfo:{...original.projectInfo,builderMode:'consumer'}}).includes('현재 욕실 상태: '+conditionSummary[0].text));
+assert.deepEqual(consultation.generateConsultationSummary(conditionValues,'consumer'),consumerBaseline, 'condition stays in detail only');
+const conditionDetails=consultation.consultationText(consultation.consultationRows(conditionValues,'consumer'),'','',{...original.projectInfo,builderMode:'consumer'});
+for(const label of ['기존타일이 깨졌거나 들떠 있다','누수 이력이 있다','욕조를 철거하고 싶다','천장 누수 흔적이 있다']) assert.ok(conditionDetails.includes(label),label);
 for(const absent of [undefined,null,[],'','   ','미정',['unknown-condition'],['invalid'],['other']]){
  assert.ok(!consultation.generateConsultationSummary({...original.values,bathroomCondition:absent},'consumer').some(group=>group.id==='condition'));
  assert.ok(!consultation.consultationSummaryText({...original,values:{...original.values,bathroomCondition:absent},projectInfo:{...original.projectInfo,builderMode:'consumer'}}).includes('현재 욕실 상태:'));
 }
-assert.equal(consultation.generateConsultationSummary({bathroomCondition:['leak']},'consumer')[0].text,'누수 이력이 있다');
-assert.equal(consultation.generateConsultationSummary({bathroomCondition:['other'],bathroomConditionOther:'바닥 일부 파손'},'consumer')[0].text,'바닥 일부 파손');
+assert.deepEqual(Array.from(consultation.generateConsultationSummary({bathroomCondition:['leak']},'consumer')),[]);
+assert.deepEqual(Array.from(consultation.generateConsultationSummary({bathroomCondition:['other'],bathroomConditionOther:'바닥 일부 파손'},'consumer')),[]);
 assert.deepEqual(consultation.generateConsultationSummary(conditionValues,'professional'),summary);
 assert.equal(consultation.formatLastModified(timestamp), '2026.10.08 00:32');
 assert.equal(consultation.formatLastModified(null), '');
@@ -156,7 +161,7 @@ const legacy = consultation.normalizeProject({version: 3, values: original.value
 assert.equal(legacy.lastModifiedAt, null);
 assert.equal(consultation.updateProjectContent(legacy, {current: 3}).lastModifiedAt, null);
 assert.equal(consultation.normalizeProject({lastModifiedAt:'invalid'}).lastModifiedAt, null);
-console.log('PASS summary: 5 groups, empty/pending/other/multiple/text inputs; timestamps: semantic content changes only, legacy, Seoul format');
+console.log('PASS overview: 4 priority groups, full details retained, empty/pending/other/multiple/text inputs; timestamps: semantic content changes only, legacy, Seoul format');
 
 for (const info of [{customerName:'홍길동',projectName:''}, {customerName:'',projectName:'안방 욕실'}, original.projectInfo, {customerName:'',projectName:''}]) {
   fresh({...original, projectInfo:info}); const tree = resultRender();
@@ -188,7 +193,7 @@ fresh({...original,values:{...original.values,ventilationOther:'',showerFaucet:[
 assert.ok(byClass(tree,'sheetUndecidedValue').some(node=>text(node)==='미정'));
 const tileCard=all(tree,n=>n.props.id==='consultation-tile')[0];
 const white=all(tileCard,n=>n.type==='strong'&&text(n)==='화이트')[0];assert.equal(white.props.className,undefined);
-console.log('PASS condition summary: first group, no duplication, absent/legacy/custom/multiple, clipboard source; undecided badge all 15 cards, duplicate status removed, normal values unchanged');
+console.log('PASS condition detail retained and excluded from overview; undecided badge all 15 cards, duplicate status removed, normal values unchanged');
 for (const step of builderSteps.slice(0,-1)) {
   fresh(original, `editedCategory=${step.key}`); tree = resultRender();
   const highlight = byClass(tree,'sheetStep--highlighted');
@@ -235,11 +240,11 @@ console.log('PASS render: identity variants, 15 detail cards, all 15 return high
 (async()=>{
   const before=JSON.stringify(saved());
   assert.equal(all(tree,n=>n.type==='button'&&text(n)==='선택 내용 복사').length,0);
-  await button(tree,'요약만 복사').props.onClick();
+  await button(tree,'공사 개요만 복사').props.onClick();
   for(const group of summary)assert.ok(clipboardText.includes(group.text));
   assert.ok(clipboardText.includes('고객명: 홍길동'));assert.ok(clipboardText.includes('새 메모\n줄바꿈 보존'));assert.ok(!clipboardText.includes('15 욕실 문틀 하부 / 문턱'));
   button(tree,'인쇄 / PDF 저장').props.onClick();assert.equal(printCalls,1);assert.equal(JSON.stringify(saved()),before);
-  clipboardFailure=true;await button(tree,'요약만 복사').props.onClick();tree=resultRender();assert.ok(byClass(tree,'copyFallback').length);
+  clipboardFailure=true;await button(tree,'공사 개요만 복사').props.onClick();tree=resultRender();assert.ok(byClass(tree,'copyFallback').length);
   const noMemo={...original,memo:'  '};assert.ok(!consultation.consultationSummaryText(noMemo).includes('[업체에 전달할 메모]'));assert.ok(!consultation.consultationText(consultation.consultationRows(noMemo.values),'',noMemo.memo,noMemo.projectInfo).includes('[업체에 전달할 메모]'));
   console.log('PASS clipboard: full details/time/metadata/memo, same-source summary, fallback, empty memo omitted; copy/print do not change storage');
 })().catch(error=>{console.error(error);process.exitCode=1;});
