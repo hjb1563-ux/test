@@ -1,0 +1,347 @@
+[
+  {
+    "id": "essential-01",
+    "title": "실속형 01",
+    "categories": [
+      {
+        "key": "tiles",
+        "title": "타일",
+        "items": [
+          "300x600",
+          "아이보리 / 무광"
+        ]
+      },
+      {
+        "key": "basinsAndToilets",
+        "title": "세면대 · 변기",
+        "items": [
+          "일반 세면대",
+          "투피스 변기(물탱크 분리형)"
+        ]
+      },
+      {
+        "key": "faucetsAndShowers",
+        "title": "수전 · 샤워",
+        "items": [
+          "일반 세면 수전",
+          "일반 샤워 수전",
+          "핸드 샤워"
+        ]
+      },
+      {
+        "key": "storageAndAccessories",
+        "title": "수납 · 액세서리",
+        "items": [
+          "거울장(하부 간접 조명)",
+          "샤워 코너 선반",
+          "휴지걸이",
+          "수건걸이"
+        ]
+      },
+      {
+        "key": "features",
+        "title": "이 욕실의 특징",
+        "items": [
+          "유리 파티션으로 구분한 샤워 공간",
+          "세면대 뒤 선반벽(젠다이)"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "essential-02",
+    "title": "실속형 02",
+    "categories": [
+      {
+        "key": "tiles",
+        "title": "타일",
+        "items": [
+          "300x600",
+          "그레이 / 유광"
+        ]
+      },
+      {
+        "key": "basinsAndToilets",
+        "title": "세면대 · 변기",
+        "items": [
+          "일반 세면대",
+          "투피스 변기(물탱크 분리형)"
+        ]
+      },
+      {
+        "key": "faucetsAndShowers",
+        "title": "수전 · 샤워",
+        "items": [
+          "일반 세면 수전",
+          "일반 샤워 수전",
+          "핸드 샤워"
+        ]
+      },
+      {
+        "key": "storageAndAccessories",
+        "title": "수납 · 액세서리",
+        "items": [
+          "거울장(하부 간접 조명)",
+          "샤워 코너 선반",
+          "휴지걸이",
+          "수건걸이"
+        ]
+      },
+      {
+        "key": "features",
+        "title": "이 욕실의 특징",
+        "items": [
+          "일반 욕조",
+          "세면대 뒤 선반벽(젠다이)"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "balanced-01",
+    "title": "기본형 01",
+    "categories": [
+      {
+        "key": "tiles",
+        "title": "타일",
+        "items": [
+          "600x600",
+          "아이보리 / 무광"
+        ]
+      },
+      {
+        "key": "basinsAndToilets",
+        "title": "세면대 · 변기",
+        "items": [
+          "일반 세면대",
+          "투피스 변기(물탱크 분리형)"
+        ]
+      },
+      {
+        "key": "faucetsAndShowers",
+        "title": "수전 · 샤워",
+        "items": [
+          "일반 세면 수전",
+          "일반 샤워 수전",
+          "핸드 샤워"
+        ]
+      },
+      {
+        "key": "storageAndAccessories",
+        "title": "수납 · 액세서리",
+        "items": [
+          "거울장(하부 간접 조명)",
+          "샤워 코너 선반",
+          "휴지걸이",
+          "수건걸이"
+        ]
+      },
+      {
+        "key": "features",
+        "title": "이 욕실의 특징",
+        "items": [
+          "타일 풀(full) 파티션으로 샤워 공간 분리",
+          "세면대 뒤 선반벽(젠다이)"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "balanced-02",
+    "title": "기본형 02",
+    "categories": [
+      {
+        "key": "tiles",
+        "title": "타일",
+        "items": [
+          "600x600",
+          "그레이 / 무광"
+        ]
+      },
+      {
+        "key": "basinsAndToilets",
+        "title": "세면대 · 변기",
+        "items": [
+          "일반 세면대",
+          "투피스 변기(물탱크 분리형)"
+        ]
+      },
+      {
+        "key": "faucetsAndShowers",
+        "title": "수전 · 샤워",
+        "items": [
+          "일반 세면 수전",
+          "일반 샤워 수전",
+          "핸드 샤워"
+        ]
+      },
+      {
+        "key": "storageAndAccessories",
+        "title": "수납 · 액세서리",
+        "items": [
+          "거울장(하부 간접 조명)",
+          "샤워 코너 선반",
+          "휴지걸이",
+          "수건걸이"
+        ]
+      },
+      {
+        "key": "features",
+        "title": "이 욕실의 특징",
+        "items": [
+          "타일 하프(half) 파티션으로 개방감 있는 샤워 공간 분리",
+          "세면대 뒤 선반벽(젠다이)"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "balanced-03",
+    "title": "기본형 03",
+    "categories": [
+      {
+        "key": "tiles",
+        "title": "타일",
+        "items": [
+          "600x600",
+          "다크 / 무광"
+        ]
+      },
+      {
+        "key": "basinsAndToilets",
+        "title": "세면대 · 변기",
+        "items": [
+          "일반 세면대",
+          "투피스 변기(물탱크 분리형)"
+        ]
+      },
+      {
+        "key": "faucetsAndShowers",
+        "title": "수전 · 샤워",
+        "items": [
+          "일반 세면 수전",
+          "일반 샤워 수전",
+          "핸드 샤워"
+        ]
+      },
+      {
+        "key": "storageAndAccessories",
+        "title": "수납 · 액세서리",
+        "items": [
+          "거울장(하부 간접 조명)",
+          "샤워 코너 선반",
+          "휴지 걸이",
+          "수건 걸이"
+        ]
+      },
+      {
+        "key": "features",
+        "title": "이 욕실의 특징",
+        "items": [
+          "일반 욕조",
+          "세면대 뒤 선반 벽(젠다이)"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "premium-01",
+    "title": "프리미엄 01",
+    "categories": [
+      {
+        "key": "tiles",
+        "title": "타일",
+        "items": [
+          "600x1200",
+          "다크 / 무광"
+        ]
+      },
+      {
+        "key": "basinsAndToilets",
+        "title": "세면대 · 변기",
+        "items": [
+          "언더볼 세면대",
+          "비데형 변기"
+        ]
+      },
+      {
+        "key": "faucetsAndShowers",
+        "title": "수전 · 샤워",
+        "items": [
+          "매립 세면 수전",
+          "매립 샤워 수전",
+          "해바라기 샤워 수전",
+          "핸드 샤워"
+        ]
+      },
+      {
+        "key": "storageAndAccessories",
+        "title": "수납 · 액세서리",
+        "items": [
+          "거울장(하부 간접 조명)",
+          "샴푸박스(니치)",
+          "휴지걸이",
+          "수건걸이"
+        ]
+      },
+      {
+        "key": "features",
+        "title": "이 욕실의 특징",
+        "items": [
+          "타일 풀(full) 파티션",
+          "세면대 뒤 선반 벽(젠다이)"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "premium-02",
+    "title": "프리미엄 02",
+    "categories": [
+      {
+        "key": "tiles",
+        "title": "타일",
+        "items": [
+          "600x600",
+          "화이트 / 유광"
+        ]
+      },
+      {
+        "key": "basinsAndToilets",
+        "title": "세면대 · 변기",
+        "items": [
+          "탑볼 세면대",
+          "비데형 변기"
+        ]
+      },
+      {
+        "key": "faucetsAndShowers",
+        "title": "수전 · 샤워",
+        "items": [
+          "매립 세면 수전",
+          "매립 샤워 수전",
+          "해바라기 샤워 수전",
+          "핸드 샤워"
+        ]
+      },
+      {
+        "key": "storageAndAccessories",
+        "title": "수납 · 액세서리",
+        "items": [
+          "거울장(하부 간접 조명)",
+          "샴푸박스(니치)",
+          "휴지걸이",
+          "수건걸이"
+        ]
+      },
+      {
+        "key": "features",
+        "title": "이 욕실의 특징",
+        "items": [
+          "타일 하프(half) 파티션으로 개방감 있는 샤워 공간 분리",
+          "세면대 뒤 선반 벽(젠다이)"
+        ]
+      }
+    ]
+  }
+]

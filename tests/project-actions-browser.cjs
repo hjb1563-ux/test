@@ -15,9 +15,10 @@ const key = 'bath-designer-selections-v2';
     const saved = () => page.evaluate(key => JSON.parse(localStorage.getItem(key)), key);
     async function fresh() {
         await page.goto(base + '/design');
-        await page.locator('.projectInfoForm,.builderCompactFlow').first().waitFor();
+        await page.locator('#style-preview-title,.projectInfoForm,.builderCompactFlow').first().waitFor();
         await page.evaluate(key => localStorage.removeItem(key), key);
         await page.reload();
+        await page.getByRole('button', { name: '프로젝트 정보 입력하기', exact: true }).click();
         await page.locator('.projectInfoForm').waitFor();
     }
     async function start(customer, project) {
@@ -57,7 +58,7 @@ const key = 'bath-designer-selections-v2';
             await page.goto(base + '/result');
             await page.locator('.consultationSheet').waitFor();
             const actions = page.locator('.consultationActionsWrap .resultActions');
-            assert.deepEqual(await actions.getByRole('button').allTextContents(), ['공사 개요만 복사', '상담서 전체 복사', '인쇄 / PDF 저장', '선택 수정']);
+            assert.deepEqual(await actions.getByRole('button').allTextContents(), ['공사 개요만 복사', '상담서 전체 텍스트 복사', '상담서 전체 복사', '인쇄 / PDF 저장', '선택 수정']);
             assert.equal(await page.getByRole('button', { name: '선택 내용 복사', exact: true }).count(), 0);
             const before = await saved();
             await page.getByRole('button', { name: '공사 개요만 복사', exact: true }).click();

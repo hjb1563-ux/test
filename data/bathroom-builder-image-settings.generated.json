@@ -52,11 +52,11 @@
     "showBuilderImage": false
   },
   "partitionShower:half-partition": {
-    "builderImage": "/images/bathroom-builder/structure/partition/half-partition.jpg",
+    "builderImage": "/images/bathroom-builder/structure/partition/%ED%95%98%ED%94%84%20%ED%8C%8C%ED%8B%B0%EC%85%98.png",
     "showBuilderImage": true
   },
   "partitionShower:full-partition": {
-    "builderImage": "/images/bathroom-builder/structure/partition/full-partition.jpg",
+    "builderImage": "/images/bathroom-builder/structure/partition/%ED%92%80%ED%8C%8C%ED%8B%B0%EC%85%98.png",
     "showBuilderImage": true
   },
   "partitionShower:fixed-glass": {
@@ -68,7 +68,7 @@
     "showBuilderImage": true
   },
   "partitionShower:bathtub-partition": {
-    "builderImage": "/images/bathroom-builder/inbox/%EC%9A%95%EC%A1%B0%20%ED%8C%8C%ED%8B%B0%EC%85%98.png",
+    "builderImage": "/images/bathroom-builder/structure/partition/%EC%9A%95%EC%A1%B0%20%ED%8C%8C%ED%8B%B0%EC%85%98.png",
     "showBuilderImage": true
   },
   "niche:none": {

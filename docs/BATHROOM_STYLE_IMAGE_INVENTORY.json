@@ -1,0 +1,154 @@
+[
+    {
+        "id": "essential-01",
+        "source": "public/images/bathroom-builder/inbox/실속형 욕실 사진1 (유리파티션).png",
+        "destination": "public/images/bathroom-styles/essential/실속형 욕실 사진1 (유리파티션).png",
+        "width": 1446,
+        "height": 1087,
+        "bytes": 2234453,
+        "sha256": "6DCC0F12B49CE6E58C3637F713AADEECB87DDC7C9D93809D659CB7BFBFEEA7A9",
+        "previousVersions": [
+            {
+                "width": 1448,
+                "height": 1086,
+                "bytes": 2303953,
+                "sha256": "F43C1FF0367408F409C82615EEC738925B91AD9A9298F1F3E9C4986C7F05919D"
+            }
+        ],
+        "updatedAt": "2026-10-31",
+        "updateNote": "User replaced essential-01; current photo matches the existing product content."
+    },
+    {
+        "id": "essential-02",
+        "source": "public/images/bathroom-builder/inbox/실속형 욕실 사진2 (욕조).png",
+        "destination": "public/images/bathroom-styles/essential/실속형 욕실 사진2 (욕조).png",
+        "width": 1449,
+        "height": 1085,
+        "bytes": 2099360,
+        "sha256": "08A544E2A4878A239997D58AD195E539409799EB63519D8334B7CD49CAFECA27",
+        "previousVersions": [
+            {
+                "width": 1448,
+                "height": 1086,
+                "bytes": 2370688,
+                "sha256": "8C9B4568D35F1DC321538634E46405C83E30A1E3931869627C28E85D51102B32"
+            }
+        ],
+        "updatedAt": "2026-10-31",
+        "updateNote": "User replaced essential-02. Current image metadata refreshed; user-confirmed configuration preserved."
+    },
+    {
+        "id": "balanced-01",
+        "source": "public/images/bathroom-builder/inbox/기본형 욕실 사진 1 (풀 파티션).png",
+        "destination": "public/images/bathroom-styles/balanced/기본형 욕실 사진 1 (풀 파티션).png",
+        "width": 1445,
+        "height": 1089,
+        "bytes": 2057394,
+        "sha256": "20F0DB9BDDD5D64E08A7B48305B59AD7355A1E5931480917A8E8914A3AE41FFB",
+        "updatedAt": "2026-10-31",
+        "updateNote": "User replaced the reference photo; image metadata refreshed. User-confirmed configuration text is unchanged.",
+        "previousVersions": [
+            {
+                "width": 1448,
+                "height": 1086,
+                "bytes": 2389964,
+                "sha256": "E884D81C5F2C06E36ED07C4813DAE3EA24FA684D0DF1A2ACA614BCC2242B4E95"
+            },
+            {
+                "width": 1448,
+                "height": 1086,
+                "bytes": 2191040,
+                "sha256": "1C194816629EAD3D5A42151A8D7C7AE1F893989C0729444B4BEB9D2843E28CC7"
+            }
+        ]
+    },
+    {
+        "id": "balanced-02",
+        "source": "public/images/bathroom-builder/inbox/기본형 욕실 사진 2 (하프 파티션).png",
+        "destination": "public/images/bathroom-styles/balanced/기본형 욕실 사진 2 (하프 파티션).png",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 2400181,
+        "sha256": "D1F2235539F764149B9608E49796E44F486C5F23A9B1B13795BDEA5362F4FFE1",
+        "previousVersions": [
+            {
+                "width": 1443,
+                "height": 1090,
+                "bytes": 2339709,
+                "sha256": "36FA4947E4F5186AC8176C10E6FEDB56B47F7B16909B093487F3FDAE19E44DD1"
+            }
+        ],
+        "updatedAt": "2026-10-31",
+        "updateNote": "User replaced this reference photo in the dedicated folder; metadata describes the current file."
+    },
+    {
+        "id": "balanced-03",
+        "source": "public/images/bathroom-builder/inbox/기본형 욕실 사진 3(욕조).png",
+        "destination": "public/images/bathroom-styles/balanced/기본형 욕실 사진 3(욕조).png",
+        "width": 1450,
+        "height": 1085,
+        "bytes": 2482255,
+        "sha256": "C80F3C3CEBCD61D0B573D02131F4195ED8DCD5A3922704244FEE4AFB7AB715AF",
+        "previousVersions": [
+            {
+                "width": 1448,
+                "height": 1086,
+                "bytes": 2351448,
+                "sha256": "E7946280EC321A7CED571679CBF62EF2D17D8094C06C118FC7C540E04E117A9A"
+            }
+        ],
+        "updatedAt": "2026-10-31",
+        "updateNote": "User replaced the reference photo; image metadata refreshed. User-confirmed configuration text is unchanged."
+    },
+    {
+        "id": "premium-01",
+        "source": "public/images/bathroom-builder/inbox/프리미엄 욕실1 (풀 파티션).png",
+        "destination": "public/images/bathroom-styles/premium/프리미엄 욕실1 (풀 파티션).png",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 2552318,
+        "sha256": "CFFB619DB78D03C2A78B0CAB57D8E4A17050524736A4124434B97DC70EF55333",
+        "previousVersions": [
+            {
+                "width": 1456,
+                "height": 1080,
+                "bytes": 2415523,
+                "sha256": "E84F142F4056C5DFBF1B692D6B42BE9B8E426B1586CEA9FA63B820990EB8071F"
+            }
+        ],
+        "updatedAt": "2026-10-31",
+        "updateNote": "User replaced the reference photo; image metadata refreshed. User-confirmed configuration text is unchanged."
+    },
+    {
+        "id": "premium-02",
+        "source": "public/images/bathroom-builder/inbox/프리미얼 욕실2 (하프 파티션).png",
+        "destination": "public/images/bathroom-styles/premium/프리미엄 욕실2 (하프 파티션).png",
+        "width": 1421,
+        "height": 1107,
+        "bytes": 1929614,
+        "sha256": "186BE17FC707E855ED6E1F1514E414A0F8E1522AD20AABFA07205B0F14E6D611",
+        "previousVersions": [
+            {
+                "width": 1443,
+                "height": 1090,
+                "bytes": 2317517,
+                "sha256": "AD10BB1EE22D25AC077C37B9D9543CD35B95FAF773A11DAB8B0E11797EFAEF94"
+            },
+            {
+                "width": 1445,
+                "height": 1089,
+                "bytes": 2245096,
+                "sha256": "481DF5B604B1CC253C2DE2DC3C9B03806D2498670C094002236293E808F29B97"
+            },
+            {
+                "destination": "public/images/bathroom-styles/premium/프리미얼 욕실2 (하프 파티션).png",
+                "width": 1411,
+                "height": 1115,
+                "bytes": 2025803,
+                "sha256": "55BF2B5EB0D535833E6C7CB925CBF8872ECDC3E48EB7B0CA1FDA6A8F28E9E288"
+            }
+        ],
+        "updatedAt": "2026-10-31",
+        "updateNote": "User replaced and corrected the filename for premium-02; current destination, dimensions and hash refreshed."
+    }
+]

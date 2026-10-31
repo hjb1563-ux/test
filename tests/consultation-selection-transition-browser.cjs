@@ -1,0 +1,9 @@
+const assert=require('node:assert/strict'),{chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+(async()=>{const browser=await chromium.launch({channel:'chrome'});try{const context=await browser.newContext();await context.route('**/api/**',r=>r.abort());const page=await context.newPage();await page.goto((process.env.BUILDER_TEST_URL||'http://localhost:3120')+"/");
+await page.evaluate(()=>{localStorage.setItem('bath-designer-selections-v2','{"version":3,"memo":"original"}');sessionStorage.setItem('bath-designer-style-draft-v1:transition',JSON.stringify({exampleId:'essential-01',project:{version:3,projectInfo:{builderMode:'professional'},values:{tile:'ivory'}}}));});
+const original=await page.evaluate(()=>localStorage.getItem('bath-designer-selections-v2'));
+await page.goto((process.env.BUILDER_TEST_URL||'http://localhost:3120')+"/result?styleDraft=transition");const row=page.locator('[data-selection-key="waterproofing"]');await row.waitFor();assert.equal(await row.getAttribute('data-selection-status'),'unselected');
+for(const[name,status]of [['업체와 상담 후 결정','undecided'],['도막 방수','selected'],['도막 방수','unselected'],['도막 방수','selected']]){
+ await page.getByRole('button',{name:'방수 수정',exact:true}).click();await page.getByRole('radio',{name,exact:false}).click();await page.getByRole('link',{name:'상담서로 돌아가기',exact:true}).first().click();await row.waitFor();assert.equal(await row.getAttribute('data-selection-status'),status);await page.reload();await row.waitFor();assert.equal(await row.getAttribute('data-selection-status'),status);assert.equal(await page.evaluate(()=>localStorage.getItem('bath-designer-selections-v2')),original);
+}
+console.log('PASS real STEP transitions: missing -> deferred -> selected -> missing -> selected, refresh and return, original storage untouched');await context.close();}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

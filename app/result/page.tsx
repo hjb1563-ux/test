@@ -6,12 +6,16 @@ import { copyConsultationImage } from '../../data/consultation-image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import SiteHeader from '../../components/SiteHeader';
+import { readStyleDraft, writeStyleDraft, withStyleDraft, styleDraftNotice, styleDraftTitle } from '../../data/bathroom-style-draft';
 import { builderBathroomSteps as steps } from '../../data/bathroom-builder-options';
 import { normalizeBathroomValues } from '../../data/bathroom-selection';
-import { projectMetadata, STORAGE, consultationEditUrl, readProject, normalizeProject, consultationOutputRows, consultationSummaryText, generateConsultationSummary, formatLastModified, updateProjectContent, type LocalProject } from '../../data/bathroom-consultation';
+import { projectMetadata, STORAGE, consultationEditUrl, readProject, normalizeProject, consultationOutputRows, consultationStatusLabel, consultationText, consultationSummaryText, generateConsultationSummary, formatLastModified, updateProjectContent, type LocalProject } from '../../data/bathroom-consultation';
 
 function Content() {
   const params = useSearchParams();
+  const draftId = params.get('styleDraft');
+  const [draftExample, setDraftExample] = useState('');
+  const [draftError, setDraftError] = useState(false);
   const [project, setProject] = useState<LocalProject>(() => normalizeProject(null));
   const [ready, setReady] = useState(false);
   const [status, setStatus] = useState('');
@@ -39,6 +43,12 @@ function Content() {
   }, [highlightedCategory]);
 
   useEffect(() => {
+    if (draftId) {
+      try { const draft = readStyleDraft(draftId); setProject(draft.project); setDraftExample(draft.exampleId); setDraftError(false); }
+      catch { setDraftError(true); }
+      setReady(true);
+      return;
+    }
     let saved = normalizeProject(null);
     try { saved = readProject(); } catch { setSaveStatus('저장된 내용을 불러오지 못했어요.'); }
     let next = saved;
@@ -63,7 +73,7 @@ function Content() {
   const mode = project.projectInfo.builderMode;
   const rows = consultationOutputRows(project.values, mode);
   const allVisibleSteps = getVisibleSteps(mode);
-  const visibleSteps = allVisibleSteps.filter(step => mode === 'professional' || rows.some(row => row.stepIndex === step.stepIndex));
+  const visibleSteps = allVisibleSteps;
   const columnSize = Math.max(1, Math.ceil(visibleSteps.length / 2));
   const summary = generateConsultationSummary(project.values, mode);
   const modified = formatLastModified(project.lastModifiedAt);
@@ -74,6 +84,10 @@ function Content() {
 
   function updateMetadata(patch: Partial<Pick<LocalProject, 'memo' | 'checks' | 'specialNotes'>>) {
     let next = updateProjectContent(project, patch);
+    if (draftId) {
+      try { writeStyleDraft(draftId, next); setProject(next); setSaveStatus('임시 초안'); } catch { setSaveStatus('초안 변경을 보관하지 못했어요.'); }
+      return;
+    }
     try {
       const base = metadataKey === STORAGE ? readProject() : project;
       next = updateProjectContent(base, patch);
@@ -88,10 +102,10 @@ function Content() {
     }
   }
 
-  async function copy() {
-    const text = consultationSummaryText(project);
-    try { await navigator.clipboard.writeText(text); setCopyFallback(''); setStatus('공사 개요를 복사했어요. 업체에 붙여넣어 전달하세요.'); }
-    catch { setCopyFallback(text); setStatus('공사 개요를 복사하지 못했어요. 아래 내용을 선택해 직접 복사해주세요.'); }
+  async function copy(full = false) {
+    const text = (draftId ? `${styleDraftTitle(draftExample)} · 예시 기반 상담서 초안\n${styleDraftNotice}\n` : '') + (full ? consultationText(rows, project.specialNotes, project.memo, project.projectInfo, project.lastModifiedAt) : consultationSummaryText(project));
+    try { await navigator.clipboard.writeText(text); setCopyFallback(''); setStatus(full ? '상담서 전체 텍스트를 복사했어요.' : '공사 개요를 복사했어요. 업체에 붙여넣어 전달하세요.'); }
+    catch { setCopyFallback(text); setStatus(full ? '상담서 전체 텍스트를 복사하지 못했어요. 아래 내용을 선택해 직접 복사해주세요.' : '공사 개요를 복사하지 못했어요. 아래 내용을 선택해 직접 복사해주세요.'); }
   }
 
   async function copyImage() {
@@ -107,23 +121,31 @@ function Content() {
 
   function edit(step = allVisibleSteps[0].stepIndex + 1) {
     try {
+      if (draftId) {
+        writeStyleDraft(draftId, { ...project, current: step - 1 });
+        window.location.assign(withStyleDraft(consultationEditUrl(step - 1), draftId));
+        return;
+      }
       localStorage.setItem(STORAGE, JSON.stringify({ ...project, current: step - 1 }));
       window.location.assign(consultationEditUrl(step - 1));
     } catch { setStatus('수정할 내용을 저장하지 못했어요. 요약을 복사하거나 인쇄해 보관해주세요.'); }
   }
 
   if (!ready) return <main className="result">상담서를 불러오는 중입니다.</main>;
+  if (draftError) return <main className="result"><p role="alert">임시 초안이 만료되었거나 불러올 수 없습니다. 기존 프로젝트는 유지됩니다.</p><Link href="/design">내 욕실 만들기로 돌아가기</Link></main>;
   return <main className="consultationPage">
     <div className="printHide"><SiteHeader /></div>
     <div className="consultationActionsWrap printHide" data-capture-ignore="true">
-      <div className="resultActions" role="group" aria-label="상담서 작업"><button className="secondary" onClick={copy}>공사 개요만 복사</button><button className="secondary" disabled={imageCopyBusy} aria-busy={imageCopyBusy} aria-describedby="consultation-image-copy-help" onClick={copyImage}>{imageCopyBusy ? '복사 중...' : '상담서 전체 복사'}</button><button className="secondary" onClick={() => window.print()}>인쇄 / PDF 저장</button><button className="secondary" onClick={() => edit()}>선택 수정</button></div>
+      <div className="resultActions" role="group" aria-label="상담서 작업"><button className="secondary" onClick={() => copy()}>공사 개요만 복사</button><button className="secondary" onClick={() => copy(true)}>상담서 전체 텍스트 복사</button><button className="secondary" disabled={imageCopyBusy} aria-busy={imageCopyBusy} aria-describedby="consultation-image-copy-help" onClick={copyImage}>{imageCopyBusy ? '복사 중...' : '상담서 전체 복사'}</button><button className="secondary" onClick={() => window.print()}>인쇄 / PDF 저장</button><button className="secondary" onClick={() => edit()}>선택 수정</button></div>
       <span id="consultation-image-copy-help" className="sr-only">상담서 전체를 PNG 이미지로 클립보드에 복사합니다.</span>
       <p className="consultationNote" role="status">{status}</p>
+      {draftId && <Link className="resumeLink" href={withStyleDraft('/design?returnTo=consultation&projectInfo=1', draftId)}>프로젝트 정보 입력·수정</Link>}
       {copyFallback && <label className="copyFallback">복사할 상담 내용<textarea readOnly value={copyFallback} onFocus={event => event.currentTarget.select()} /></label>}
     </div>
     <article ref={consultationCaptureRef} className="result consultationSheet unifiedSheet consultationDocument">
       <header className="sheetHeading"><div className="eyebrow">BATHROOM / CONSULTATION</div><h1>욕실 리모델링 상담서</h1>
         <p>내가 선택한 욕실 구성과 업체에 전달할 내용을 한곳에 정리했어요.</p>
+        {draftId && <p data-style-draft-notice><strong>{styleDraftTitle(draftExample)} · 예시 기반 상담서 초안</strong><br />{styleDraftNotice}<br />기존 프로젝트와 분리된 임시 초안입니다. 이 탭을 닫으면 만료됩니다.{!project.projectInfo.customerName && !project.projectInfo.projectName && ' 프로젝트 정보 미입력'}</p>}
         {(displayProjectTitle || modified || mode) && <div className="sheetProjectIdentity">
           {displayProjectTitle && <p className="sheetProjectTitle">{displayProjectTitle}</p>}
           {project.projectInfo.customerName && <p className="sheetProjectInfo"><span><span className="sheetInfoLabel">고객명 ·</span> <span className="sheetCustomerName">{project.projectInfo.customerName}</span></span></p>}
@@ -138,7 +160,7 @@ function Content() {
       </section>
       <section className="sheetSelections"><h2>STEP별 선택 내용</h2>
         <div className="sheetColumns">{[0, columnSize].map(start => <div className="sheetColumn" key={start}>{visibleSteps.slice(start, start + columnSize).map((step, offset) => { const index = allVisibleSteps.findIndex(item => item.key === step.key); return <section id={`consultation-${step.key}`} className={`sheetStep${highlightedCategory === step.key ? ' sheetStep--highlighted' : ''}`} key={step.key}><header><h3><span>{String(index + 1).padStart(2, '0')}</span> {step.title}</h3><button data-capture-ignore="true" className="printHide resumeLink" aria-label={`${step.title} 수정`} onClick={() => edit(step.stepIndex + 1)}>수정</button></header>
-          <dl>{rows.filter(row => row.stepIndex === step.stepIndex).map(row => <div className={`sheetRow${row.pending ? ' sheetRow--pending' : ''}`} key={row.key}><dt>{row.title}</dt><dd><strong className={row.label === '미정' ? 'sheetUndecidedValue' : undefined}>{row.choices.length && !row.choices.some(choice => choice.requiresCustomText) ? row.choices.map(choice => choice.name).join(' · ') : row.label}</strong><div className="rowStatus">{row.pending && row.reason !== row.label && <span>{row.reason}</span>}</div>
+          <dl>{rows.filter(row => row.stepIndex === step.stepIndex).map(row => <div className={`sheetRow sheetRow--${row.status}`} data-selection-key={row.key} data-selection-status={row.status} key={row.key}><dt>{row.title}</dt><dd>{row.status === 'selected' && <strong>{row.displayLabel}</strong>}<div className="sheetSelectionState"><span className={`sheetStatusBadge sheetStatusBadge--${row.status}`}>{consultationStatusLabel(row.status)}</span>{row.status === 'unselected' && <span className="sheetStatusHelp">상담 시 확인 필요</span>}{row.status === 'selected' && row.reason === '기타 내용 미입력' && <span className="sheetStatusHelp">기타 내용 미입력</span>}</div>
           </dd></div>)}</dl></section>; })}</div>)}</div>
       </section>
       <section className="sheetMemo"><h2><label htmlFor="consultation-memo">업체에 전달할 메모</label> <small>선택 입력</small></h2><textarea data-capture-ignore="true" id="consultation-memo" className="printHide" value={project.memo} placeholder="예: 청소가 쉬웠으면 좋겠어요. 아이와 함께 사용하는 욕실입니다. 수납공간을 넉넉하게 하고 싶어요." onChange={event => updateMetadata({ memo: event.target.value })} /><p data-capture-text="true" className="printOnly memoPrint">{project.memo.trim() || '별도 메모 없음'}</p><small data-capture-ignore="true" className="printHide" role="status">{saveStatus}</small></section>

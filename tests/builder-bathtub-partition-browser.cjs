@@ -16,7 +16,7 @@ const message='욕조 파티션 선택 시 선택 불가';
  const serveFont=require('./helpers/font-response-cache.cjs')(errors,10000);
  await context.route('**/*',async r=>{if(await serveFont(r))return;const u=new URL(r.request().url());if(u.origin===new URL(base).origin||['fonts.googleapis.com','fonts.gstatic.com'].includes(u.hostname))return r.continue();errors.push('Unexpected external request: '+u.hostname);return r.abort();});
  const imageUrl=require('../data/bathroom-builder-image-settings.generated.json')['partitionShower:bathtub-partition'].builderImage;
- assert.ok(imageUrl&&decodeURIComponent(imageUrl).endsWith('/inbox/욕조 파티션.png'));
+ assert.ok(imageUrl&&decodeURIComponent(imageUrl).endsWith('/structure/partition/욕조 파티션.png'));
  const output=path.join(require('node:os').tmpdir(),'bath-bathtub-partition');await fs.mkdir(output,{recursive:true});
  const group=k=>page.locator(`.choiceGroup:has(#builder-${k}-content)`);
  const saved=()=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);

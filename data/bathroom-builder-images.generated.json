@@ -37,5 +37,7 @@
   "wallTileSize:600x600": "/images/bathroom-builder/tile/wall/600x600.png",
   "waterproofing:coating-waterproofing": "/images/bathroom-builder/waterproofing/coating.png",
   "waterproofing:combined-waterproofing": "/images/bathroom-builder/waterproofing/liquid-plus-coating.png",
-  "waterproofing:liquid-waterproofing": "/images/bathroom-builder/waterproofing/liquid.png"
+  "waterproofing:liquid-waterproofing": "/images/bathroom-builder/waterproofing/liquid.png",
+  "partition:half-partition": "/images/bathroom-builder/structure/partition/%ED%95%98%ED%94%84%20%ED%8C%8C%ED%8B%B0%EC%85%98.png",
+  "partition:full-partition": "/images/bathroom-builder/structure/partition/%ED%92%80%ED%8C%8C%ED%8B%B0%EC%85%98.png"
 }

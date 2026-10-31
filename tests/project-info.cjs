@@ -92,7 +92,7 @@ function render() {
 
 const consultation=load(path.join(root,'data/bathroom-consultation'));
 const saved=()=>JSON.parse(storage.get(consultation.STORAGE));
-function fresh(project,query='') {slots=[];params.forEach((v,k)=>params.delete(k));new URLSearchParams(query).forEach((v,k)=>params.set(k,v));storage.clear();if(project)storage.set(consultation.STORAGE,JSON.stringify(project));return render();}
+function fresh(project,query='') {slots=[];params.forEach((v,k)=>params.delete(k));new URLSearchParams(query).forEach((v,k)=>params.set(k,v));storage.clear();if(project)storage.set(consultation.STORAGE,JSON.stringify(project));let tree=render();const preview=all(tree,n=>n.type==='button'&&text(n).includes('프로젝트 정보 입력하기'))[0];if(preview){assert.ok(!project&&!query,'saved drafts and deep links must bypass preview');assert.equal(storage.has(consultation.STORAGE),false,'preview must not save a consultation');assert.equal(all(tree,n=>n.type==='progress').length,0);preview.props.onClick();tree=render();}return tree;}
 const form=t=>all(t,n=>n.type==='form')[0];
 function enter(t,id,value){all(t,n=>n.type==='input'&&n.props.id===id)[0].props.onChange({target:{value},currentTarget:{value,selectionStart:value.length}});return render();}
 function submit(t){all(t,n=>n.type==='button'&&/욕실 만들기 시작|프로젝트 정보 저장/.test(text(n)))[0].props.onClick();return render();}
@@ -103,7 +103,7 @@ tree=fresh(legacy);assert.ok(form(tree));assert.equal(all(tree,n=>n.type==='prog
 all(tree,n=>n.type==='button'&&n.props['aria-label']==='프로젝트 정보 수정')[0].props.onClick();tree=render();tree=enter(tree,'project-name','수정 프로젝트');tree=submit(tree);assert.equal(all(tree,n=>n.type==='progress')[0].props.value,8);assert.equal(JSON.stringify(saved().values),before);assert.equal(JSON.stringify(saved().imageHistoryOrder),history);assert.equal(saved().memo,'상담 메모');
 tree=fresh(saved());assert.equal(all(tree,n=>n.type==='progress')[0].props.value,8);assert.equal(form(tree),undefined);
 const rows=consultation.consultationRows(saved().values);assert.equal(rows.length,consultation.consultationRows(legacy.values).length);assert.ok(consultation.consultationText(rows,'','',saved().projectInfo).includes('프로젝트명: 수정 프로젝트'));
-confirmReset=true;all(tree,n=>n.type==='button'&&n.props['aria-label']==='처음부터 다시 만들기')[0].props.onClick();tree=render();assert.ok(form(tree));assert.equal(saved().projectInfo.projectName,'');assert.equal(Object.keys(saved().values).length,0);
+confirmReset=true;all(tree,n=>n.type==='button'&&n.props['aria-label']==='처음부터 다시 만들기')[0].props.onClick();tree=render();assert.equal(form(tree),undefined);assert.equal(storage.has(consultation.STORAGE),false);all(tree,n=>n.type==='button'&&text(n).includes('프로젝트 정보 입력하기'))[0].props.onClick();tree=render();assert.ok(form(tree));assert.equal(saved().projectInfo.projectName,'');assert.equal(Object.keys(saved().values).length,0);
 for(const step of builderSteps)for(const group of step.groups){if(group.choices.some(c=>c.requiresCustomText)){const code=fs.readFileSync(path.join(root,'components/BuilderChoiceGroup.tsx'),'utf8');assert.ok(code.includes(group.key+':'),group.key+' placeholder');}}
 assert.equal(builderSteps.length,16);console.log('PASS project info: empty/name/project/both/trim, legacy resume, refresh, edit preserves selections/history/memo/counts, copy, reset, custom placeholders, 16 steps');
 

@@ -38,6 +38,7 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024
   }
   try {
     await page.goto(base+'/design'); await page.evaluate(() => localStorage.clear()); await page.reload();
+    await page.getByRole('button',{name:'프로젝트 정보 입력하기',exact:true}).click();
     await page.locator('.projectInfoForm').waitFor();
     assert.equal(await page.getByRole('radio',{name:/^일반 고객용/}).getAttribute('aria-checked'),'true');
     await page.getByRole('button',{name:'욕실 만들기 시작'}).click();
@@ -83,7 +84,7 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024
         await seed(mode,15,technical); assert.equal(await page.getByText('최종 검토',{exact:true}).count(),0);
         await page.locator('a:visible').filter({hasText:/상담서 보기/}).last().click();
         await page.locator('.sheetStep').first().waitFor();
-        assert.equal(await page.locator('.sheetStep').count(),mode==='consumer'?4:15);
+        assert.equal(await page.locator('.sheetStep').count(),mode==='consumer'?10:15);
         assert.equal(await page.locator('#consultation-waterproofing').count(),mode==='consumer'?0:1);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth>innerWidth),false);
         await page.screenshot({path:`tests/artifacts/builder-mode/${mode}-${width}-report.png`,fullPage:true});
@@ -127,7 +128,7 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024
     assert.ok(page.url().includes('step=4'));
     assert.ok((await page.locator('.stepMeta').textContent()).includes('03 / 10'));
     await page.getByRole('link',{name:'상담서로 돌아가기',exact:true}).click(); await page.locator('#consultation-tile').waitFor();
-    assert.equal(await page.locator('.sheetStep').count(),4);
+    assert.equal(await page.locator('.sheetStep').count(),10);
     await page.getByRole('link',{name:'내 욕실 만들기로 돌아가기',exact:true}).click(); await page.locator('.builderProgress').waitFor();
     await switchMode('professional');
     await page.goto(base+'/result'); await page.locator('#consultation-waterproofing').waitFor();

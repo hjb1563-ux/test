@@ -242,7 +242,7 @@ assert.equal(all(resultTree,n=>n.props.className==='sheetCompleted').length,0);
 assert.ok(consultation.consultationRows(changed).some(r=>r.site));
 const newCopy=consultation.consultationText(consultation.consultationRows(changed),'','');
 assert.ok(!/미결정|아직 결정하지 않은 항목|니치/.test(newCopy));
-assert.ok(newCopy.includes('변기: 미정'));
+assert.ok(newCopy.includes('변기: 미선택 · 상담 시 확인 필요'));
 assert.ok(newCopy.includes('환풍기: 힘펠 휴젠뜨'));assert.ok(!/현장 확인|현장에서 확인/.test(newCopy));
 // History may preview earlier steps without changing the persisted selection.
 tree=mount(13,{demolition:'full-demolition',partitionShower:'half-partition',wallTileSize:'600x600',grout:'grout-polyurea'});

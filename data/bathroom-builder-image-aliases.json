@@ -10,6 +10,9 @@
     "매립 샤워&욕조 수전"
   ],
   "preferredFiles": {
+    "partitionShower:half-partition": "structure/partition/하프 파티션.png",
+    "partitionShower:full-partition": "structure/partition/풀파티션.png",
+    "partitionShower:bathtub-partition": "structure/partition/욕조 파티션.png",
     "wallTileSize:300x600": "tile/size/벽 타일 300x600.png",
     "wallTileSize:600x600": "tile/size/벽 타일 600x600.png",
     "wallTileSize:600x1200": "tile/size/벽타일600x1200.png",

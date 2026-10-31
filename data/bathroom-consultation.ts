@@ -60,14 +60,21 @@ export function consultationRows(values: BathroomValues, mode: BuilderMode = 'pr
     const custom = values[customTextKey(group.key)];
     const hasText = ['accessory', 'ventilation'].includes(group.key) && typeof custom === 'string' && !!custom.trim();
     if (!choices.length && !hasText) reasons.push('미정');
-    return { key: group.key, title: group.title, stepTitle: step.title, stepIndex, displayIndex, label: selectionLabel(values, group), choices, pending: reasons.length > 0, reason: Array.from(new Set(reasons)).join(' · '), site: siteCheck(group.key, values) };
+    const deferred = choices.length > 0 && choices.every(choice => /^(consult|undecided|notSure|unknown(?:-condition)?)$/i.test(choice.id) || /모르겠/.test(choice.name));
+    const status: 'selected' | 'undecided' | 'unselected' = deferred ? 'undecided' : choices.length || hasText ? 'selected' : 'unselected';
+    const displayLabel = status === 'unselected' ? '미선택' : status === 'undecided' ? '미정' : choices.length ? choices.map(choice => {
+      if (!choice.requiresCustomText) return choice.name;
+      return typeof custom === 'string' && custom.trim() ? `${choice.name} · ${custom.trim()}` : `${choice.name} · 내용 미입력`;
+    }).join(' · ') : String(custom).trim();
+    return { key: group.key, title: group.title, stepTitle: step.title, stepIndex, displayIndex, label: selectionLabel(values, group), displayLabel, status, choices, pending: reasons.length > 0, reason: Array.from(new Set(reasons)).join(' · '), site: siteCheck(group.key, values) };
   }));
 }
 export type ConsultationRow = ReturnType<typeof consultationRows>[number];
-// Output omits unanswered consumer categories; Builder counts keep all visible questions.
+// Detailed output includes every question offered by the current mode.
 export function consultationOutputRows(values: BathroomValues, mode: BuilderMode) {
-  return consultationRows(values, mode).filter(row => mode === 'professional' || !row.pending);
+  return consultationRows(values, mode);
 }
+export const consultationStatusLabel = (status: ConsultationRow['status']) => status === 'selected' ? '선택 완료' : status === 'undecided' ? '미정' : '미선택';
 
 export type ProjectInfo = { builderMode: BuilderMode; customerName: string; projectName: string; propertyType: '아파트' | '빌라' | '상가' | null; occupancyStatus: '살고 있다' | '이사갈 곳이다' | null; areaPyeong: string; constructionDate: string | null; budget: number | null };
 export const numericDigits = (value: string, max: number) => value.replace(/[^0-9]/g, '').slice(0, max);
@@ -212,13 +219,13 @@ export function consultationText(rows: ConsultationRow[], specialNotes: string, 
   rows = rows.filter(row => visibleKeys.has(row.key));
   if (projectInfo.builderMode === 'consumer') {
     const construction = getVisibleSteps('consumer')[0].groups.find(group => group.key === 'demolition')!;
-    rows = rows.filter(row => !row.pending).map(row => row.key !== 'demolition' ? row : {
-      ...row, label: row.choices.map(choice => construction.choices.find(item => item.id === choice.id)?.name ?? choice.name).join(', ') || row.label,
+    rows = rows.map(row => row.key !== 'demolition' || row.status !== 'selected' ? row : {
+      ...row, displayLabel: row.choices.map(choice => construction.choices.find(item => item.id === choice.id)?.name ?? choice.name).join(' · ') || row.displayLabel,
     });
   }
-  const pending = rows.filter(row => row.pending);
+  const pending = rows.filter(row => row.status !== 'selected');
   return ['[욕실 리모델링 상담서]', ...(projectInfo.projectName ? [`프로젝트명: ${projectInfo.projectName}`] : []), ...(projectInfo.customerName ? [`고객명: ${projectInfo.customerName}`] : []), `작성 모드 · ${builderModeLabel(projectInfo.builderMode)}`, ...projectMetadata(projectInfo), ...(formatLastModified(lastModifiedAt) ? [`마지막 수정: ${formatLastModified(lastModifiedAt)}`] : []), `선택 완료 ${rows.length - pending.length}`, '집계 기준: 선택 카테고리 수',
-    ...getVisibleSteps(projectInfo.builderMode).filter(step => step.key !== 'checklist').flatMap((step, index) => projectInfo.builderMode === 'consumer' && !rows.some(row => row.stepIndex === step.stepIndex) ? [] : [`\n${String(index + 1).padStart(2, '0')} ${step.title}\n${rows.filter(row => row.stepIndex === step.stepIndex).map(row => `${row.title}: ${row.label}`).join('\n')}`]),
+    ...getVisibleSteps(projectInfo.builderMode).filter(step => step.key !== 'checklist').flatMap((step, index) => [`\n${String(index + 1).padStart(2, '0')} ${step.title}\n${rows.filter(row => row.stepIndex === step.stepIndex).map(row => `${row.title}: ${row.displayLabel}${row.status === 'selected' ? ' [선택 완료]' : ''}${row.status === 'unselected' ? ' · 상담 시 확인 필요' : ''}`).join('\n')}`]),
     '\n업체 실측 후 최종 확인이 필요합니다. 선택 내용은 상담을 위한 희망 사항입니다.',
     ...(specialNotes.trim() ? [`\n[특이사항]\n${specialNotes.trim()}`] : []),
     ...(memo.trim() ? [`\n[업체에 전달할 메모]\n${memo.trim()}`] : []),

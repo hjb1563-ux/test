@@ -185,12 +185,15 @@ assert.equal(saved().lastModifiedAt,null);
 fresh(consultation.normalizeProject({version:3,values:{}}));tree=resultRender();
 for(const card of byClass(tree,'sheetStep')){
  for(const row of byClass(card,'sheetRow')){
-  const undecided=byClass(row,'sheetUndecidedValue');assert.equal(undecided.length,1);
-  assert.equal(text(undecided[0]),'미정');assert.equal(text(row).split('미정').length-1,1);
+  const missing=byClass(row,'sheetStatusBadge--unselected');assert.equal(missing.length,1);
+  assert.equal(text(missing[0]),'미선택');assert.equal(text(row).split('미선택').length-1,1);
  }
 }
 fresh({...original,values:{...original.values,ventilationOther:'',showerFaucet:['other'],showerFaucetOther:''}});tree=resultRender();
-assert.ok(byClass(tree,'sheetUndecidedValue').some(node=>text(node)==='미정'));
+assert.ok(byClass(tree,'sheetStatusBadge--unselected').some(node=>text(node)==='미선택'));
+assert.ok(text(tree).includes('기타 · 내용 미입력'));
+fresh({...original,values:{...original.values,waterproofing:'consult'}});tree=resultRender();
+assert.ok(byClass(tree,'sheetStatusBadge--undecided').some(node=>text(node)==='미정'));
 const tileCard=all(tree,n=>n.props.id==='consultation-tile')[0];
 const white=all(tileCard,n=>n.type==='strong'&&text(n)==='화이트')[0];assert.equal(white.props.className,undefined);
 console.log('PASS condition detail retained and excluded from overview; undecided badge all 15 cards, duplicate status removed, normal values unchanged');
