@@ -1,0 +1,11 @@
+.page{min-height:100vh;background:var(--paper,#f7f4ee);color:var(--ink,#303631);padding:0 24px 64px}
+.header{max-width:1080px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:28px 0;border-bottom:1px solid var(--line,#ded7cc)}
+.header a{text-decoration:none;color:inherit;font-family:Georgia,serif;letter-spacing:.03em}.header span{font-size:13px;color:var(--muted,#716b63)}
+.content{max-width:1080px;margin:56px auto 0}.eyebrow{font-size:11px;letter-spacing:.15em;color:var(--accent,#96664f)}
+.content h1{font-size:clamp(26px,4vw,36px);line-height:1.4;margin:12px 0 20px}.content p{font-size:14px;line-height:1.8;overflow-wrap:anywhere}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin:24px 0}.page button{border:1px solid var(--line,#ded7cc);border-radius:8px;padding:11px 18px;background:#fffdf9;color:inherit;font:inherit;cursor:pointer;min-height:44px}.page button:disabled{opacity:.6;cursor:wait}
+.page button:focus-visible,.page a:focus-visible,.page input:focus-visible{outline:2px solid var(--accent,#96664f);outline-offset:3px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.cards article{padding:24px;border:1px solid var(--line,#ded7cc);border-radius:12px;background:#fffdf9;min-width:0}.cards h2{font-size:14px;font-weight:500;margin:0 0 20px}.cards strong{font-size:clamp(24px,3vw,34px);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.content .definition{max-width:780px;color:var(--muted,#716b63);font-size:13px}.form{display:grid;gap:10px;max-width:400px;margin-top:28px}.form label{font-size:14px}.form input{width:100%;min-width:0;box-sizing:border-box;padding:12px;border:1px solid var(--line,#ded7cc);border-radius:8px;background:#fffdf9;color:inherit;font:inherit}.form button{margin-top:14px;background:var(--ink,#303631);color:#fff}.message{min-height:25px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.page{padding:0 20px 40px}.content{margin-top:36px}.cards{gap:12px}.cards article{padding:18px 14px}.cards h2{font-size:13px}.actions{justify-content:flex-start}}

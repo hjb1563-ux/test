@@ -1,0 +1,99 @@
+{
+  "base": "e0b5496ebd628dcb4847f0f9fbbc5ff08c89ac06",
+  "branch": "verify/visitor-admin-https-20261106",
+  "files": [
+    {
+      "path": "app/admin/login/page.tsx",
+      "sha256": "41b288fec83e42f2f9e854773a590fdc8f95cfab72e163e772507eb8af8e7b27"
+    },
+    {
+      "path": "app/admin/setup-password/page.tsx",
+      "sha256": "f8aedb1004bd34883cfda2f9fb244d348eb26ef3d631401e33af0dc2781bb30e"
+    },
+    {
+      "path": "app/admin/visitors/page.tsx",
+      "sha256": "b99165c1930ba2ba85d5aae12f566c006c92af06563c56cfde4fa283680291fe"
+    },
+    {
+      "path": "app/api/admin/session/route.ts",
+      "sha256": "be0b905618456a0a2e65b43722e8d39bb68007431fb190a4053ca888447ed123"
+    },
+    {
+      "path": "app/api/admin/visitors/route.ts",
+      "sha256": "bd18e7151913c2eb6dbe461f27422f6ac68eda4980654ff612c1815318963bab"
+    },
+    {
+      "path": "app/api/admin/password/route.ts",
+      "sha256": "0b72dbd99c4beb44b817e779c22b5fe56503609051251081db02c8d72c98df4c"
+    },
+    {
+      "path": "app/api/admin/password/recovery/route.ts",
+      "sha256": "e05685eb7b2d1791d63e0b199f26474318065654833383a548164ee6ae47f205"
+    },
+    {
+      "path": "app/api/visitors/total/route.ts",
+      "sha256": "32517ce3838b211e3bdc3e4fa5d010f0db1381147a4fd1e81197f5c0f278757b"
+    },
+    {
+      "path": "components/VisitorAdminPanel.tsx",
+      "sha256": "e7c3a18826bcbe6209317e4be8ae16c26fc953bea3bad418528622052a978d24"
+    },
+    {
+      "path": "components/VisitorAdminPanel.module.css",
+      "sha256": "d19d5c4d2ebefeee4329bf7f507422f9ac7ef9a932191bd0524c86dec2495133"
+    },
+    {
+      "path": "components/VisitorPasswordSetup.tsx",
+      "sha256": "6872ded67f731ae4dd95afe4e698ec106a413beb2ff48083b8d332280efeeac6"
+    },
+    {
+      "path": "server/visitor-admin.ts",
+      "sha256": "1358019d50bf01916c0b40fe55babf2c1d6a834de9deb87fd3e8bb73cbe6f6da"
+    },
+    {
+      "path": "server/visitor-password.ts",
+      "sha256": "bdce6fb8c0d081f514e895df8f5f71d37f289e33efba77af812e454d5b086dfb"
+    },
+    {
+      "path": "server/visitor-core.ts",
+      "sha256": "343d27a3e27da100c54ee64d17299b659370c8e06e5adad04495b2e8f1f2214d"
+    },
+    {
+      "path": "server/visitor-rpc.ts",
+      "sha256": "3e74f66f800cc9f289f58c346359ba9ceea1eef83d434dd26606fe8764356eb3"
+    },
+    {
+      "path": "server/visitors.ts",
+      "sha256": "d54484c442f7cb3ea130a0d8e356e1d6e8c6a2a2feb0494f11f1f4c249db5233"
+    },
+    {
+      "path": "data/home-visitors.ts",
+      "sha256": "08d735239d12bfbd0c723a27637c737c4da835dee5e44bf78c16c935c43d90bd"
+    },
+    {
+      "path": "tests/visitor-admin.cjs",
+      "sha256": "4ab8575cbfe2db0deb81d36fc6328216ed6f8c1355e336e1ae52696f9ab3df16"
+    },
+    {
+      "path": "tests/visitor-password.cjs",
+      "sha256": "7e0b41a40753555e905d86dac4fd8d7b90626117f09ab8b9c69845cd5cbe41f1"
+    },
+    {
+      "path": "tests/visitors.cjs",
+      "sha256": "7a8742ce02a2eac69320c2e05420a7422284fd089637f5b126f00ca73baf7b8d"
+    },
+    {
+      "path": "tests/visitors-security.cjs",
+      "sha256": "dba934fe81a0ec7aa85b1cf9666ad8a2ac0ed25218c852916d15ecd01a49c594"
+    },
+    {
+      "path": "tests/visitors-verification.cjs",
+      "sha256": "062aa86dc90ac7bb65c13ce9abf24332c23de3f0f134afc3b08f1fb4a33e0d77"
+    },
+    {
+      "path": "next.config.mjs",
+      "sha256": "49f702946564f592955db85208f0340b12df0bed2c74b07342f0b1570e2b6d57"
+    }
+  ],
+  "note": "Source copied unchanged. No collection routes or homepage edits. visitors.ts and home-visitors.ts support regression tests only."
+}
