@@ -1,9 +1,9 @@
 ﻿import Image from 'next/image';
 import Link from 'next/link';
-import { FEATURE_FLAGS } from '../config/features';
+import { FEATURE_FLAGS } from '../../config/features';
 import { ArrowDown, ArrowRight, ArrowUpRight } from 'lucide-react';
-import SiteHeader from '../components/SiteHeader';
-import { getVisibleSteps } from '../data/bathroom-builder-mode';
+import SiteHeader from '../../components/SiteHeader';
+import { getVisibleSteps } from '../../data/bathroom-builder-mode';
 
 const chapters = [
   { number: '01', title: '공간의 바탕', detail: '시공 방식 · 구조 · 방수', href: '/guide/demolition' },

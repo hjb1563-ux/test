@@ -157,7 +157,7 @@ complete.ventilation=['other'];complete.ventilationOther='힘펠 휴젠뜨';
 const rows=consultation.consultationRows(complete);assert.equal(rows.filter(r=>r.pending).length,0);assert.equal(rows.filter(r=>r.key==='partitionShower').length,1);
 const copied=consultation.consultationText(rows,'','');assert.ok(copied.includes('05 세면대 & 변기'));assert.ok(copied.includes('15 욕실 문틀'));assert.ok(copied.includes(draft));assert.ok(!/욕실 창문|매립 설비|세면대 젠다이|변기 젠다이|샤워공간 젠다이/.test(copied));assert.ok(!copied.includes('16 최종 검토'));
 tree=mount(15,complete);assert.equal(all(tree,n=>n.props.className==='reviewCategory').length,0);assert.equal(state().accessoryOther,draft);assert.ok(text(tree).includes('STEP 15 / 15'));assert.ok(all(tree,n=>n.type==='a'&&text(n).includes('상담서 보기')).length);
-const Result=load(path.join(root,'app/result/page')).default;slots=[];let resultTree;do {dirty=false;cursor=0;effects=[];resultTree=expand(Result());effects.forEach(f=>f());}while(dirty);
+const Result=load(path.join(root,'app/(public)/result/page')).default;slots=[];let resultTree;do {dirty=false;cursor=0;effects=[];resultTree=expand(Result());effects.forEach(f=>f());}while(dirty);
 assert.equal(all(resultTree,n=>n.props.className==='sheetStep').length,15);assert.ok(text(resultTree).includes(draft));assert.ok(!/욕실 창문|매립 설비/.test(text(resultTree)));
 all(resultTree,n=>n.type==='button'&&text(n)==='인쇄 / PDF 저장')[0].props.onClick();assert.equal(printCalls,1);
 all(resultTree,n=>n.type==='button'&&text(n)==='선택 수정')[0].props.onClick();assert.equal(navigatedTo,'/design?step=1&returnTo=consultation');
