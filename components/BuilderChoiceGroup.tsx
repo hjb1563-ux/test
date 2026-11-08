@@ -2,8 +2,9 @@
 
 import { getConsumerGroupHelp, type BuilderMode } from '../data/bathroom-builder-mode';
 import { Fragment } from 'react';
+import { Info } from 'lucide-react';
 import type { ChoiceGroup } from '../data/bathroom-options';
-import { customTextKey, hasBathtubPartition, selectedIds, selectionLabel, type BathroomValues } from '../data/bathroom-selection';
+import { customTextKey, hasBathtubPartition, isBathtubExcluded, selectedIds, selectionLabel, type BathroomValues } from '../data/bathroom-selection';
 import BuilderChoiceCard from './BuilderChoiceCard';
 import { resolveBuilderImage } from '../data/bathroom-builder-image-resolver';
 
@@ -30,6 +31,7 @@ export default function BuilderChoiceGroup({ mode = 'professional', group, numbe
 }) {
   const help = mode === 'consumer' ? getConsumerGroupHelp(group.key) : undefined;
   const ids = selectedIds(values[group.key]);
+  const showBathtubSkipNotice = group.key === 'partitionShower' && isBathtubExcluded(values);
   const blocked = (id: string) => group.key === 'bathtub' && id === 'none' && hasBathtubPartition(values);
   const firstEnabled = group.choices.findIndex(choice => !blocked(choice.id));
 
@@ -58,7 +60,7 @@ export default function BuilderChoiceGroup({ mode = 'professional', group, numbe
         placeholder="(ex : 휴지걸이, 수건걸이, 코너 선반· ·)"
         onChange={event => onCustomText(group.key, event.target.value)} />
     </label>}
-    {group.choices.length > 0 && <div className="builderChoiceGrid" role={group.multiple ? 'group' : 'radiogroup'} aria-label={group.title}>
+    {group.choices.length > 0 && <div className="builderChoiceGrid" role={group.multiple ? 'group' : 'radiogroup'} aria-label={group.title} aria-describedby={showBathtubSkipNotice ? 'builder-bathtub-skip-notice' : undefined}>
       {group.choices.map((choice, index) => {
         const selected = ids.includes(choice.id);
         const disabled = blocked(choice.id);
@@ -76,9 +78,12 @@ export default function BuilderChoiceGroup({ mode = 'professional', group, numbe
     </label>}</Fragment>;
       })}
     </div>}
+    {group.key === 'partitionShower' && <div className="builderBathtubSkipStatus" role="status" aria-live="polite" aria-atomic="true">{showBathtubSkipNotice && <p id="builder-bathtub-skip-notice" className="builderBathtubSkipNotice"><Info size={16} aria-hidden="true" /><span>선택한 구성에서는 욕조 선택 단계를 건너뜁니다.</span></p>}</div>}
     {help?.selectionHelp && ids.some(id => help.selectionHelp!.ids.includes(id)) && <p className="builderRestriction">{help.selectionHelp.text}</p>}
     </div>
     <style>{`
+      .design .builderBathtubSkipNotice{display:flex;align-items:flex-start;gap:8px;margin:14px 0 0;color:#716b63;font-size:13px;line-height:1.6}
+      .design .builderBathtubSkipNotice svg{flex:0 0 16px;margin-top:2px}
       body .design.builderCompactFlow .options .builderChoiceCard:disabled,body .design.builderCompactFlow .options .builderChoiceCard:disabled:hover,body .design.builderCompactFlow .options .builderChoiceCard:disabled:active{opacity:1;cursor:not-allowed;background:#E7E7E5;border-color:#BEC3C6;color:#4B5563;box-shadow:none;transform:none;transition:none}
       .design .builderChoiceCard:disabled .builderChoiceDescription{color:#5C6670;white-space:nowrap;font-size:11px;line-height:1.5}
       .design .builderChoiceCard:disabled .builderChoiceIndicator--disabled{border:0;color:#6F7478}

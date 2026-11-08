@@ -9,7 +9,9 @@ for (const mode of ['consumer','professional']) {
   const before = JSON.stringify(full), result = overview(full,mode);
   assert.equal(result.length, mode==='consumer'?4:5);
   assert.equal(row(full,mode,'construction'),mode==='consumer'?'올철거':'전체 철거');
-  assert.equal(row(full,mode,'space'),'풀 파티션 · 욕조 없음');
+  assert.equal(row(full,mode,'space'),'풀 파티션');
+  assert.equal(consultationRows(full,mode).find(r=>r.key==='bathtub').status,'excluded');
+  assert.equal(full.bathtub,'none');
   assert.equal(row(full,mode,'tile'),'600×600 · 다크 · 무광');
   assert.equal(row(full,mode,'fixtures'),'일반 세면대 · 원피스 변기 · 매립 세면 수전');
   assert.equal(row(full,mode,'pending'),mode==='professional'?'방수 방식 · 배수 위치':undefined);

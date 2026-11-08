@@ -1,8 +1,9 @@
 import { resolveBuilderImage } from './bathroom-builder-image-resolver';
 import { builderBathroomSteps } from './bathroom-builder-options';
-import { selectedIds, type BathroomValues } from './bathroom-selection';
+import { effectiveBathroomValues, selectedIds, type BathroomValues } from './bathroom-selection';
 
 export function selectedImageItems(values: BathroomValues) {
+  values = effectiveBathroomValues(values);
   return builderBathroomSteps.flatMap(step => step.groups.flatMap(group =>
     group.choices.filter(choice => selectedIds(values[group.key]).includes(choice.id)
       && choice.showBuilderImage && choice.builderImage)

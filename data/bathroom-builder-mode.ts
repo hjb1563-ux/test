@@ -1,4 +1,5 @@
 import { builderBathroomSteps } from './bathroom-builder-options';
+import { isBathtubExcluded, type BathroomValues } from './bathroom-selection';
 import type { BathroomStep, ChoiceGroup } from './bathroom-options';
 
 export type BuilderMode = 'consumer' | 'professional';
@@ -59,8 +60,14 @@ export function getVisibleSteps(mode: BuilderMode) {
     }] : [];
   });
 }
-export function nearestVisibleStep(index: number, mode: BuilderMode): number {
-  const visible = getVisibleSteps(mode);
+export function getNavigableSteps(mode: BuilderMode, values: BathroomValues) {
+  return getVisibleSteps(mode).flatMap(step => {
+    const groups = step.groups.filter(group => group.key !== 'bathtub' || !isBathtubExcluded(values));
+    return groups.length ? [{ ...step, groups }] : [];
+  });
+}
+export function nearestVisibleStep(index: number, mode: BuilderMode, values: BathroomValues = {}): number {
+  const visible = getNavigableSteps(mode, values);
   return (visible.find(step => step.stepIndex >= index) ?? visible[visible.length - 1]).stepIndex;
 }
 export function getConsumerGroupHelp(key: string) { return groupPresentation[key]; }
