@@ -7,6 +7,18 @@ export const customTextKey = (groupKey: string): `${string}Other` => `${groupKey
 export const selectedIds = (value: string | string[] | undefined): string[] =>
   Array.isArray(value) ? value : value ? [value] : [];
 
+export const isBathtubExcluded = (values: BathroomValues): boolean =>
+  selectedIds(values.partitionShower).some(id =>
+    ['half-partition', 'full-partition', 'fixed-glass', 'door-booth'].includes(id));
+
+/** Derive output only; retain the stored bathtub selection for restoration. */
+export function effectiveBathroomValues(values: BathroomValues): BathroomValues {
+  const effective = enforceBathtubCompatibility(values);
+  if (!isBathtubExcluded(effective)) return effective;
+  const { bathtub, bathtubOther, ...rest } = effective;
+  return rest;
+}
+
 export const hasBathtubPartition = (values: BathroomValues): boolean =>
   selectedIds(values.partitionShower).includes('bathtub-partition');
 

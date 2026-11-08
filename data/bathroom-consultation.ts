@@ -1,7 +1,7 @@
 import { getVisibleSteps, builderModeLabel, type BuilderMode } from './bathroom-builder-mode';
 import { normalizeImageHistoryOrder } from './bathroom-image-history';
 import { builderBathroomSteps as steps } from './bathroom-builder-options';
-import { customTextKey, enforceBathtubCompatibility, normalizeBathroomValues, selectedIds, selectionLabel, type BathroomValues } from './bathroom-selection';
+import { customTextKey, effectiveBathroomValues, isBathtubExcluded, enforceBathtubCompatibility, normalizeBathroomValues, selectedIds, selectionLabel, type BathroomValues } from './bathroom-selection';
 
 export const STORAGE = 'bath-designer-selections-v2';
 export const consultationEditUrl = (stepIndex: number) => `/design?step=${stepIndex + 1}&returnTo=consultation`;
@@ -48,7 +48,8 @@ export function siteCheck(key: string, values: BathroomValues): string | undefin
 }
 
 export function consultationRows(values: BathroomValues, mode: BuilderMode = 'professional') {
-  values = enforceBathtubCompatibility(values);
+  const bathtubExcluded = isBathtubExcluded(values);
+  values = effectiveBathroomValues(values);
   return getVisibleSteps(mode).flatMap((step, displayIndex) => step.groups.map(group => {
     const stepIndex = step.stepIndex;
     const choices = group.choices.filter(choice => selectedIds(values[group.key]).includes(choice.id));
@@ -61,12 +62,13 @@ export function consultationRows(values: BathroomValues, mode: BuilderMode = 'pr
     const hasText = ['accessory', 'ventilation'].includes(group.key) && typeof custom === 'string' && !!custom.trim();
     if (!choices.length && !hasText) reasons.push('미정');
     const deferred = choices.length > 0 && choices.every(choice => /^(consult|undecided|notSure|unknown(?:-condition)?)$/i.test(choice.id) || /모르겠/.test(choice.name));
-    const status: 'selected' | 'undecided' | 'unselected' = deferred ? 'undecided' : choices.length || hasText ? 'selected' : 'unselected';
-    const displayLabel = status === 'unselected' ? '미선택' : status === 'undecided' ? '미정' : choices.length ? choices.map(choice => {
+    const excluded = group.key === 'bathtub' && bathtubExcluded;
+    const status: 'selected' | 'undecided' | 'unselected' | 'excluded' = excluded ? 'excluded' : deferred ? 'undecided' : choices.length || hasText ? 'selected' : 'unselected';
+    const displayLabel = excluded ? '해당 없음 · 선택 대상 제외' : status === 'unselected' ? '미선택' : status === 'undecided' ? '미정' : choices.length ? choices.map(choice => {
       if (!choice.requiresCustomText) return choice.name;
       return typeof custom === 'string' && custom.trim() ? `${choice.name} · ${custom.trim()}` : `${choice.name} · 내용 미입력`;
     }).join(' · ') : String(custom).trim();
-    return { key: group.key, title: group.title, stepTitle: step.title, stepIndex, displayIndex, label: selectionLabel(values, group), displayLabel, status, choices, pending: reasons.length > 0, reason: Array.from(new Set(reasons)).join(' · '), site: siteCheck(group.key, values) };
+    return { key: group.key, title: group.title, stepTitle: step.title, stepIndex, displayIndex, label: excluded ? displayLabel : selectionLabel(values, group), displayLabel, status, choices, pending: !excluded && reasons.length > 0, reason: Array.from(new Set(excluded ? [] : reasons)).join(' · '), site: siteCheck(group.key, values) };
   }));
 }
 export type ConsultationRow = ReturnType<typeof consultationRows>[number];
@@ -74,7 +76,7 @@ export type ConsultationRow = ReturnType<typeof consultationRows>[number];
 export function consultationOutputRows(values: BathroomValues, mode: BuilderMode) {
   return consultationRows(values, mode);
 }
-export const consultationStatusLabel = (status: ConsultationRow['status']) => status === 'selected' ? '선택 완료' : status === 'undecided' ? '미정' : '미선택';
+export const consultationStatusLabel = (status: ConsultationRow['status']) => status === 'excluded' ? '해당 없음 · 선택 대상 제외' : status === 'selected' ? '선택 완료' : status === 'undecided' ? '미정' : '미선택';
 
 export type ProjectInfo = { builderMode: BuilderMode; customerName: string; projectName: string; propertyType: '아파트' | '빌라' | '상가' | null; occupancyStatus: '살고 있다' | '이사갈 곳이다' | null; areaPyeong: string; constructionDate: string | null; budget: number | null };
 export const numericDigits = (value: string, max: number) => value.replace(/[^0-9]/g, '').slice(0, max);
@@ -158,7 +160,7 @@ const summaryGroups = [
 ];
 
 export function generateConsultationSummary(values: BathroomValues, mode: BuilderMode = 'professional') {
-  const normalized = normalizeBathroomValues(values, steps);
+  const normalized = effectiveBathroomValues(normalizeBathroomValues(values, steps));
   const groups = getVisibleSteps(mode).flatMap(step => step.groups);
   const seen = new Set<string>();
   const pending = new Set<string>();

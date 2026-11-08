@@ -1,10 +1,11 @@
 const assert=require('node:assert/strict'),path=require('node:path');
 const {load}=require('./bathroom-style-draft.cjs');
+const s=load(path.resolve('data/bathroom-selection.ts'));
 const c=load(path.resolve('data/bathroom-consultation.ts')),m=load(path.resolve('data/bathroom-builder-mode.ts')),d=load(path.resolve('data/bathroom-style-draft.ts'));
 const ids=['essential-01','essential-02','balanced-01','balanced-02','balanced-03','premium-01','premium-02'];
 for(const mode of ['consumer','professional']){
  const expected=m.getVisibleSteps(mode).flatMap(s=>s.groups.map(g=>g.key));
- for(const id of ids){const v=d.styleDraftValues(id,mode),before=JSON.stringify(v),rows=c.consultationOutputRows(v,mode);assert.deepEqual(rows.map(r=>r.key),expected);assert.equal(new Set(rows.map(r=>r.key)).size,rows.length);for(const r of rows){assert.equal(r.status,v[r.key]&&(Array.isArray(v[r.key])?v[r.key].length:true)?'selected':'unselected');assert.ok(r.displayLabel);if(r.status==='unselected')assert.equal(r.displayLabel,'미선택');}assert.equal(JSON.stringify(v),before);const text=c.consultationText(rows,'','',c.normalizeProjectInfo({builderMode:mode}));for(const r of rows)assert.ok(text.includes(r.title+': '+r.displayLabel));assert.ok(!c.consultationSummaryText(c.normalizeProject({projectInfo:{builderMode:mode},values:v})).includes('미선택'));}
+ for(const id of ids){const v=d.styleDraftValues(id,mode),before=JSON.stringify(v),rows=c.consultationOutputRows(v,mode);assert.deepEqual(rows.map(r=>r.key),expected);assert.equal(new Set(rows.map(r=>r.key)).size,rows.length);for(const r of rows){assert.equal(r.status,r.key==='bathtub'&&s.isBathtubExcluded(v)?'excluded':v[r.key]&&(Array.isArray(v[r.key])?v[r.key].length:true)?'selected':'unselected');assert.ok(r.displayLabel);if(r.status==='unselected')assert.equal(r.displayLabel,'미선택');}assert.equal(JSON.stringify(v),before);const text=c.consultationText(rows,'','',c.normalizeProjectInfo({builderMode:mode}));for(const r of rows)assert.ok(text.includes(r.title+': '+r.displayLabel));assert.ok(!c.consultationSummaryText(c.normalizeProject({projectInfo:{builderMode:mode},values:v})).includes('미선택'));}
  console.log('PASS '+mode+': '+m.getVisibleSteps(mode).length+' STEP / '+expected.length+' groups, all seven examples, exact order, no duplicates, no stored placeholder values');
 }
 const row=(v,key)=>c.consultationOutputRows(v,'professional').find(r=>r.key===key);
