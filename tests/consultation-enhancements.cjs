@@ -92,7 +92,7 @@ function render() {
 }
 
 const consultation = load(path.join(root, 'data/bathroom-consultation'));
-const Result = load(path.join(root, 'app/result/page')).default;
+const Result = load(path.join(root, 'app/(public)/result/page')).default;
 const timestamp = '2026-10-07T15:32:00.000Z';
 const changedTimestamp = '2026-10-08T01:23:00.000Z';
 const values = {

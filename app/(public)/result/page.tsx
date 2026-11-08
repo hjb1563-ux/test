@@ -1,15 +1,15 @@
 'use client';
 
-import { getVisibleSteps, builderModeLabel } from '../../data/bathroom-builder-mode';
+import { getVisibleSteps, builderModeLabel } from '../../../data/bathroom-builder-mode';
 import { Suspense, useEffect, useRef, useState } from 'react';
-import { copyConsultationImage } from '../../data/consultation-image';
+import { copyConsultationImage } from '../../../data/consultation-image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import SiteHeader from '../../components/SiteHeader';
-import { readStyleDraft, writeStyleDraft, withStyleDraft, styleDraftNotice, styleDraftTitle } from '../../data/bathroom-style-draft';
-import { builderBathroomSteps as steps } from '../../data/bathroom-builder-options';
-import { normalizeBathroomValues } from '../../data/bathroom-selection';
-import { projectMetadata, STORAGE, consultationEditUrl, readProject, normalizeProject, consultationOutputRows, consultationStatusLabel, consultationText, consultationSummaryText, generateConsultationSummary, formatLastModified, updateProjectContent, type LocalProject } from '../../data/bathroom-consultation';
+import SiteHeader from '../../../components/SiteHeader';
+import { readStyleDraft, writeStyleDraft, withStyleDraft, styleDraftNotice, styleDraftTitle } from '../../../data/bathroom-style-draft';
+import { builderBathroomSteps as steps } from '../../../data/bathroom-builder-options';
+import { normalizeBathroomValues } from '../../../data/bathroom-selection';
+import { projectMetadata, STORAGE, consultationEditUrl, readProject, normalizeProject, consultationOutputRows, consultationStatusLabel, consultationText, consultationSummaryText, generateConsultationSummary, formatLastModified, updateProjectContent, type LocalProject } from '../../../data/bathroom-consultation';
 
 function Content() {
   const params = useSearchParams();

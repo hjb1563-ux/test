@@ -126,7 +126,7 @@ beforeEach(()=>{for(const k of [...params.keys()])params.delete(k);storage.clear
 const modes=load(path.join(root,'data/bathroom-builder-mode'));
 const imageHistory=load(path.join(root,'data/bathroom-image-history'));
 const Image=load(path.join(root,'components/BuilderOptionImage')).default;
-const Result=load(path.join(root,'app/result/page')).default;
+const Result=load(path.join(root,'app/(public)/result/page')).default;
 const original=evaluate(execFileSync('git',['show','51944b9:data/bathroom-options.ts'],{cwd:root,encoding:'utf8'}),path.join(root,'data/bathroom-options.ts'));
 const getGroup=key=>groups.find(g=>g.key===key);
 const indexOf=key=>builderSteps.findIndex(s=>s.groups.some(g=>g.key===key));
@@ -194,6 +194,19 @@ test('consultation metadata, memo isolation, copy success/fallback, print, edit,
  press(r,'인쇄 / PDF 저장').props.onClick();assert.equal(printCalls,1);press(r,'선택 수정').props.onClick();assert.equal(navigatedTo,'/design?step=1&returnTo=consultation');
  const before=storage.get(stateKey);r=showResult('plan='+encodeURIComponent(JSON.stringify({sink:'other',sinkOther:'FOREIGN_100%'})));assert.equal(all(r,n=>n.props.id==='consultation-memo')[0].props.value,'');all(r,n=>n.props.id==='consultation-memo')[0].props.onChange({target:{value:'FOREIGN_MEMO'}});r=resultRender();assert.equal(storage.get(stateKey),before);r=showResult('plan='+encodeURIComponent(JSON.stringify({sink:'other',sinkOther:'FOREIGN_100%'})));assert.equal(all(r,n=>n.props.id==='consultation-memo')[0].props.value,'FOREIGN_MEMO');assert.ok(text(r).includes('FOREIGN_100%'));r=showResult('plan=%invalid');assert.ok(text(r).includes('링크의 선택 내용을 읽지 못해'));
  storageFailure=true;r=showResult();all(r,n=>n.props.id==='consultation-memo')[0].props.onChange({target:{value:'UNSAVED_MEMO'}});r=resultRender();assert.equal(all(r,n=>n.props.id==='consultation-memo')[0].props.value,'UNSAVED_MEMO');assert.ok(text(r).includes('저장'));storageFailure=false;
- tree=mount(2,{demolition:'overlay'});const beforeReset=storage.get(stateKey);confirmReset=false;all(tree,n=>n.props['aria-label']==='처음부터 다시 만들기')[0].props.onClick();tree=render();assert.equal(storage.get(stateKey),beforeReset);confirmReset=true;all(tree,n=>n.props['aria-label']==='처음부터 다시 만들기')[0].props.onClick();tree=render();assert.equal(JSON.stringify(state()),'{}');assert.equal(saved().memo,'');assert.ok(all(tree,n=>n.props.className==='projectInfoForm').length);assert.ok(all(tree,n=>n.props.role==='radio').some(n=>text(n).includes('일반 고객용')));
+ tree=mount(2,{demolition:'overlay'});const beforeReset=storage.get(stateKey);
+ confirmReset=false;all(tree,n=>n.props['aria-label']==='처음부터 다시 만들기')[0].props.onClick();tree=render();assert.equal(storage.get(stateKey),beforeReset);
+ confirmReset=true;all(tree,n=>n.props['aria-label']==='처음부터 다시 만들기')[0].props.onClick();tree=render();
+ // Map.get returns undefined for a missing key; browser getItem returns null.
+ // Keep state()/saved() strict for tests that require persisted data. Reset must
+ // remove that data, then the real public reader must restore empty defaults.
+ assert.equal(storage.has(stateKey),false);assert.equal(storage.get(stateKey),undefined);
+ assert.equal(JSON.parse(null),null);assert.throws(()=>JSON.parse(storage.get(stateKey)),SyntaxError);
+ const cleared=consultation.readProject();assert.deepEqual(plain(cleared.values),{});assert.equal(cleared.memo,'');assert.equal(cleared.specialNotes,'');assert.equal(cleared.current,0);
+ assert.deepEqual(plain(cleared.imageHistoryOrder),[]);assert.deepEqual(plain(cleared.checks),{});assert.equal(cleared.projectInfo.projectName,'');assert.equal(cleared.projectInfo.customerName,'');
+ assert.ok(all(tree,n=>n.props.id==='style-preview-title').length,'Reset returns to the style entry screen');
+ press(tree,'프로젝트 정보 입력하기').props.onClick();tree=render();
+ assert.ok(all(tree,n=>n.props.className==='projectInfoForm').length);assert.equal(JSON.stringify(state()),'{}');assert.equal(saved().memo,'');
+ assert.ok(all(tree,n=>n.props.role==='radio').some(n=>text(n).includes('일반 고객용')&&n.props['aria-checked']===true));
  const css=fs.readFileSync(path.join(root,'app/consultation.css'),'utf8');for(const rule of ['@page','@media print','break-inside:avoid-page','.sheetImages{display:none}'])assert.ok(css.includes(rule));
 });
