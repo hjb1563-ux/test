@@ -11,7 +11,7 @@ const key = 'bath-designer-selections-v2';
     const name = () => page.locator('#project-customer-name'), project = () => page.locator('#project-name');
     const start = () => page.getByRole('button', { name: '욕실 만들기 시작', exact: true });
     const saved = () => page.evaluate(k => JSON.parse(localStorage.getItem(k)), key);
-    async function fresh() { await page.goto(base + '/design'); await page.locator('.projectInfoForm,.progressHeading').first().waitFor(); await page.evaluate(k => localStorage.removeItem(k), key); await page.reload(); await start().waitFor(); }
+    async function fresh() { await page.goto(base + '/'); await page.evaluate(k => localStorage.removeItem(k), key); await page.goto(base + '/design'); await page.locator('.stylePreview button.button, button.button').filter({hasText:'\uD504\uB85C\uC81D\uD2B8 \uC815\uBCF4 \uC785\uB825\uD558\uAE30'}).click(); await start().waitFor(); }
     async function enterDoesNothing() { for (const input of [name(), project()]) {
         await input.press('Enter');
         assert.equal(await page.locator('.projectInfoForm').isVisible(), true);
@@ -23,6 +23,9 @@ const key = 'bath-designer-selections-v2';
             await fresh();
             await page.evaluate(() => document.fonts.ready);
             await start().scrollIntoViewIfNeeded();
+            // Nearest scrolling rounds scrollY; center with the normal DOM API
+            // before checking the full button with strict viewport/hit assertions.
+            await start().evaluate(e => e.scrollIntoView({ block: 'center', behavior: 'instant' }));
             const box = await start().boundingBox();
             assert.ok(await start().evaluate(e=>{const r=e.getBoundingClientRect();return e.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2))}),'start CTA must not be obscured after normal page scroll');
             assert.ok(box.height >= 44);

@@ -5,9 +5,11 @@ run('responsive', async (h) => {
     for (const [width, height] of [[1920, 1080], [1280, 720], ...h.sizes])
         for (const mode of ['consumer', 'professional']) {
             await page.setViewportSize({ width, height });
-            for (const [display, index] of h.indices(mode).entries()) {
+            const navigable = h.indices(mode).filter(index => index !== 6); // fixed-glass excludes the bathtub screen.
+            for (const [display, index] of navigable.entries()) {
                 await h.seed(index, values, mode);
                 assert.equal(Number(await page.locator('progress').getAttribute('value')), display + 1);
+                assert.ok((await page.locator('.stepMeta').textContent()).includes('STEP ' + String(h.indices(mode).indexOf(index) + 1).padStart(2,'0')), 'displayed STEP keeps stable mode numbering');
                 await h.noOverflow();
                 if (width < 1200) {
                     assert.equal(await page.locator('.choiceGroup:visible').count(), 1);
@@ -18,6 +20,9 @@ run('responsive', async (h) => {
                 }
                 assert.equal(await page.getByRole('button', { name: '선택 완료', exact: true }).count(), 0);
             }
+            await page.goto(h.base+'/design?step=7'); await page.locator('progress').waitFor();
+            assert.equal(await page.locator('#builder-bathtub-content').count(),0);
+            assert.equal((await h.saved()).values.bathtub,'none');
             const before = await h.saved();
             await h.report();
             await h.noOverflow();

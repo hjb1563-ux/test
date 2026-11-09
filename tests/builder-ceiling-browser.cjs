@@ -14,7 +14,7 @@ const key = 'bath-designer-selections-v2';
   const saved = () => page.evaluate(key => JSON.parse(localStorage.getItem(key)), key);
   let mobile;
   async function seed(step, mode, values = {}) {
-    await page.goto(base + '/design'); await page.locator('.projectInfoForm,.builderCompactFlow').first().waitFor();
+    await page.goto(base + '/');
     await page.evaluate(({ key, step, mode, values }) => localStorage.setItem(key, JSON.stringify({ version: 3, current: step - 1, values, projectInfo: { projectName: '천장 검증', builderMode: mode }, imageHistoryOrder: [] })), { key, step, mode, values });
     await page.goto(base + '/design?step=' + step); await page.locator('.builderCompactFlow').waitFor();
   }

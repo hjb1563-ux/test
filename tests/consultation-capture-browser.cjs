@@ -14,7 +14,7 @@ run('consultation-capture', async (h) => {
             const link = page.locator('a:visible').filter({ hasText: /^상담서 보기/ });
             await link.last().click();
             await page.locator('.consultationSheet').waitFor();
-            assert.equal(await page.locator('.sheetStep').count(), mode === 'consumer' ? 4 : 15);
+            assert.equal(await page.locator('.sheetStep').count(), mode === 'consumer' ? 10 : 15);
             assert.equal(await page.locator('.consultationDocument .resultActions').count(), 0);
             assert.equal(await page.locator('.selectionWarning').count(), 0);
             const copied = await h.copy();

@@ -11,7 +11,7 @@ const message='욕조 파티션 선택 시 선택 불가';
  page.setDefaultTimeout(10000);
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  page.on('console',m=>{if(m.type()==='error'&&!/favicon.ico/.test(m.location().url||''))errors.push(m.text());});
- page.on('requestfailed',r=>{if(!r.url().endsWith('/favicon.ico'))errors.push(r.url()+': '+r.failure()?.errorText);});
+ const verifyCanceledResources=require('./helpers/navigation-resources.cjs')(page,base,errors);
  page.on('response',r=>{if(r.status()>=400&&!r.url().endsWith('/favicon.ico'))errors.push(r.status()+' '+r.url());});
  const serveFont=require('./helpers/font-response-cache.cjs')(errors,10000);
  await context.route('**/*',async r=>{if(await serveFont(r))return;const u=new URL(r.request().url());if(u.origin===new URL(base).origin||['fonts.googleapis.com','fonts.gstatic.com'].includes(u.hostname))return r.continue();errors.push('Unexpected external request: '+u.hostname);return r.abort();});
@@ -101,6 +101,7 @@ const message='욕조 파티션 선택 시 선택 불가';
  await page.goto(base+'/result');await page.locator('.consultationSheet').waitFor();
  await page.getByRole('button',{name:'구조와 샤워 공간 수정',exact:true}).click();await ready();await (await partition()).waitFor();assert.equal((await saved()).values.partitionShower,'bathtub-partition');
  await page.getByRole('link',{name:'상담서로 돌아가기',exact:true}).click();await page.locator('.consultationSheet').waitFor();assert.ok((await page.locator('.consultationSheet').textContent()).includes('욕조 파티션'));
+ await verifyCanceledResources();
  assert.deepEqual(errors,[]);console.log('PASS conflicting URL consultation, clipboard, print PDF and runtime errors; screenshots: '+output);
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

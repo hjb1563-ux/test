@@ -28,7 +28,7 @@ assert.equal(new URL(base).hostname,'127.0.0.1');
 
     const fixture={version:3,current:3,values:{demolition:'overlay',tile:'white',sink:'top-bowl',showerFaucet:[]},projectInfo:{builderMode:'consumer',projectName:'STORAGE_FIXTURE'},memo:'MEMO_STORAGE_FIXTURE',specialNotes:'NOTES_STORAGE_FIXTURE',imageHistoryOrder:['sink:top-bowl','tile:white','demolition:overlay']};
     await page.evaluate(({key,fixture})=>localStorage.setItem(key,JSON.stringify(fixture)),{key,fixture});
-    await page.reload();await page.locator('progress').waitFor();
+    await page.reload();await page.getByRole('button',{name:'이어서 만들기',exact:true}).click();await page.locator('progress').waitFor();
     const existing=await saved();assert.deepEqual(existing.values,fixture.values);assert.equal(existing.memo,fixture.memo);assert.equal(existing.specialNotes,fixture.specialNotes);assert.equal(existing.projectInfo.projectName,fixture.projectInfo.projectName);
     const expected=content(existing);
     await page.reload();await page.locator('progress').waitFor();assert.deepEqual(content(await saved()),expected);
@@ -54,13 +54,11 @@ assert.equal(new URL(base).hostname,'127.0.0.1');
 
     // Corrupt JSON must remain recoverable, rather than be automatically erased.
     const corrupt='{invalid-storage-fixture';await page.evaluate(({key,corrupt})=>localStorage.setItem(key,corrupt),{key,corrupt});
-    await page.reload();await page.locator('#project-name').waitFor();assert.equal(await raw(),corrupt);
-    await page.locator('#project-name').fill('RECOVERY_FIXTURE');await page.getByRole('button',{name:'욕실 만들기 시작',exact:true}).click();
-    await page.getByRole('status').filter({hasText:'자동 저장할 수 없어요'}).waitFor();assert.equal(await raw(),corrupt);
-    await page.reload();await page.locator('#project-name').waitFor();assert.equal(await raw(),corrupt);
-    await page.locator('#project-name').fill('RECOVERY_FIXTURE');await page.getByRole('button',{name:'욕실 만들기 시작',exact:true}).click();await page.locator('progress').waitFor();
-    page.once('dialog',d=>d.dismiss());await page.getByRole('button',{name:'처음부터 다시 만들기',exact:true}).click();assert.equal(await raw(),corrupt);
-    page.once('dialog',d=>d.accept());await page.getByRole('button',{name:'처음부터 다시 만들기',exact:true}).click();await page.locator('#style-preview-title').waitFor();assert.equal(await raw(),null);
+    await page.reload();await page.getByRole('heading',{name:'저장된 내용을 불러오지 못했어요'}).waitFor();assert.equal(await raw(),corrupt);
+    await page.getByRole('button',{name:'다시 불러오기'}).click();await page.locator('.projectEntry').waitFor();assert.equal(await raw(),corrupt);
+    await page.reload();await page.locator('.projectEntry').waitFor();assert.equal(await raw(),corrupt);
+    await page.getByRole('button',{name:'새로 만들기',exact:true}).click();await page.getByRole('button',{name:'취소',exact:true}).click();assert.equal(await raw(),corrupt);
+    await page.getByRole('button',{name:'새로 만들기',exact:true}).click();await page.getByRole('button',{name:'삭제하고 새로 만들기'}).click();await page.locator('#style-preview-title').waitFor();assert.equal(await raw(),null);
     await page.getByRole('button',{name:'프로젝트 정보 입력하기',exact:true}).click();assert.equal(await page.locator('#project-name').inputValue(),'');
     assert.deepEqual(errors,[]);
     console.log(JSON.stringify({device:mobile?'mobile':'desktop',missing:true,validPreserved:true,refreshHistoryReportPreserved:true,deleted:true,corruptPreservedAndWarned:true,explicitResetOnly:true,pdfBytes:pdf.length,uncaughtErrors:0}));

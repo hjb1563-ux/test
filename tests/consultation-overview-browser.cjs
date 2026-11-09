@@ -9,7 +9,9 @@ run('consultation-overview', async h => {
     assert.equal(await page.getByRole('heading',{name:'공사 개요',exact:true}).count(),1);
     assert.equal(await page.getByRole('heading',{name:'핵심 선택 요약',exact:true}).count(),0);
     assert.deepEqual(await page.locator('.sheetCoreSummary dt').allTextContents(),['시공 방식','공간 구성','타일','주요 설비',...(mode==='professional'?['미정 사항']:[])]);
-    assert.deepEqual(await page.locator('.sheetCoreSummary dd').allTextContents(),[mode==='consumer'?'올철거':'전체 철거','풀 파티션 · 욕조 없음','600×600 · 다크 · 무광','일반 세면대 · 원피스 변기 · 매립 세면 수전',...(mode==='professional'?['방수 방식 · 배수 위치']:[])]);
+    assert.deepEqual(await page.locator('.sheetCoreSummary dd').allTextContents(),[mode==='consumer'?'올철거':'전체 철거','풀 파티션','600×600 · 다크 · 무광','일반 세면대 · 원피스 변기 · 매립 세면 수전',...(mode==='professional'?['방수 방식 · 배수 위치']:[])]);
+    assert.equal(await page.locator('[data-selection-key="bathtub"]').getAttribute('data-selection-status'),'excluded');
+    assert.equal((await h.saved()).values.bathtub,'none','conditional output retains the stored bathtub value');
     const overlap=await page.locator('.sheetCoreSummary').evaluate(root=>{
       const rows=[...root.querySelectorAll('dl>div')];
       return rows.some((row,i)=>{const dt=row.querySelector('dt').getBoundingClientRect(),dd=row.querySelector('dd').getBoundingClientRect(),r=row.getBoundingClientRect(),next=rows[i+1]?.getBoundingClientRect();return dt.right>dd.left||dd.right>r.right+1||(next&&r.bottom>next.top+1)||row.querySelector('dd').scrollWidth>row.querySelector('dd').clientWidth;});

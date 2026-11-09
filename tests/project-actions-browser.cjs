@@ -14,10 +14,9 @@ const key = 'bath-designer-selections-v2';
     fs.mkdirSync('tests/artifacts/project-actions', { recursive: true });
     const saved = () => page.evaluate(key => JSON.parse(localStorage.getItem(key)), key);
     async function fresh() {
-        await page.goto(base + '/design');
-        await page.locator('#style-preview-title,.projectInfoForm,.builderCompactFlow').first().waitFor();
+        await page.goto(base + '/');
         await page.evaluate(key => localStorage.removeItem(key), key);
-        await page.reload();
+        await page.goto(base + '/design');
         await page.getByRole('button', { name: '프로젝트 정보 입력하기', exact: true }).click();
         await page.locator('.projectInfoForm').waitFor();
     }

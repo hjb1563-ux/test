@@ -16,7 +16,11 @@ const sizes = [[1920,1080],[1440,900],[1280,720],[1100,800],[1024,768],[768,1024
     // Seed from a page without Builder autosave to avoid racing the previous render.
     await page.goto(base+'/');
     await page.evaluate(({key,mode,current,values}) => localStorage.setItem(key, JSON.stringify({version:3,current,values,projectInfo:{projectName:'작성 모드 검증',customerName:'테스트 고객',...(mode ? {builderMode:mode} : {})}})), {key,mode,current,values});
-    await page.goto(base+'/design'); await page.locator('.builderProgress').waitFor();
+    await page.goto(base+'/design');
+    const entry = page.getByRole('button',{name:'이어서 만들기',exact:true});
+    await page.locator('.projectEntry,.builderProgress').first().waitFor();
+    if(await entry.count()) await entry.click();
+    await page.locator('.builderProgress').waitFor();
   }
   const nav = () => page.locator('.mobileBuilderNav:visible');
   const group = () => page.locator('.choiceGroup:visible');
