@@ -21,7 +21,11 @@ run('summary-layout', async (h) => {
             assert.equal(after.preview.top, before.preview.top);
             assert.equal(after.preview.width, before.preview.width);
             assert.ok(after.preview.height <= before.preview.height, 'preview only shrinks when space is constrained');
-            assert.ok(after.selection.height < before.selection.height);
+            // Grid can take the space from the preview while choices reach their
+            // 64px minimum. Verify the full vertical budget, not one track alone.
+            const released = before.preview.height + before.selection.height - after.preview.height - after.selection.height;
+            assert.ok(released > 0, 'preview and choices release space for the expanded summary');
+            assert.ok(Math.abs(released - (after.summary.height - before.summary.height)) <= 1, 'released space equals added summary height');
             assert.deepEqual((await h.saved()).values, stored.values);
             const last = page.locator('.choiceGroup:visible .builderChoiceCard').last();
             await last.scrollIntoViewIfNeeded();

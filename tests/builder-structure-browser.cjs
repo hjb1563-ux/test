@@ -53,9 +53,13 @@ run('structure', async (h) => {
             }
             assert.equal(await page.locator('progress').getAttribute('value'), mode === 'consumer' ? '10' : '15');
             await h.report();
-            assert.equal(await page.locator('.sheetStep').count(), mode === 'consumer' ? 0 : 15);
+            assert.equal(await page.locator('.sheetStep').count(), mode === 'consumer' ? 10 : 15);
+            const statuses = await page.locator('[data-selection-key]').evaluateAll(nodes => nodes.map(node => ({key:node.dataset.selectionKey,status:node.dataset.selectionStatus,text:node.textContent})));
+            assert.equal(new Set(statuses.map(row=>row.key)).size,statuses.length,'all consultation fields appear exactly once');
+            assert.ok(statuses.length>0);
+            for(const row of statuses){assert.equal(row.status,'unselected');assert.ok(row.text.includes('미선택'));}
             if (mode === 'professional')
-                assert.equal(await page.locator('.sheetRow--pending').count(), 24);
+                assert.equal(await page.locator('[data-selection-status="unselected"]').count(), 24);
             console.log('PASS optional empty navigation ' + width + ' ' + mode);
         }
     await page.setViewportSize({ width: 390, height: 844 });

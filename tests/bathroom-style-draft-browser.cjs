@@ -18,7 +18,10 @@ const base=(process.env.BUILDER_TEST_URL||'http://localhost:3120'),key='bath-des
    await go(base+'/');
    await page.evaluate(({key,mode})=>{localStorage.clear();sessionStorage.clear();if(mode==='professional')localStorage.setItem(key,JSON.stringify({version:3,current:3,projectInfo:{builderMode:mode,projectName:'Existing project'},values:{tile:'white',waterproofing:'combined-waterproofing'},memo:'Preserve memo',specialNotes:'Preserve notes',checks:{tile:'keep'}}));},{key,mode});
    await go(base+'/design');
-   if(mode==='professional')await page.getByRole('button',{name:'욕실 스타일 미리보기',exact:true}).click();
+   if(mode==='professional'){
+    await page.getByRole('button',{name:'이어서 만들기',exact:true}).click();
+    await page.getByRole('button',{name:'욕실 스타일 미리보기',exact:true}).click();
+   }
    const before=await page.evaluate(k=>localStorage.getItem(k),key);
    await page.locator('button[aria-haspopup="dialog"]').nth(bathroomStyles.indexOf(style)).click();
    const modal=page.getByRole('dialog');await modal.getByRole('button',{name:example.title+' 보기',exact:true}).click();

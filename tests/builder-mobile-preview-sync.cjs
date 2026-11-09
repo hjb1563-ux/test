@@ -16,7 +16,7 @@ const emptyText = '옵션을 선택하면 시공 예시 이미지가 여기에 �
   const previous = () => page.locator('.mobileBuilderNav>.secondary').first().click();
   const saved = () => page.evaluate(key => JSON.parse(localStorage.getItem(key)), key);
   async function seed(step, values = {}, imageHistoryOrder = [], extra = '') {
-    await page.goto(base + '/design'); await page.locator('.projectInfoForm,.builderCompactFlow').first().waitFor();
+    await page.goto(base + '/');
     await page.evaluate(({ key, step, values, imageHistoryOrder }) => localStorage.setItem(key, JSON.stringify({ version: 3, current: step - 1, values, imageHistoryOrder, projectInfo: { projectName: 'Preview 테스트', builderMode: 'consumer' } })), { key, step, values, imageHistoryOrder });
     await page.goto(base + '/design?step=' + step + extra); await page.locator('.builderCompactFlow').waitFor();
   }

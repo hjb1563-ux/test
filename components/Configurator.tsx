@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import Link from 'next/link';
 import { FEATURE_FLAGS } from '../config/features';
 import { notifyCustomerLocalSave, notifyCustomerLocalReset } from '../data/customer-builder-cloud';
@@ -17,6 +17,8 @@ import { builderBathroomSteps as bathroomSteps } from '../data/bathroom-builder-
 import { guideBySlug } from '../data/guides/catalog';
 import { STORAGE, readProject, consultationEditUrl, phases, consultationRows, updateProjectContent } from '../data/bathroom-consultation';
 import ProjectInfoForm from './ProjectInfoForm';
+import { inspectProject, isActiveProject, activateProject } from '../data/bathroom-project-entry';
+
 import BathroomStylePreview from './BathroomStylePreview';
 import { createStyleDraft, readStyleDraft, writeStyleDraft, withStyleDraft, styleDraftNotice } from '../data/bathroom-style-draft';
 import ProjectIdentity from './ProjectIdentity';
@@ -50,6 +52,16 @@ function querySelections(params: URLSearchParams): Values {
 export default function Configurator() {
   const params = useSearchParams();
   const draftId = params.get('styleDraft');
+  const [entry, setEntry] = useState<'loading' | 'choice' | 'confirm' | 'error' | 'ready'>('loading');
+  const [entryStep, setEntryStep] = useState<number | null>(null);
+  const [confirmReturn, setConfirmReturn] = useState<'choice' | 'error'>('choice');
+  const [retryEntry, setRetryEntry] = useState(0);
+  const [loadedQuery, setLoadedQuery] = useState<string | null>(null);
+  const writeAllowed = useRef(false);
+  const resetBusy = useRef(false);
+  const entryExitAt = useRef(0);
+  const entryTitle = useRef<HTMLHeadingElement>(null);
+  const query = params.toString();
   const draftStarting = useRef(false);
   const [draftError, setDraftError] = useState(false);
   const mobileNavigation = useRef(false);
@@ -67,7 +79,6 @@ export default function Configurator() {
   const [guideOpen, setGuideOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [saveStatus, setSaveStatus] = useState('');
-  const [resumeStep, setResumeStep] = useState<number | null>(null);
   const [activePreview, setActivePreview] = useState<{ step: number; id: string; fromHistory?: boolean } | null>(null);
   const [imageHistoryOrder, setImageHistoryOrder] = useState<string[]>([]);
   const mode = projectInfo.builderMode;
@@ -125,38 +136,78 @@ export default function Configurator() {
   }, [activeSectionIndex, hydrated]);
 
   useEffect(() => {
+    writeAllowed.current = false;
     try {
-      const saved = draftId ? readStyleDraft(draftId).project : readProject();
-      setConsultationEditMode(params.get('returnTo') === 'consultation');
-      const restoredValues = normalizeBathroomValues({ ...saved.values, ...guideValues }, bathroomSteps);
-      setValues(restoredValues);
-      setImageHistoryOrder(normalizeImageHistoryOrder(saved.imageHistoryOrder, restoredValues));
-      setActivePreview(null);
-      setSpecialNotes(saved.specialNotes);
-      setProjectInfo(saved.projectInfo);
-      setProjectFormOpen(draftId ? params.get('projectInfo') === '1' : !hasProjectInfo(saved.projectInfo));
-      // Old drafts, deep links and saved projects keep their existing entry point.
-      setStylePreviewOpen(!hasProjectInfo(saved.projectInfo) && Object.keys(saved.values).length === 0 && !saved.specialNotes && !saved.memo && saved.current === 0 && params.size === 0);
-      const requested = Number(params.get('step'));
-      const guideStep = bathroomSteps.findIndex(item => item.groups.some(group => {
-        const value = guideValues[group.key];
-        return Array.isArray(value) ? value.length > 0 : !!value;
-      }));
-      if (params.has('step') && Number.isInteger(requested) && requested >= 1 && requested <= bathroomSteps.length) setCurrent(nearestVisibleStep(requested - 1, saved.projectInfo.builderMode, restoredValues));
-      else if (guideStep >= 0) setCurrent(nearestVisibleStep(guideStep, saved.projectInfo.builderMode, restoredValues));
-      else { setCurrent(nearestVisibleStep(saved.current, saved.projectInfo.builderMode, restoredValues)); if (Object.keys(saved.values).length) setResumeStep(saved.current); }
-    } catch { if (draftId) setDraftError(true); setValues(guideValues); setSaveStatus('저장된 내용을 불러오지 못했어요.'); }
-    setHydrated(true);
-  }, [guideValues]);
+      const snapshot = draftId ? null : inspectProject();
+      const requestedStep = Number(params.get('step'));
+      // Old final-STEP links use the legacy catalog; restoration below migrates them.
+      const explicitStep = params.has('step') && Number.isInteger(requestedStep) && requestedStep >= 1 && requestedStep <= (snapshot?.sourceStepCount ?? bathroomSteps.length);
+      const explicitEntry = explicitStep || params.get('returnTo') === 'consultation' || params.get('projectInfo') === '1' || Object.keys(guideValues).length > 0;
+      if (snapshot && snapshot.meaningful && !explicitEntry && !isActiveProject(snapshot.raw)) {
+        setEntryStep(snapshot.stepNumber); setEntry('choice'); setHydrated(true); return;
+      }
+      restoreProject(snapshot?.project ?? readStyleDraft(draftId!).project, snapshot ? !snapshot.meaningful : false);
+      if (snapshot && explicitEntry) activateProject(snapshot.raw);
+    } catch { if (draftId) setDraftError(true); setEntry('error'); setHydrated(true); }
+  }, [guideValues, retryEntry]);
 
   useEffect(() => {
-    if (!hydrated || stylePreviewOpen || draftError) return;
+    if (entry === 'ready') document.getElementById('builder-question')?.focus({ preventScroll: true });
+    else if (entry !== 'loading') entryTitle.current?.focus();
+  }, [entry]);
+  useEffect(() => { if (entry === 'ready' && stylePreviewOpen) resetBusy.current = false; }, [entry, stylePreviewOpen]);
+
+  function restoreProject(saved: ReturnType<typeof readProject>, fresh = false) {
+    setConsultationEditMode(params.get('returnTo') === 'consultation');
+    const restoredValues = normalizeBathroomValues({ ...saved.values, ...guideValues }, bathroomSteps);
+    setValues(restoredValues);
+    setImageHistoryOrder(normalizeImageHistoryOrder(saved.imageHistoryOrder, restoredValues));
+    setActivePreview(null);
+    setSpecialNotes(saved.specialNotes);
+    setProjectInfo(saved.projectInfo);
+    setProjectFormOpen(draftId ? params.get('projectInfo') === '1' : !hasProjectInfo(saved.projectInfo));
+    // Old drafts, deep links and saved projects keep their existing entry point.
+    setStylePreviewOpen(fresh && params.size === 0);
+    const requested = Number(params.get('step'));
+    const guideStep = bathroomSteps.findIndex(item => item.groups.some(group => {
+      const value = guideValues[group.key];
+      return Array.isArray(value) ? value.length > 0 : !!value;
+    }));
+    if (params.has('step') && Number.isInteger(requested) && requested >= 1 && requested <= bathroomSteps.length) setCurrent(nearestVisibleStep(requested - 1, saved.projectInfo.builderMode, restoredValues));
+    else if (guideStep >= 0) setCurrent(nearestVisibleStep(guideStep, saved.projectInfo.builderMode, restoredValues));
+    else setCurrent(nearestVisibleStep(saved.current, saved.projectInfo.builderMode, restoredValues));
+    setLoadedQuery(query); setEntry('ready'); setHydrated(true); writeAllowed.current = true;
+  }
+
+  function continueProject() {
+    if (entry !== 'choice') return;
+    try { const snapshot = inspectProject(); entryExitAt.current = Date.now(); restoreProject(snapshot.project, !snapshot.meaningful); activateProject(snapshot.raw); }
+    catch { writeAllowed.current = false; setEntry('error'); }
+  }
+
+  function guardEntryDoubleClick(event: MouseEvent<HTMLElement>) {
+    if (event.detail > 1 && Date.now() - entryExitAt.current < 600) { event.preventDefault(); event.stopPropagation(); }
+  }
+
+  function backupProject() {
+    try {
+      const raw = localStorage.getItem(STORAGE);
+      if (raw === null) throw new Error('No data');
+      const url = URL.createObjectURL(new Blob([raw], { type: 'application/json' }));
+      const link = document.createElement('a'); link.href = url; link.download = 'bath-designer-backup.json'; link.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setSaveStatus('원본 파일을 다운로드했어요. 파일을 보관한 뒤 새로 시작할 수 있어요.');
+    } catch { setSaveStatus('원본을 내보낼 수 없어요. 브라우저 저장소 설정을 확인해주세요.'); }
+  }
+
+  useEffect(() => {
+    if (!writeAllowed.current || entry !== 'ready' || loadedQuery !== query || !hydrated || stylePreviewOpen || draftError) return;
     if (draftId) {
       try { const saved = readStyleDraft(draftId).project; writeStyleDraft(draftId, updateProjectContent(saved, { values, specialNotes, current, imageHistoryOrder, projectInfo })); setSaveStatus('임시 초안'); } catch { setDraftError(true); }
       return;
     }
-    try { const saved = readProject(); const next = updateProjectContent(saved, { values, specialNotes, current, imageHistoryOrder, projectInfo }); localStorage.setItem(STORAGE, JSON.stringify(next)); notifyCustomerLocalSave(next); setSaveStatus('자동 저장됨'); } catch { setSaveStatus('자동 저장할 수 없어요. 상담 내용을 복사해 보관해주세요.'); }
-  }, [values, specialNotes, current, imageHistoryOrder, projectInfo, hydrated, stylePreviewOpen, draftId, draftError]);
+    try { const saved = inspectProject().project; const next = updateProjectContent(saved, { values, specialNotes, current, imageHistoryOrder, projectInfo }); localStorage.setItem(STORAGE, JSON.stringify(next)); activateProject(JSON.stringify(next)); notifyCustomerLocalSave(next); setSaveStatus('자동 저장됨'); } catch { setSaveStatus('자동 저장할 수 없어요. 상담 내용을 복사해 보관해주세요.'); }
+  }, [values, specialNotes, current, imageHistoryOrder, projectInfo, hydrated, stylePreviewOpen, draftId, draftError, entry, loadedQuery, query]);
 
 
   function update(key: string, id: string, multiple?: boolean) {
@@ -217,17 +268,21 @@ export default function Configurator() {
     ? '탑볼 세면대와 낮은 수전의 높이 조합을 확인하세요'
     : '';
 
-  function reset() {
+  function reset(confirmed = false) {
     if (draftId) { window.location.assign('/design'); return; }
-    if (!window.confirm('현재 선택 내용이 삭제됩니다. 처음부터 다시 시작할까요?')) return;
-    try { localStorage.removeItem(STORAGE); } catch { setSaveStatus('저장소를 초기화할 수 없어요.'); return; }
+    if (confirmed !== true && !window.confirm('현재 선택 내용이 삭제됩니다. 처음부터 다시 시작할까요?')) return;
+    if (resetBusy.current) return;
+    resetBusy.current = true;
+    try { localStorage.removeItem(STORAGE); } catch { resetBusy.current = false; setSaveStatus('저장소를 초기화할 수 없어요. 다시 시도해주세요.'); return; }
+    entryExitAt.current = Date.now();
+    activateProject(null); writeAllowed.current = true; setEntry('ready'); setLoadedQuery(query); setSaveStatus('');
     notifyCustomerLocalReset();
     setProjectInfo(normalizeProjectInfo(null)); setProjectFormOpen(true);
     setStylePreviewOpen(true);
     visitedSections.current.clear();
     setLastEditedCategory(null);
     setSectionPosition({ step: 0, index: 0 });
-    setValues({}); setSpecialNotes(''); setCurrent(0); setResumeStep(null); setActivePreview(null); setImageHistoryOrder([]); setConsultationEditMode(false);
+    setValues({}); setSpecialNotes(''); setCurrent(0); setActivePreview(null); setImageHistoryOrder([]); setConsultationEditMode(false);
     if (consultationEditMode) window.history.replaceState(null, '', '/design');
   }
 
@@ -236,12 +291,24 @@ export default function Configurator() {
     <progress max={totalSteps} value={displayIndex + 1} aria-label={`${totalSteps}단계 중 ${displayIndex + 1}단계`} />
     <ol>{phases.map(item => <li key={item.title} aria-current={phase === item ? 'step' : undefined}>{item.title}</li>)}</ol>
     <p className="builderPhase">{phase.title}</p>
-    {resumeStep !== null && <button className="resumeLink" onClick={() => { goToStep(resumeStep); setResumeStep(null); }}>이어서 만들기 · 저장된 STEP {stepNumber(nearestVisibleStep(resumeStep, mode, values))}</button>}
   </section>;
 
   if (!hydrated) return <main className="design"><p role="status">저장된 욕실 구성을 불러오는 중입니다.</p></main>;
   if (draftError) return <main className="design"><p role="alert">임시 초안을 불러오지 못했습니다. 기존 프로젝트는 유지됩니다.</p><Link href="/design">내 욕실 만들기로 돌아가기</Link></main>;
-  if (stylePreviewOpen) return <main className="design">
+  if (entry !== 'ready') return <main className="design">
+    <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>내 욕실 만들기</span></header>
+    <section className="projectEntry" aria-labelledby="project-entry-title">
+      <h1 ref={entryTitle} id="project-entry-title" tabIndex={-1}>{entry === 'error' ? '저장된 내용을 불러오지 못했어요' : entry === 'confirm' ? '새로 만들까요?' : '이전에 만들던 욕실이 있어요'}</h1>
+      <p>{entry === 'error' ? '저장된 원본은 그대로 보관돼요. 브라우저 저장소 설정을 확인하고 다시 시도해주세요.' : entry === 'confirm' ? '새로 시작하면 이전에 저장한 욕실 선택 내용이 삭제돼요.' : '저장된 내용을 이어서 만들거나, 새로 시작할 수 있어요.'}</p>
+      {entry === 'choice' && entryStep !== null && <p className="projectEntryStep">최근 작업 · STEP {String(entryStep).padStart(2, '0')}</p>}
+      <div className="projectEntryActions">
+        {entry === 'choice' ? <><button className="button" onClick={continueProject}>이어서 만들기</button><button className="secondary" onClick={() => { setSaveStatus(''); setConfirmReturn('choice'); setEntry('confirm'); }}>새로 만들기</button></> : entry === 'confirm' ? <><button className="secondary" onClick={() => { setSaveStatus(''); setEntry(confirmReturn); }}>취소</button><button className="button" onClick={() => reset(true)}>삭제하고 새로 만들기</button></> : <><button className="button" onClick={() => { setEntry('loading'); setHydrated(false); setRetryEntry(x => x + 1); }}>다시 불러오기</button><button className="secondary" onClick={backupProject}>저장 원본 내보내기</button><button className="secondary" onClick={() => { setSaveStatus(''); setConfirmReturn('error'); setEntry('confirm'); }}>새로 만들기</button><Link className="secondary" href="/">홈으로 돌아가기</Link></>}
+      </div>
+      {saveStatus && <p role="alert">{saveStatus}</p>}
+      <small>저장된 내용은 현재 브라우저에 보관돼요.</small>
+    </section>
+  </main>;
+  if (stylePreviewOpen) return <main className="design" onClickCapture={guardEntryDoubleClick}>
     <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>내 욕실 만들기</span></header>
     <BathroomStylePreview onContinue={() => { setStylePreviewOpen(false); setProjectFormOpen(true); }} onCreateDraft={exampleId => {
       if (draftStarting.current) return;
@@ -250,14 +317,14 @@ export default function Configurator() {
       catch { draftStarting.current = false; window.alert('초안을 만들지 못했습니다. 기존 프로젝트는 유지됩니다.'); }
     }} />
   </main>;
-  if (projectFormOpen) return <main className="design">
+  if (projectFormOpen) return <main className="design" onClickCapture={guardEntryDoubleClick}>
     <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>내 욕실 만들기</span></header>
     {!hasProjectInfo(projectInfo) && <button type="button" className="secondary" style={{ margin: '16px 20px 0' }} onClick={() => setStylePreviewOpen(true)}><ArrowLeft size={16} aria-hidden="true" /> 욕실 스타일 미리보기로 이전</button>}
     <ProjectInfoForm key={JSON.stringify(projectInfo)} initial={projectInfo} editing={hasProjectInfo(projectInfo)} onSave={info => { const next = nearestVisibleStep(current, info.builderMode, values); setProjectInfo(info); setCurrent(next); setSectionPosition({ step: next, index: 0 }); setActivePreview(null); setProjectFormOpen(false); }} onCancel={draftId || hasProjectInfo(projectInfo) ? () => setProjectFormOpen(false) : undefined} />
   </main>;
 
-  return <main className="design builderCompactFlow">
-    <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>내 욕실 만들기</span><button onClick={reset} aria-label="처음부터 다시 만들기"><RotateCcw size={15} /><span className="resetFull">처음부터 다시 만들기</span><span className="resetShort">초기화</span></button></header>
+  return <main className="design builderCompactFlow" onClickCapture={guardEntryDoubleClick}>
+    <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>내 욕실 만들기</span><button onClick={() => reset()} aria-label="처음부터 다시 만들기"><RotateCcw size={15} /><span className="resetFull">처음부터 다시 만들기</span><span className="resetShort">초기화</span></button></header>
     <ProjectIdentity info={projectInfo} onEdit={() => setProjectFormOpen(true)} />
     {!draftId && <button type="button" className="resumeLink" onClick={() => setStylePreviewOpen(true)}>욕실 스타일 미리보기</button>}
     {draftId && <p className="consultationNote">{styleDraftNotice} 기존 프로젝트와 분리된 임시 초안입니다.</p>}

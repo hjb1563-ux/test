@@ -43,7 +43,9 @@ run('consultation-edit', async (h) => {
         await edit('줄눈', 13);
         await h.choose('grout', '에폭시 줄눈');
         await back();
-        assert.ok((await page.locator('#consultation-grout').textContent()).includes('미정'));
+        assert.equal(await page.locator('[data-selection-key="grout"]').getAttribute('data-selection-status'),'unselected');
+        assert.ok((await page.locator('#consultation-grout').textContent()).includes('미선택'));
+        assert.ok(!(await h.saved()).values.grout);
         await h.noOverflow();
         console.log('PASS edit ' + width);
     }
@@ -59,9 +61,13 @@ run('consultation-edit', async (h) => {
     await edit('방수', 2);
     page.once('dialog', d => d.accept());
     await page.getByRole('button', { name: '처음부터 다시 만들기', exact: true }).click();
-    await page.locator('.projectInfoForm').waitFor();
+    await page.locator('#style-preview-title').waitFor();
+    assert.equal(await page.evaluate(key=>localStorage.getItem(key),h.key),null);
     assert.equal(await page.locator('.builderConsultationEdit').count(), 0);
     await page.reload();
+    await page.locator('#style-preview-title').waitFor();
+    assert.equal(await page.evaluate(key=>localStorage.getItem(key),h.key),null);
+    await page.getByRole('button',{name:'프로젝트 정보 입력하기',exact:true}).click();
     await page.locator('.projectInfoForm').waitFor();
     await page.waitForFunction(key=>Array.isArray(JSON.parse(localStorage.getItem(key)).values.showerFaucet),h.key);
     assert.deepEqual((await h.saved()).values, { showerFaucet: [] });

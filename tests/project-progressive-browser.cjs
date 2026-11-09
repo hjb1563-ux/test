@@ -12,7 +12,7 @@ const key = 'bath-designer-selections-v2';
     fs.mkdirSync('tests/artifacts/project-sections', { recursive: true });
     const field = id => page.locator('#project-' + id), start = () => page.locator('.projectInfoForm .button');
     const saved = () => page.evaluate(key => JSON.parse(localStorage.getItem(key)), key);
-    async function fresh() { await page.goto(base + '/design'); await page.locator('.projectInfoForm,.builderCompactFlow').first().waitFor(); await page.evaluate(key => localStorage.removeItem(key), key); await page.reload(); await field('customer-name').waitFor(); }
+    async function fresh() { await page.goto(base + '/'); await page.evaluate(key => localStorage.removeItem(key), key); await page.goto(base + '/design'); await page.locator('.stylePreview button.button, button.button').filter({hasText:'\uD504\uB85C\uC81D\uD2B8 \uC815\uBCF4 \uC785\uB825\uD558\uAE30'}).click(); await field('customer-name').waitFor(); }
     async function schedule() { assert.equal(await field('date-0').isVisible(), true); assert.equal(await field('date-1').isVisible(), true); assert.equal(await field('date-2').isVisible(), true); assert.equal(await field('budget').isVisible(), true); }
     async function screen(name) { await page.screenshot({ path: 'tests/artifacts/project-sections/' + name + '.png', fullPage: true, animations: 'disabled' }); }
     try {
@@ -88,7 +88,14 @@ const key = 'bath-designer-selections-v2';
             assert.equal(project.projectInfo.budget, 10000000);
             assert.equal(project.projectInfo.constructionDate, '2026-11-10');
             assert.equal(await page.locator('progress').getAttribute('max'), '10');
-            await page.evaluate(key => { const p = JSON.parse(localStorage.getItem(key)); p.values = { tile: 'dark', wallTileSize: '600x600', showerFaucet: ['rain'] }; p.imageHistoryOrder = ['showerFaucet:rain', 'tile:dark', 'wallTileSize:600x600']; p.current = 3; localStorage.setItem(key, JSON.stringify(p)); }, key);
+            // Use the supported selection deep link and its real autosave/session
+            // path instead of replacing the active project behind the app's back.
+            await page.goto(base + '/design?step=4&tile=dark&wallTileSize=600x600&showerFaucet=rain');
+            await page.locator('.builderCompactFlow').waitFor();
+            await page.waitForFunction(key => {const p=JSON.parse(localStorage.getItem(key));return p.current===3&&p.values.tile==='dark'&&p.values.wallTileSize==='600x600'&&p.values.showerFaucet?.includes('rain');},key);
+            const seeded = await saved();
+            assert.deepEqual(seeded.values,{wallTileSize:'600x600',tile:'dark',showerFaucet:['rain']});
+            assert.ok(seeded.imageHistoryOrder.includes('showerFaucet:rain')); assert.ok(seeded.imageHistoryOrder.includes('tile:dark')); assert.ok(seeded.imageHistoryOrder.includes('wallTileSize:600x600'));
             await page.reload();
             await page.locator('.builderCompactFlow').waitFor();
             const before = await saved();

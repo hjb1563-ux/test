@@ -87,6 +87,9 @@ const groups = builderSteps.flatMap(step => step.groups);
 function render() {
   let tree, rounds = 0;
   do { dirty = false; cursor = 0; effects = []; tree = expand(Configurator()); effects.forEach(fn => fn()); assert.ok(++rounds < 20); } while (dirty);
+  // Editor regressions explicitly accept the entry gate; gate behavior has its own suite.
+  const resume = all(tree, n => n.type === 'button' && text(n) === '\uC774\uC5B4\uC11C \uB9CC\uB4E4\uAE30')[0];
+  if (resume) { resume.props.onClick(); return render(); }
   return tree;
 }
 function click(tree, title) {

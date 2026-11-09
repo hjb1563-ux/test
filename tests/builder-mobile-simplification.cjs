@@ -67,6 +67,7 @@ run('mobile-simplification', async (h) => {
     await h.seed(0, {}, 'consumer');
     page.once('dialog', d => d.accept());
     await page.getByRole('button', { name: '처음부터 다시 만들기', exact: true }).click();
+    await page.getByRole('button', { name: '프로젝트 정보 입력하기', exact: true }).click();
     await page.locator('.projectInfoForm').waitFor();
     assert.deepEqual((await h.saved()).values, {});
 }).catch(e => { console.error(e); process.exitCode = 1; });

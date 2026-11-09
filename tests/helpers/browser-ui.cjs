@@ -37,7 +37,10 @@ async function run(name, fn) {
         await page.evaluate(({ key, current, values, mode, extra }) => localStorage.setItem(key, JSON.stringify({ version: 3, current, values, imageHistoryOrder: [], memo: '테스트 메모', specialNotes: '테스트 특이사항', ...extra, projectInfo: { projectName: 'UI 회귀 테스트', builderMode: mode, ...extra.projectInfo } })), { key, current, values, mode, extra });
         await page.goto(base + '/design?step=' + (current + 1), { waitUntil: "domcontentloaded" });
         await page.locator('progress').waitFor();
-        assert.equal(await page.locator('progress').getAttribute('max'), mode === 'consumer' ? '10' : '15');
+        const { load } = require('../bathroom-style-draft.cjs');
+        const { getNavigableSteps } = load(path.resolve('data/bathroom-builder-mode.ts'));
+        const { normalizeBathroomValues } = load(path.resolve('data/bathroom-selection.ts'));
+        assert.equal(await page.locator('progress').getAttribute('max'), String(getNavigableSteps(mode, normalizeBathroomValues(values)).length));
     };
     h.focus = async (k) => {
         const historyToggle = page.locator('.selectionHistory[data-open=true]>.builderDisclosureToggle:visible');
