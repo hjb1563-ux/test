@@ -132,6 +132,10 @@ export default function BathroomStylePreview({ onContinue, onCreateDraft }: { on
   const [position, setPosition] = useState(0);
   const strip = useRef<HTMLDivElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
+  const dialogBody = useRef<HTMLDivElement>(null);
+  const information = useRef<HTMLDivElement>(null);
+  const [detailsBelow, setDetailsBelow] = useState(false);
+  const [hintFocused, setHintFocused] = useState(false);
   const trigger = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
@@ -156,6 +160,49 @@ export default function BathroomStylePreview({ onContinue, onCreateDraft }: { on
       trigger.current?.focus({ preventScroll: true });
     };
   }, [active]);
+
+  useEffect(() => {
+    if (!active || expanded) { setDetailsBelow(false); setHintFocused(false); return; }
+    const body = dialogBody.current, detail = information.current;
+    if (!body || !detail) return;
+    const mobile = window.matchMedia('(max-width: 767px)');
+    let frame: number | null = null;
+    const measure = () => {
+      frame = null;
+      const title = detail.querySelector('h3');
+      const viewportBottom = window.visualViewport ? window.visualViewport.offsetTop + window.visualViewport.height : window.innerHeight;
+      const bottom = Math.min(body.getBoundingClientRect().bottom, viewportBottom);
+      // Once the title is reached, including while reading further down, there
+      // is no reason to point downward. No fixed scroll-distance threshold.
+      setDetailsBelow(mobile.matches && !!title && title.getBoundingClientRect().top >= bottom && body.scrollHeight > body.clientHeight);
+    };
+    const schedule = () => { if (frame === null) frame = requestAnimationFrame(measure); };
+    measure();
+    const resize = new ResizeObserver(schedule);
+    resize.observe(body);
+    resize.observe(detail);
+    if (body.firstElementChild) resize.observe(body.firstElementChild);
+    body.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    window.visualViewport?.addEventListener('resize', schedule);
+    mobile.addEventListener('change', schedule);
+    return () => {
+      if (frame !== null) cancelAnimationFrame(frame);
+      resize.disconnect();
+      body.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      window.visualViewport?.removeEventListener('resize', schedule);
+      mobile.removeEventListener('change', schedule);
+    };
+  }, [active, selectedExample?.id, expanded]);
+
+  function showInformation() {
+    const body = dialogBody.current, detail = information.current;
+    if (!body || !detail) return;
+    const top = body.scrollTop + detail.getBoundingClientRect().top - body.getBoundingClientRect().top - body.clientTop;
+    body.scrollTo({ top, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+    detail.focus({ preventScroll: true });
+  }
 
   function move(index: number) {
     const card = strip.current?.children[index] as HTMLElement | undefined;
@@ -192,7 +239,7 @@ export default function BathroomStylePreview({ onContinue, onCreateDraft }: { on
       <div className={styles.dialogHeader}><div><h2 id="style-detail-title">{expanded ? selectedExample?.title : active?.title ?? '욕실 구성 살펴보기'}</h2><p>{expanded ? '사진 확대 보기' : `${active?.description ?? ''} · ${active?.examples.length ?? 0}가지 예시`}</p></div>{expanded ? <button ref={zoomClose} type="button" aria-label="확대 보기 닫기" onClick={closeZoom}><X size={22} /></button> : <button type="button" autoFocus aria-label="상세 정보 닫기" onClick={() => setActive(null)}><X size={22} /></button>}</div>
       {active && selectedExample && <>
       {expanded && <div className={styles.zoomImage}><ExampleImage key={selectedExample.id} example={selectedExample} /></div>}
-      <div className={styles.dialogBody} hidden={expanded} tabIndex={0} role="region" aria-label="욕실 구성 상세 내용">
+      <div ref={dialogBody} className={styles.dialogBody} hidden={expanded} tabIndex={0} role="region" aria-label="욕실 구성 상세 내용">
         <div className={styles.selectedDetail} id="style-example-detail" aria-label={selectedExample.title}>
           <section className={styles.gallery} aria-label={`${active.title} 사진 갤러리`}>
             <MagnifierPhoto key={selectedExample.id} example={selectedExample} buttonRef={zoomTrigger} dismissRef={dismissMagnifier} onTouchExpand={() => setExpanded(true)}>
@@ -207,17 +254,24 @@ export default function BathroomStylePreview({ onContinue, onCreateDraft }: { on
               </div>
             </div>
           </section>
-          <ExampleInformation example={selectedExample} onCreateDraft={onCreateDraft} />
+          <ExampleInformation example={selectedExample} informationRef={information} onCreateDraft={onCreateDraft} />
         </div>
-      </div></>}
+      </div>
+      {/* Keep a keyboard-focused hint mounted until blur; scrolling must not drop focus. */}
+      {!expanded && (detailsBelow || hintFocused) && <div className={styles.scrollHint}>
+        <button type="button" aria-controls="style-example-information" onClick={showInformation}
+          onFocus={() => setHintFocused(true)} onBlur={() => setHintFocused(false)}>
+          상세 구성 보기 <span aria-hidden="true">↓</span>
+        </button>
+      </div>}</>}
     </dialog>
   </section>;
 }
 
-function ExampleInformation({ example, onCreateDraft }: { example: BathroomStyleExample; onCreateDraft?: (exampleId: string) => void }) {
+function ExampleInformation({ example, informationRef, onCreateDraft }: { example: BathroomStyleExample; informationRef: RefObject<HTMLDivElement>; onCreateDraft?: (exampleId: string) => void }) {
   const groups = bathroomStyleContentGroups(bathroomStyleContent[example.id]);
-  return <div className={styles.information}>
-    <header className={styles.informationHeader}><h3 className={styles.exampleTitle} aria-live="polite">{example.title}</h3></header>
+  return <div ref={informationRef} id="style-example-information" className={styles.information} tabIndex={-1} role="region" aria-labelledby="style-example-information-title">
+    <header className={styles.informationHeader}><h3 id="style-example-information-title" className={styles.exampleTitle} aria-live="polite">{example.title}</h3></header>
     <div className={styles.categoryList}>
       {groups.map(({key, title, items}) => <section className={styles.categoryCard} key={key} aria-labelledby={`${example.id}-${key}-title`}>
         <h4 id={`${example.id}-${key}-title`}>{title}</h4>
