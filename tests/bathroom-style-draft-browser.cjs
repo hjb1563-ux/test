@@ -16,11 +16,12 @@ const base=(process.env.BUILDER_TEST_URL||'http://localhost:3120'),key='bath-des
   for(const mode of ['consumer','professional'])for(const style of bathroomStyles)for(const example of style.examples){
    if(![390,1366].includes(width)&&example.id!=='premium-02')continue;
    await go(base+'/');
-   await page.evaluate(({key,mode})=>{localStorage.clear();sessionStorage.clear();if(mode==='professional')localStorage.setItem(key,JSON.stringify({version:3,current:3,projectInfo:{builderMode:mode,projectName:'Existing project'},values:{tile:'white',waterproofing:'combined-waterproofing'},memo:'Preserve memo',specialNotes:'Preserve notes',checks:{tile:'keep'}}));},{key,mode});
+   await page.evaluate(({key,mode})=>{localStorage.clear();sessionStorage.clear();if(mode==='professional')localStorage.setItem(key,JSON.stringify({version:3,current:3,projectInfo:{builderMode:mode,projectName:''},values:{tile:'white',waterproofing:'combined-waterproofing'},memo:'Preserve memo',specialNotes:'Preserve notes',checks:{tile:'keep'}}));},{key,mode});
    await go(base+'/design');
+   // The STEP shortcut is removed; an unnamed restored project can return from project info.
    if(mode==='professional'){
-    await page.getByRole('button',{name:'이어서 만들기',exact:true}).click();
-    await page.getByRole('button',{name:'욕실 스타일 미리보기',exact:true}).click();
+    await go(base+'/design?projectInfo=1');
+    await page.getByRole('button',{name:'욕실 스타일 미리보기로 이전',exact:true}).click();
    }
    const before=await page.evaluate(k=>localStorage.getItem(k),key);
    await page.locator('button[aria-haspopup="dialog"]').nth(bathroomStyles.indexOf(style)).click();
@@ -33,7 +34,7 @@ const base=(process.env.BUILDER_TEST_URL||'http://localhost:3120'),key='bath-des
    const url=page.url(),id=new URL(url).searchParams.get('styleDraft');assert.ok(id);
    let record=await page.evaluate(id=>JSON.parse(sessionStorage.getItem('bath-designer-style-draft-v1:'+id)),id);
    assert.equal(record.exampleId,example.id);assert.deepEqual(record.project.values,styleDraftValues(example.id,mode));
-   assert.equal(record.project.memo,'');assert.equal(record.project.specialNotes,'');assert.equal(record.project.projectInfo.projectName,mode==='professional'?'Existing project':'');
+   assert.equal(record.project.memo,'');assert.equal(record.project.specialNotes,'');assert.equal(record.project.projectInfo.projectName,'');
    assert.ok((await page.locator('[data-style-draft-notice]').textContent()).includes(example.title));
    assert.equal(await page.locator('.sheetStep').count(),mode==='consumer'?10:15);
    assert.equal(await page.locator('[data-selection-key]').count(),mode==='consumer'?18:24);

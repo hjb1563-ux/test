@@ -52,9 +52,8 @@ function querySelections(params: URLSearchParams): Values {
 export default function Configurator() {
   const params = useSearchParams();
   const draftId = params.get('styleDraft');
-  const [entry, setEntry] = useState<'loading' | 'choice' | 'confirm' | 'error' | 'ready'>('loading');
+  const [entry, setEntry] = useState<'loading' | 'choice' | 'error' | 'ready'>('loading');
   const [entryStep, setEntryStep] = useState<number | null>(null);
-  const [confirmReturn, setConfirmReturn] = useState<'choice' | 'error'>('choice');
   const [retryEntry, setRetryEntry] = useState(0);
   const [loadedQuery, setLoadedQuery] = useState<string | null>(null);
   const writeAllowed = useRef(false);
@@ -298,14 +297,14 @@ export default function Configurator() {
   if (entry !== 'ready') return <main className="design">
     <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>내 욕실 만들기</span></header>
     <section className="projectEntry" aria-labelledby="project-entry-title">
-      <h1 ref={entryTitle} id="project-entry-title" tabIndex={-1}>{entry === 'error' ? '저장된 내용을 불러오지 못했어요' : entry === 'confirm' ? '새로 만들까요?' : '이전에 만들던 욕실이 있어요'}</h1>
-      <p>{entry === 'error' ? '저장된 원본은 그대로 보관돼요. 브라우저 저장소 설정을 확인하고 다시 시도해주세요.' : entry === 'confirm' ? '새로 시작하면 이전에 저장한 욕실 선택 내용이 삭제돼요.' : '저장된 내용을 이어서 만들거나, 새로 시작할 수 있어요.'}</p>
+      <h1 ref={entryTitle} id="project-entry-title" tabIndex={-1}>{entry === 'error' ? '저장된 내용을 불러오지 못했어요' : '이전에 만들던 욕실이 있어요'}</h1>
+      {entry === 'error' && <p>저장된 원본은 그대로 보관돼요. 브라우저 저장소 설정을 확인하고 다시 시도해주세요.</p>}
       {entry === 'choice' && entryStep !== null && <p className="projectEntryStep">최근 작업 · STEP {String(entryStep).padStart(2, '0')}</p>}
       <div className="projectEntryActions">
-        {entry === 'choice' ? <><button className="button" onClick={continueProject}>이어서 만들기</button><button className="secondary" onClick={() => { setSaveStatus(''); setConfirmReturn('choice'); setEntry('confirm'); }}>새로 만들기</button></> : entry === 'confirm' ? <><button className="secondary" onClick={() => { setSaveStatus(''); setEntry(confirmReturn); }}>취소</button><button className="button" onClick={() => reset(true)}>삭제하고 새로 만들기</button></> : <><button className="button" onClick={() => { setEntry('loading'); setHydrated(false); setRetryEntry(x => x + 1); }}>다시 불러오기</button><button className="secondary" onClick={backupProject}>저장 원본 내보내기</button><button className="secondary" onClick={() => { setSaveStatus(''); setConfirmReturn('error'); setEntry('confirm'); }}>새로 만들기</button><Link className="secondary" href="/">홈으로 돌아가기</Link></>}
+        {entry === 'choice' ? <><button className="button" onClick={continueProject}>이어서 만들기</button><button className="secondary" aria-describedby="project-new-help" onClick={() => reset(true)}>새로 만들기</button></> : <><button className="button" onClick={() => { setEntry('loading'); setHydrated(false); setRetryEntry(x => x + 1); }}>다시 불러오기</button><button className="secondary" onClick={backupProject}>저장 원본 내보내기</button><button className="secondary" aria-describedby="project-new-help" onClick={() => reset(true)}>새로 만들기</button><Link className="secondary" href="/">홈으로 돌아가기</Link></>}
       </div>
       {saveStatus && <p role="alert">{saveStatus}</p>}
-      <small>저장된 내용은 현재 브라우저에 보관돼요.</small>
+      <small id="project-new-help">새로 만들면 이 브라우저의 기존 기본 프로젝트가 삭제돼요.</small>
     </section>
   </main>;
   if (stylePreviewOpen) return <main className="design" onClickCapture={guardEntryDoubleClick}>
@@ -326,7 +325,6 @@ export default function Configurator() {
   return <main className="design builderCompactFlow" onClickCapture={guardEntryDoubleClick}>
     <header className="designHeader"><Link href="/" className="brand">BATH <i>DESIGNER</i></Link><span>내 욕실 만들기</span><button onClick={() => reset()} aria-label="처음부터 다시 만들기"><RotateCcw size={15} /><span className="resetFull">처음부터 다시 만들기</span><span className="resetShort">초기화</span></button></header>
     <ProjectIdentity info={projectInfo} onEdit={() => setProjectFormOpen(true)} />
-    {!draftId && <button type="button" className="resumeLink" onClick={() => setStylePreviewOpen(true)}>욕실 스타일 미리보기</button>}
     {draftId && <p className="consultationNote">{styleDraftNotice} 기존 프로젝트와 분리된 임시 초안입니다.</p>}
     {progress}
     <div className="designGrid">
