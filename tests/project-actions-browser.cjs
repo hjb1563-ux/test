@@ -33,8 +33,8 @@ const key = 'bath-designer-selections-v2';
         for (const [width, height] of [[1920, 1080], [1440, 900], [1280, 720], [430, 932], [390, 844], [375, 812]]) {
             await page.setViewportSize({ width, height });
             await fresh();
-            assert.equal(await page.locator('#project-basic-help').textContent(), '고객명 또는 프로젝트명 중 편한 항목 하나만 입력해주세요.');
-            assert.equal(await page.locator('#project-basic-help').evaluate(element => getComputedStyle(element).wordBreak), 'keep-all');
+            assert.equal(await page.locator('#project-basic-help').count(),0);
+            for(const id of ['project-customer-name','project-name']) assert.equal(await page.locator('#'+id).getAttribute('aria-describedby'),null);
             assert.equal(await page.locator('#project-customer-name').getAttribute('placeholder'), '예: 홍길동 또는 원하는 가명');
             assert.equal(await page.locator('#project-customer-name').inputValue(), '');
             assert.equal(await page.locator('#project-name').getAttribute('placeholder'), '예: 홍길동 고객님 욕실 리모델링');
@@ -44,6 +44,7 @@ const key = 'bath-designer-selections-v2';
             await page.getByRole('button', { name: '욕실 만들기 시작', exact: true }).click();
             assert.equal(await page.locator('#project-info-validation').textContent(), '고객명 또는 프로젝트명 중 하나를 입력해주세요.');
             assert.equal(await page.locator('progress').count(), 0);
+            for(const id of ['project-customer-name','project-name']) assert.equal(await page.locator('#'+id).getAttribute('aria-describedby'),'project-info-validation');
             await page.locator('#project-customer-name').fill('고객A');
             await page.locator('#project-customer-name').press('Enter');
             assert.equal(await page.locator('.projectInfoForm').isVisible(), true);
