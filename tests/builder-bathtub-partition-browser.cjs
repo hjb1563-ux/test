@@ -20,13 +20,17 @@ const message='욕조 파티션 선택 시 선택 불가';
  const output=path.join(require('node:os').tmpdir(),'bath-bathtub-partition');await fs.mkdir(output,{recursive:true});
  const group=k=>page.locator(`.choiceGroup:has(#builder-${k}-content)`);
  const saved=()=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
+ // Finish real font loads before leaving a document; do not suppress abort errors.
+ async function fontsReady(){await page.evaluate(async()=>{document.documentElement.getBoundingClientRect();await document.fonts.ready;});}
+ async function navigate(url){await fontsReady();await page.goto(url);await fontsReady();}
+ async function reload(){await fontsReady();await page.reload();await fontsReady();}
  async function ready(){await page.locator('.progressHeading').getByText('자동 저장됨').waitFor({state:'attached'});}
- async function seed(current,values,mode){await page.goto(base+'/');await page.evaluate(({key,current,values,mode})=>localStorage.setItem(key,JSON.stringify({version:3,current,values,projectInfo:{projectName:'욕조 검증',builderMode:mode},memo:'기존 메모',checks:{bathtub:'유지'}})),{key,current,values,mode});await page.goto(base+'/design?step='+(current+1));await ready();}
- async function step(current){await page.goto(base+'/design?step='+(current+1));await ready();}
+ async function seed(current,values,mode){await navigate(base+'/');await page.evaluate(({key,current,values,mode})=>localStorage.setItem(key,JSON.stringify({version:3,current,values,projectInfo:{projectName:'욕조 검증',builderMode:mode},memo:'기존 메모',checks:{bathtub:'유지'}})),{key,current,values,mode});await navigate(base+'/design?step='+(current+1));await ready();}
+ async function step(current){await navigate(base+'/design?step='+(current+1));await ready();}
  async function partition(){if(!await group('partitionShower').isVisible())await page.locator('.mobileBuilderNav:visible').getByRole('button',{name:'다음 항목 →',exact:true}).click();return group('partitionShower').getByRole('radio',{name:'욕조 파티션',exact:true});}
  async function settled(predicate){await page.waitForFunction(({key,source})=>new Function('s','return '+source)(JSON.parse(localStorage.getItem(key))),{key,source:predicate});}
  try{
- await page.goto(base+'/');
+ await navigate(base+'/');
  assert.equal((await context.request.get(base+imageUrl)).status(),200);
  for(const mode of ['consumer','professional'])for(const width of [375,390,430,768,1024,1440]){
   await page.setViewportSize({width,height:width===1024?768:900});
@@ -61,7 +65,7 @@ const message='욕조 파티션 선택 시 선택 불가';
   const standard=group('bathtub').getByRole('radio',{name:'일반 욕조',exact:true});await standard.focus();await page.keyboard.press('ArrowUp');
   assert.notEqual(await page.evaluate(()=>document.activeElement?.textContent),'욕조 없음'+message);
   await standard.tap();await settled('s.values.bathtub==="bath-standard"');
-  await page.reload();await ready();assert.equal(await none.isDisabled(),true);assert.equal((await saved()).values.bathtub,'bath-standard');
+  await reload();await ready();assert.equal(await none.isDisabled(),true);assert.equal((await saved()).values.bathtub,'bath-standard');
   await page.screenshot({path:path.join(output,`${mode}-${width}.png`),fullPage:true});
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   assert.ok(await none.evaluate(el=>{const b=el.getBoundingClientRect(),d=el.querySelector('small').getBoundingClientRect();return d.left>=b.left&&d.right<=b.right&&d.bottom<=b.bottom;}));
@@ -71,12 +75,25 @@ const message='욕조 파티션 선택 시 선택 불가';
   assert.equal(await page.locator('img').evaluateAll((imgs,url)=>imgs.filter(img=>new URL(img.src).pathname===url).length,imageUrl),0);
   await step(6);const enabled=group('bathtub').getByRole('radio',{name:'욕조 없음',exact:true});assert.equal(await enabled.isEnabled(),true);assert.equal(await enabled.locator('small').count(),0);assert.equal(await enabled.locator('svg.builderChoiceProhibitedIcon').count(),0);assert.equal(await enabled.locator('.builderChoiceIndicator--disabled').count(),0);assert.equal((await saved()).values.bathtub,'bath-standard');
   await page.mouse.move(0,0);
+  // Mouse movement ends :hover before the 160ms color transitions finish.
+  // Wait on browser state, not elapsed time or the expected color values.
+  const bathtubGroup=await group('bathtub').elementHandle();
+  try {
+   await page.waitForFunction(element=>{
+    if(!element?.isConnected)return false;
+    const cards=Array.from(element.querySelectorAll('.builderChoiceCard'));
+    return cards.length>0&&cards.every(card=>{
+     getComputedStyle(card).backgroundColor; // Flush pending hover styles.
+     return !card.matches(':hover,:active')&&card.getAnimations().every(animation=>animation.playState==='finished');
+    });
+   },bathtubGroup);
+  } finally {await bathtubGroup.dispose();}
   const normalAppearance=el=>{const s=getComputedStyle(el);return {background:s.backgroundColor,border:s.borderTopColor,color:s.color,borderRadius:s.borderRadius,padding:s.padding};};
   assert.deepEqual(await enabled.evaluate(normalAppearance),await group('bathtub').getByRole('radio',{name:'조적 욕조',exact:true}).evaluate(normalAppearance));
   await enabled.tap();await settled('s.values.bathtub==="none"');
   await seed(6,{partitionShower:'bathtub-partition',bathtub:'none',tile:'ivory'},mode);
   assert.equal((await saved()).values.bathtub,undefined);assert.equal((await saved()).memo,'기존 메모');assert.equal((await saved()).checks.bathtub,'유지');
-  await page.reload();await ready();assert.equal((await saved()).values.bathtub,undefined);
+  await reload();await ready();assert.equal((await saved()).values.bathtub,undefined);
   await page.getByRole('button',{name:'프로젝트 정보 수정',exact:true}).click();
   await page.getByRole('radio',{name:mode==='consumer'?/^전문가용/:/^일반 고객용/}).click();await page.getByRole('button',{name:'프로젝트 정보 저장',exact:true}).click();await ready();
   assert.equal(await none.isDisabled(),true);assert.equal((await saved()).values.partitionShower,'bathtub-partition');assert.equal((await saved()).values.tile,'ivory');
@@ -93,12 +110,17 @@ const message='욕조 파티션 선택 시 선택 불가';
  }
  await page.setViewportSize({width:1440,height:900});await seed(6,{partitionShower:'bathtub-partition',bathtub:'bath-standard'},'consumer');
  const result=base+'/result?plan='+encodeURIComponent(encodeURIComponent(JSON.stringify({partitionShower:'bathtub-partition',bathtub:'none',tile:'ivory'})))+'&builderMode=consumer';
- await page.goto(result);await page.locator('.consultationSheet').waitFor();const text=await page.locator('.consultationSheet').textContent();assert.ok(text.includes('욕조 파티션'));assert.ok(!text.includes('욕조 없음'));
+ await navigate(result);await page.locator('.consultationSheet').waitFor();const text=await page.locator('.consultationSheet').textContent();assert.ok(text.includes('욕조 파티션'));assert.ok(!text.includes('욕조 없음'));
  await context.grantPermissions(['clipboard-read','clipboard-write']);await page.getByRole('button',{name:'공사 개요만 복사',exact:true}).click();const copied=await page.evaluate(()=>navigator.clipboard.readText());assert.ok(copied.includes('욕조 파티션'));assert.ok(!copied.includes('욕조 없음'));
- await page.emulateMedia({media:'print'});await page.pdf({path:path.join(output,'consultation.pdf'),format:'A4'});
- await page.emulateMedia({media:'screen'});await page.getByRole('button',{name:'상담서 전체 복사',exact:true}).click();await page.getByText('상담서 전체가 PNG 이미지로 복사되었습니다.',{exact:true}).waitFor();
+ await fontsReady();await page.emulateMedia({media:'print'});await fontsReady();await page.pdf({path:path.join(output,'consultation.pdf'),format:'A4'});
+ await page.emulateMedia({media:'screen'});await fontsReady();await page.getByRole('button',{name:'상담서 전체 복사',exact:true}).click();// The PNG suite already budgets 60s for this operation; wait for its actual UI completion.
+ await page.waitForFunction(({success,failure})=>{
+  const button=document.querySelector('button[aria-describedby="consultation-image-copy-help"]');
+  return button?.getAttribute('aria-busy')==='false'&&Array.from(document.querySelectorAll('[role="status"]')).some(el=>el.textContent===success||el.textContent===failure);
+ },{"success":"상담서 전체가 PNG 이미지로 복사되었습니다.","failure":"상담서 전체 이미지 복사에 실패했습니다."},{timeout:60000});
+ await page.getByText('상담서 전체가 PNG 이미지로 복사되었습니다.',{exact:true}).waitFor();
  const png=await page.evaluate(async()=>{const items=await navigator.clipboard.read();const item=items.find(i=>i.types.includes('image/png'));const blob=await item.getType('image/png');const bitmap=await createImageBitmap(blob);return {width:bitmap.width,height:bitmap.height,size:blob.size};});assert.ok(png.width>0&&png.height>0&&png.size>0);
- await page.goto(base+'/result');await page.locator('.consultationSheet').waitFor();
+ await navigate(base+'/result');await page.locator('.consultationSheet').waitFor();
  await page.getByRole('button',{name:'구조와 샤워 공간 수정',exact:true}).click();await ready();await (await partition()).waitFor();assert.equal((await saved()).values.partitionShower,'bathtub-partition');
  await page.getByRole('link',{name:'상담서로 돌아가기',exact:true}).click();await page.locator('.consultationSheet').waitFor();assert.ok((await page.locator('.consultationSheet').textContent()).includes('욕조 파티션'));
  await verifyCanceledResources();
