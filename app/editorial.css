@@ -103,6 +103,11 @@ body .siteNav--overlay .navCta:hover { background:rgba(250,248,243,.12); }
 .footerMain nav { min-width:230px; }
 .footerMain nav a { display:flex; justify-content:space-between; align-items:center; gap:40px; min-height:44px; font-size:13px; }
 .footerMain a:hover { color:#dfb298; }
+.footerMain nav .footerContact { justify-content:flex-start; gap:8px; margin-top:12px; padding:6px 0; color:#c7c4bb; line-height:1.65; text-decoration:underline; text-decoration-color:#85877d; text-underline-offset:4px; }
+.footerContact svg { flex-shrink:0; }
+.footerContact span { min-width:0; overflow-wrap:anywhere; }
+.footerMain nav .footerContact:hover { color:#dfb298; text-decoration-color:currentColor; }
+.footerContact:focus-visible { outline:2px solid #dfb298; outline-offset:4px; border-radius:2px; }
 .footerEnd { border-top:1px solid #4b4d46; padding-top:24px; display:flex; justify-content:space-between; gap:24px; font-size:10px; letter-spacing:.08em; color:#c7c4bb; }
 .footerEnd>span:last-child { font-family:var(--font-editorial); font-size:15px; letter-spacing:0; font-style:italic; }
 /* Guides: keep every word, image URL, option and comparison intact. */
