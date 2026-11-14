@@ -3,7 +3,8 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright-core');
 const local=process.env.BUILDER_TEST_URL||'http://127.0.0.1:3257';
 assert.equal(new URL(local).hostname,'127.0.0.1','Isolated server required');
 const enabled=process.env.ANALYTICS_TEST_ENABLED==='1';
-const origin='https://test-beta-ten-79.vercel.app';
+const origin=process.env.ANALYTICS_TEST_ORIGIN||'https://test-beta-ten-79.vercel.app';
+assert.ok(['https://test-beta-ten-79.vercel.app','https://bathdesigner.vercel.app'].includes(origin));
 
 (async()=>{
  const browser=await chromium.launch({channel:'chrome',headless:true});
@@ -29,7 +30,7 @@ const origin='https://test-beta-ten-79.vercel.app';
     const body=req.postData()||'';if(req.method()==='POST')beacons.push({body,referer:req.headers().referer||''});
     return route.fulfill({status:204,headers:{'access-control-allow-origin':origin,'access-control-allow-methods':'POST, OPTIONS','access-control-allow-headers':'content-type'}});
    }
-   if(u.origin===origin){
+   if(u.origin===origin||['https://unexpected.vercel.app','https://bathdesigner-preview.vercel.app'].includes(u.origin)){
     const response=await route.fetch({url:local+u.pathname+u.search});
     // A test-only Next Link fixture exercises the public -> excluded root
     // transition. No administrator link is added to the shipping website.
@@ -44,9 +45,14 @@ const origin='https://test-beta-ten-79.vercel.app';
   await context.addInitScript(()=>{window.__analyticsDocumentId=crypto.randomUUID();});
   await page.goto(local+'/');await page.waitForLoadState('networkidle');
   assert.equal(await page.locator('script[data-cf-beacon]').count(),0,'Even enabled builds must not track localhost');
+  for(const blocked of ['https://unexpected.vercel.app','https://bathdesigner-preview.vercel.app']) {
+   const before=scriptRequests.length;await page.goto(blocked+'/');await page.waitForLoadState('networkidle');
+   assert.equal(await page.locator('script[data-cf-beacon]').count(),0);assert.equal(scriptRequests.length,before);
+  }
   await page.goto(origin+'/');await page.waitForLoadState('networkidle');
   assert.equal(await page.locator('h1').count(),1);
   assert.equal(await page.locator('script[data-cf-beacon]').count(),enabled?1:0);
+  if(enabled)assert.equal(JSON.parse(await page.locator('script[data-cf-beacon]').getAttribute('data-cf-beacon')).token,process.env.ANALYTICS_TEST_EXPECTED_TOKEN);
   const homeDocument=await page.evaluate(()=>window.__analyticsDocumentId);
   await page.getByRole('link',{name:'내 욕실 만들기',exact:false}).first().click();
   await page.waitForURL(origin+'/design');await page.waitForLoadState('networkidle');
@@ -94,7 +100,7 @@ const origin='https://test-beta-ten-79.vercel.app';
   assert.notEqual(await page.evaluate(()=>window.__analyticsDocumentId),publicDocument,'Excluded root must unload the public beacon');
   assert.equal(await page.evaluate(()=>typeof window.__cfBeacon),'undefined');
   assert.equal(scriptRequests.length,scriptsBeforeAdmin);assert.equal(await page.locator('script[data-cf-beacon]').count(),0);
-  for(const path of ['/admin','/admin/login','/admin/setup-password','/api/admin/visitors']){
+  for(const path of ['/admin','/admin/login','/admin/setup-password','/api/admin/visitors','/auth','/login','/customers/123','/projects/123']){
    const before=scriptRequests.length,response=await page.goto(origin+path);await page.waitForLoadState('networkidle');
    assert.equal(response.status(),404);assert.equal(await page.locator('script[data-cf-beacon]').count(),0);assert.equal(scriptRequests.length,before);
   }
@@ -111,12 +117,13 @@ const origin='https://test-beta-ten-79.vercel.app';
   for(const item of beacons){assert.ok(!item.body.includes('/admin'));assert.ok(!item.referer.includes('/admin'));}
   if(enabled){
    assert.ok(beacons.length>0,'Official script must produce intercepted metrics');assert.ok(scriptRequests.length>=3);
+   for(const item of beacons)assert.equal(JSON.parse(item.body).siteToken,process.env.ANALYTICS_TEST_EXPECTED_TOKEN);
    const locations=new Set(beacons.map(item=>JSON.parse(item.body).location));
    for(const path of ['/','/design','/result','/guide','/guide/tile'])assert.ok(locations.has(origin+path),'Expected clean measured path: '+path);
    for(const item of beacons)assert.ok(!item.body.includes('PRIVATE_ANALYTICS_TEST')&&!item.referer.includes('PRIVATE_ANALYTICS_TEST'));
   }
   else {assert.equal(beacons.length,0);assert.equal(scriptRequests.length,0);}
   assert.deepEqual(errors,[]);
-  console.log(JSON.stringify({mode:enabled?'simulated-production-offline':process.env.ANALYTICS_TEST_BUILD_KIND==='preview'?'simulated-preview-disabled':'no-token-disabled',device:mobile?'mobile':'desktop',homeBuilderReport:true,publicClientNavigation:true,historyAndRefreshPreserveState:true,adminBoundaryUnloadsBeacon:true,stepNoExtraPageview:true,privateMarkerNotTransmitted:true,interceptedBeacons:beacons.length,realCloudflareWrites:0}));
+  console.log(JSON.stringify({origin,mode:enabled?'simulated-production-offline':process.env.ANALYTICS_TEST_BUILD_KIND==='preview'?'simulated-preview-disabled':'no-token-disabled',device:mobile?'mobile':'desktop',homeBuilderReport:true,publicClientNavigation:true,historyAndRefreshPreserveState:true,adminBoundaryUnloadsBeacon:true,stepNoExtraPageview:true,privateMarkerNotTransmitted:true,interceptedBeacons:beacons.length,realCloudflareWrites:0}));
  }finally{await browser.close();}
 })().catch(error=>{console.error(error.name+': '+error.message);process.exitCode=1;});
