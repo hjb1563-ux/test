@@ -13,11 +13,11 @@ test('exact HTTPS Production hostname and known public paths only; admin/referre
  assert.equal(analytics.analyticsLocationAllowed('https://test-beta-ten-79.vercel.app/','https://test-beta-ten-79.vercel.app/admin/login?token=PRIVATE'),false);
 });
 
-function componentFixture(href,referrer='',spa=false){
+function componentFixture(href,referrer='',spa=false,tokens=analytics.cloudflareSiteTokens(env)){
  let allowed=false,effect;const exports={};const jsx=(type,props)=>({type,props});
  const code=ts.transpileModule(fs.readFileSync('components/CloudflareAnalytics.tsx','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText;
  vm.runInNewContext(code,{exports,require:name=>name==='react'?{useState:()=>[allowed,value=>{allowed=value}],useEffect:fn=>{effect=fn}}:name==='react/jsx-runtime'?{jsx,jsxs:jsx}:name==='next/script'?{default:'script'}:analytics,window:{location:{href}},document:{referrer}});
- const render=()=>exports.default({token:fixtureToken,spa});return {render,effect:()=>effect()};
+ const render=()=>exports.default({tokens,spa});return {render,effect:()=>effect()};
 }
 test('one lazy official script with public token only, no customer data payload',()=>{
  const h=componentFixture('https://test-beta-ten-79.vercel.app/result?plan=PRIVATE&specialNotes=PRIVATE');assert.equal(h.render(),null);h.effect();const node=h.render();
@@ -43,4 +43,31 @@ test('page relocation preserves feature code byte-for-byte except relative impor
   const old=execFileSync('git',['show','e0b5496:'+oldPath],{encoding:'utf8'}).replace(/\r\n/g,'\n').replace(/from (['"])(\.\.\/[^'"]+)\1/g,(_,q,p)=>'from '+q+'../'+p+q);
   assert.equal(fs.readFileSync(newPath,'utf8').replace(/\r\n/g,'\n'),old,newPath);
  }
+});
+
+test('independent domain tokens, no fallback, excluded paths and environment gates',()=>{
+ const second='b'.repeat(32),both={...env,CLOUDFLARE_WEB_ANALYTICS_TOKEN_BATHDESIGNER:second};
+ for(const [host,token] of [['test-beta-ten-79.vercel.app',fixtureToken],['bathdesigner.vercel.app',second]]) {
+  const tokens=analytics.cloudflareSiteTokens(both),href='https://'+host+'/';
+  assert.equal(analytics.analyticsLocationToken(tokens,href),token);
+  const h=componentFixture(href,'',true,tokens);h.render();h.effect();assert.equal(JSON.parse(h.render().props['data-cf-beacon']).token,token);
+  for(const path of ['/admin','/auth','/login','/api/test','/customers/123','/projects/123'])assert.equal(analytics.analyticsLocationToken(tokens,'https://'+host+path),null);
+  for(const key of Object.values(analytics.ANALYTICS_TOKEN_ENV))for(const invalid of [undefined,'','bad','<script>','a'.repeat(31)]) {
+   const missing=analytics.cloudflareSiteTokens({...both,[key]:invalid});
+   assert.equal(analytics.analyticsLocationToken(missing,href),key===analytics.ANALYTICS_TOKEN_ENV[host]?null:token);
+  }
+ }
+ for(const patch of [{NODE_ENV:'development'},{VERCEL_ENV:'preview'}])assert.deepEqual(analytics.cloudflareSiteTokens({...both,...patch}),{});
+ for(const href of ['https://bathdesigner-preview.vercel.app/','https://bathdesigner.vercel.app.evil.invalid/','http://localhost:3000/'])assert.equal(analytics.analyticsLocationToken(analytics.cloudflareSiteTokens(both),href),null);
+});
+
+test('new host enforces HTTPS, exact public paths, referrers and empty token maps',()=>{
+ const host='https://bathdesigner.vercel.app';
+ for(const href of [host+':444/',host+'/guide/private-customer','http://bathdesigner.vercel.app/',host+'/admin/login',host+'/my-page',host+'/api'])assert.equal(analytics.analyticsLocationAllowed(href),false);
+ assert.equal(analytics.analyticsLocationAllowed(host+'/',host+'/auth?token=PRIVATE'),false);
+ assert.equal(analytics.analyticsLocationAllowed(host+'/guide/tile?name=PRIVATE#PRIVATE'),true);
+ for(const href of ['https://test-beta-ten-79.vercel.app/',host+'/']) {
+  const h=componentFixture(href,'',true,{});assert.equal(h.render(),null);h.effect();assert.equal(h.render(),null);
+ }
+ assert.equal(analytics.cloudflareSiteToken(env,'__proto__'),null);
 });
